@@ -1,0 +1,151 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore "Unison Access Service REST API.sln"
+
+      - name: Build
+        run: dotnet build "Unison Access Service REST API.sln" --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test "Unison Access Service REST API.sln" --no-build --configuration Release --verbosity normal --logger trx --results-directory TestResults
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: TestResults/*.trx
+
+  security-scan:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore "Unison Access Service REST API.sln"
+
+      - name: Build
+        run: dotnet build "Unison Access Service REST API.sln" --no-restore --configuration Release
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: "trivy-results.sarif"
+
+  api-tests:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore "Unison Access Service REST API.sln"
+
+      - name: Build
+        run: dotnet build "Unison Access Service REST API.sln" --no-restore --configuration Release
+
+      - name: Start API server
+        run: |
+          cd "UnisonRestAdapter"
+          dotnet run --configuration Release &
+          sleep 10
+        env:
+          ASPNETCORE_URLS: http://localhost:5001
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Wait for API to be ready
+        run: |
+          for i in {1..30}; do
+            if curl -f http://localhost:5001/api/health/ping; then
+              echo "API is ready"
+              break
+            fi
+            echo "Waiting for API... ($i/30)"
+            sleep 2
+          done
+
+      - name: Run Postman collection with Newman
+        run: |
+          newman run "postman/UnisonRestAdapter.postman_collection.json" \
+            --env-var "baseUrl=http://localhost:5001" \
+            --env-var "unisonToken=test-token-for-ci" \
+            --reporters cli,json \
+            --reporter-json-export newman-results.json
+        continue-on-error: true
+
+      - name: Upload Newman test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: newman-results
+          path: newman-results.json
+
+  openapi-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Swagger CLI
+        run: npm install -g @apidevtools/swagger-cli
+
+      - name: Validate OpenAPI spec
+        run: swagger-cli validate "openapi/unison-rest-adapter.yaml"
+
+      - name: Upload OpenAPI spec
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-spec
+          path: openapi/unison-rest-adapter.yaml

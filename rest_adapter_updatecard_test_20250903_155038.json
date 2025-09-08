@@ -1,0 +1,28 @@
+{
+  "timestamp": "20250903_155038",
+  "test_summary": {
+    "total_tests": 3,
+    "successful_tests": 0,
+    "success_rate": 0.0
+  },
+  "detailed_results": [
+    {
+      "test": "Standard UpdateCard Request",
+      "success": false,
+      "status": 400,
+      "response": "{\"success\":false,\"message\":\"HTTP Error: <?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?>\\r\\n<!DOCTYPE html PUBLIC \\\"-//W3C//DTD XHTML 1.0 Transitional//EN\\\" \\\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transiti"
+    },
+    {
+      "test": "UpdateCard with False Status",
+      "success": false,
+      "status": 400,
+      "response": "{\"success\":false,\"message\":\"HTTP Error: <?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?>\\r\\n<!DOCTYPE html PUBLIC \\\"-//W3C//DTD XHTML 1.0 Transitional//EN\\\" \\\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transiti"
+    },
+    {
+      "test": "UpdateCard with Null Status",
+      "success": false,
+      "status": 400,
+      "response": "{\"success\":false,\"message\":\"HTTP Error: <?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?>\\r\\n<!DOCTYPE html PUBLIC \\\"-//W3C//DTD XHTML 1.0 Transitional//EN\\\" \\\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transiti"
+    }
+  ]
+}

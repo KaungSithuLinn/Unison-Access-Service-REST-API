@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+  <soap:Header>
+    <tem:AuthenticationHeader>
+      <tem:Username>admin</tem:Username>
+      <tem:Password>nimadmin</tem:Password>
+      <tem:Domain>WORKGROUP</tem:Domain>
+    </tem:AuthenticationHeader>
+  </soap:Header>
+  <soap:Body>
+    <tem:Ping/>
+  </soap:Body>
+</soap:Envelope>

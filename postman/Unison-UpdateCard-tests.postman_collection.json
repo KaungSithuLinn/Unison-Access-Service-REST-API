@@ -1,0 +1,193 @@
+{
+  "info": {
+    "name": "Unison Access Service - UpdateCard Diagnostics",
+    "description": "Comprehensive test collection for diagnosing Unison AccessService SOAP faults and WCF configuration",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "WSDL Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('WSDL accessible', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Content is XML', function () {",
+              "    pm.expect(pm.response.headers.get('Content-Type')).to.include('xml');",
+              "});",
+              "",
+              "pm.test('Contains WSDL definitions', function () {",
+              "    pm.expect(pm.response.text()).to.include('definitions');",
+              "    pm.expect(pm.response.text()).to.include('UpdateCard');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}?wsdl=",
+          "host": ["{{baseUrl}}"],
+          "query": [{ "key": "wsdl", "value": "" }]
+        },
+        "description": "Verify WSDL is accessible and service is running"
+      }
+    },
+    {
+      "name": "UpdateCard - Valid Request (Expect SOAP Fault)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Check current response type to determine WCF configuration state",
+              "pm.test('Response received', function () {",
+              "    pm.response.to.not.be.undefined;",
+              "});",
+              "",
+              "const responseText = pm.response.text();",
+              "const contentType = pm.response.headers.get('Content-Type');",
+              "",
+              "if (contentType && contentType.includes('text/html')) {",
+              "    pm.test('HTML Error Response - WCF Debug NOT Enabled', function () {",
+              "        pm.expect(responseText).to.include('Request Error');",
+              "        console.log('⚠️ WCF includeExceptionDetailInFaults is disabled');",
+              "        console.log('Server returning HTML error page instead of SOAP fault');",
+              "    });",
+              "} else if (contentType && contentType.includes('xml')) {",
+              "    pm.test('XML Response - Check for SOAP Fault', function () {",
+              "        if (responseText.includes('<soap:Fault>') || responseText.includes('<s:Fault>')) {",
+              "            console.log('✅ SOAP Fault detected - WCF Debug is enabled');",
+              "            pm.expect(responseText).to.include('Fault');",
+              "        } else {",
+              "            console.log('ℹ️ XML response but no SOAP fault detected');",
+              "        }",
+              "    });",
+              "}",
+              "",
+              "// Save response for analysis",
+              "pm.globals.set('lastUpdateCardResponse', responseText);",
+              "pm.globals.set('lastUpdateCardContentType', contentType);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "text/xml; charset=utf-8" },
+          {
+            "key": "SOAPAction",
+            "value": "http://tempuri.org/IAccessService/UpdateCard"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\\n  <soap:Body>\\n    <tem:UpdateCard>\\n      <tem:userId>12345</tem:userId>\\n      <tem:profileName>John Doe</tem:profileName>\\n      <tem:cardNumber>1001</tem:cardNumber>\\n      <tem:systemNumber>1</tem:systemNumber>\\n      <tem:versionNumber>1</tem:versionNumber>\\n      <tem:miscNumber>0</tem:miscNumber>\\n      <tem:cardStatus>Active</tem:cardStatus>\\n      <tem:cardName>John Doe - Active Card</tem:cardName>\\n    </tem:UpdateCard>\\n  </soap:Body>\\n</soap:Envelope>"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+        "description": "Test UpdateCard operation - should return SOAP fault with details when WCF debug is enabled"
+      }
+    },
+    {
+      "name": "UpdateCard - Invalid Request (Force Error)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Error response received for invalid data', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);",
+              "});",
+              "",
+              "const responseText = pm.response.text();",
+              "const contentType = pm.response.headers.get('Content-Type');",
+              "",
+              "// Document the type of error response",
+              "if (contentType && contentType.includes('text/html')) {",
+              "    console.log('⚠️ HTML error page returned for invalid request');",
+              "} else if (responseText.includes('Fault')) {",
+              "    console.log('✅ SOAP Fault returned for invalid request');",
+              "    pm.test('SOAP Fault contains error details', function () {",
+              "        pm.expect(responseText).to.include('faultstring');",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "text/xml; charset=utf-8" },
+          {
+            "key": "SOAPAction",
+            "value": "http://tempuri.org/IAccessService/UpdateCard"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\\n  <soap:Body>\\n    <tem:UpdateCard>\\n      <tem:userId></tem:userId>\\n      <tem:profileName></tem:profileName>\\n      <tem:cardNumber>INVALID</tem:cardNumber>\\n      <tem:systemNumber>999999</tem:systemNumber>\\n      <tem:versionNumber>-1</tem:versionNumber>\\n      <tem:miscNumber>-1</tem:miscNumber>\\n      <tem:cardStatus>INVALID_STATUS</tem:cardStatus>\\n      <tem:cardName></tem:cardName>\\n    </tem:UpdateCard>\\n  </soap:Body>\\n</soap:Envelope>"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+        "description": "Test with invalid data to force server-side validation errors"
+      }
+    },
+    {
+      "name": "Service Help Page Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const responseText = pm.response.text();",
+              "",
+              "if (pm.response.code === 200 && responseText.includes('help')) {",
+              "    pm.test('WCF Help Page Enabled', function () {",
+              "        pm.response.to.have.status(200);",
+              "        console.log('✅ WCF help page is enabled');",
+              "    });",
+              "} else {",
+              "    pm.test('WCF Help Page Status', function () {",
+              "        console.log('ℹ️ WCF help page response: ' + pm.response.code);",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/help",
+          "host": ["{{baseUrl}}"],
+          "path": ["help"]
+        },
+        "description": "Check if WCF help page is enabled (indicates serviceDebug configuration)"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://192.168.10.206:9003/Unison.AccessService",
+      "description": "Unison AccessService SOAP endpoint"
+    },
+    {
+      "key": "timestamp",
+      "value": "{{$timestamp}}",
+      "description": "Current timestamp for unique test data"
+    }
+  ]
+}

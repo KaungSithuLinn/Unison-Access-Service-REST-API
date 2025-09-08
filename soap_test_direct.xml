@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" 
+               xmlns:tem="http://tempuri.org/">
+  <soap:Header>
+    <tem:Unison-Token>595d799a-9553-4ddf-8fd9-c27b1f233ce7</tem:Unison-Token>
+  </soap:Header>
+  <soap:Body>
+    <tem:UpdateCard>
+      <tem:userId>TEST_USER_001</tem:userId>
+      <tem:profileName>Default</tem:profileName>
+      <tem:cardNumber>12345678</tem:cardNumber>
+      <tem:systemNumber>001</tem:systemNumber>
+      <tem:versionNumber>1</tem:versionNumber>
+      <tem:miscNumber>000</tem:miscNumber>
+      <tem:cardStatus>1</tem:cardStatus>
+    </tem:UpdateCard>
+  </soap:Body>
+</soap:Envelope>

@@ -1,0 +1,211 @@
+{
+  "info": {
+    "name": "Unison Access Service API Tests",
+    "description": "Test collection for Unison Access Service API v1.5 - Add User with Photo and Card",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "event": [],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://192.168.10.206:9001/Unison.AccessService",
+      "type": "string"
+    },
+    {
+      "key": "unison_token",
+      "value": "17748106-ac22-4d5a-a4c3-31c5e531a613",
+      "type": "string"
+    },
+    {
+      "key": "test_user_id",
+      "value": "testuser_{{$timestamp}}",
+      "type": "string"
+    },
+    {
+      "key": "test_card_number",
+      "value": "1000{{$randomInt}}",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Service Health Check",
+      "item": [
+        {
+          "name": "Ping Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Unison-Token",
+                "value": "{{unison_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/Ping",
+              "host": ["{{base_url}}"],
+              "path": ["Ping"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Version",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Unison-Token",
+                "value": "{{unison_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/GetVersion",
+              "host": ["{{base_url}}"],
+              "path": ["GetVersion"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. User Management",
+      "item": [
+        {
+          "name": "Create/Update User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Unison-Token",
+                "value": "{{unison_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/UpdateUser",
+              "host": ["{{base_url}}"],
+              "path": ["UpdateUser"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{test_user_id}}\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"pinCode\": null,\n  \"validFrom\": null,\n  \"validUntil\": null,\n  \"accessFlags\": 0,\n  \"fields\": []\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add User Photo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Unison-Token",
+                "value": "{{unison_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/UpdateUserPhoto",
+              "host": ["{{base_url}}"],
+              "path": ["UpdateUserPhoto"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{test_user_id}}\",\n  \"photo\": \"/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/wA8A\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Card Management",
+      "item": [
+        {
+          "name": "Add Card to User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Unison-Token",
+                "value": "{{unison_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/UpdateCard",
+              "host": ["{{base_url}}"],
+              "path": ["UpdateCard"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{test_user_id}}\",\n  \"profileName\": \"\",\n  \"cardNumber\": \"{{test_card_number}}\",\n  \"systemNumber\": \"\",\n  \"versionNumber\": \"\",\n  \"miscNumber\": \"\",\n  \"cardStatus\": 1\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Alternative Formats",
+      "item": [
+        {
+          "name": "Update User (XML Format)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/xml"
+              },
+              {
+                "key": "Unison-Token",
+                "value": "{{unison_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/UpdateUser",
+              "host": ["{{base_url}}"],
+              "path": ["UpdateUser"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<UpdateUser>\n  <userId>{{test_user_id}}</userId>\n  <firstName>John</firstName>\n  <lastName>Doe</lastName>\n  <pinCode></pinCode>\n  <validFrom></validFrom>\n  <validUntil></validUntil>\n  <accessFlags>0</accessFlags>\n  <fields></fields>\n</UpdateUser>"
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

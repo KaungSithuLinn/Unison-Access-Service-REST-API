@@ -1,0 +1,336 @@
+openapi: 3.0.3
+info:
+  title: Unison REST Adapter API
+  description: REST-to-SOAP adapter for Unison Access Service
+  version: 1.0.0
+  contact:
+    name: Development Team
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://192.168.10.206:5001
+    description: Local development server
+  - url: https://localhost:5001
+    description: Local HTTPS server
+
+security:
+  - UnisonToken: []
+
+paths:
+  /api/health/ping:
+    get:
+      tags:
+        - Health
+      summary: Health check endpoint
+      description: Returns the health status of the API service
+      operationId: ping
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+              example:
+                isHealthy: true
+                message: Service is healthy
+                timestamp: "2025-09-08T10:30:00Z"
+                serviceVersion: "1.0.0"
+
+  /api/cards/update:
+    put:
+      tags:
+        - Cards
+      summary: Update card information
+      description: Updates card information via SOAP backend service
+      operationId: updateCard
+      security:
+        - UnisonToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCardRequest"
+            example:
+              cardId: "TEST123"
+              userName: "john.doe"
+              firstName: "John"
+              lastName: "Doe"
+              email: "john.doe@example.com"
+              department: "Engineering"
+              title: "Software Engineer"
+              isActive: true
+              expirationDate: "2025-12-31T23:59:59Z"
+              customFields:
+                buildingAccess: "A,B,C"
+                emergencyContact: "555-1234"
+      responses:
+        "200":
+          description: Card updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateCardResponse"
+              example:
+                success: true
+                message: "Card updated successfully"
+                cardId: "TEST123"
+                timestamp: "2025-09-08T10:30:00Z"
+                transactionId: "TXN-001234"
+        "400":
+          description: Bad request or SOAP backend error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateCardResponse"
+              example:
+                success: false
+                message: "HTTP Error: [HTML error from SOAP backend]"
+                cardId: "TEST123"
+                timestamp: "2025-09-08T10:30:00Z"
+                transactionId: null
+        "401":
+          description: Unauthorized - Unison-Token header required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unison-Token header is required"
+
+  /updatecard:
+    post:
+      tags:
+        - Cards
+      summary: Update card information (legacy)
+      description: Alternative endpoint for updating card information for backwards compatibility
+      operationId: updateCardLegacy
+      security:
+        - UnisonToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCardRequest"
+      responses:
+        "200":
+          description: Card updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateCardResponse"
+        "400":
+          description: Bad request or SOAP backend error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateCardResponse"
+        "401":
+          description: Unauthorized - Unison-Token header required
+
+  /api/cards/{cardId}:
+    get:
+      tags:
+        - Cards
+      summary: Get card information
+      description: Retrieves card information by card ID
+      operationId: getCard
+      security:
+        - UnisonToken: []
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          description: Card identifier
+          schema:
+            type: string
+            example: "TEST123"
+      responses:
+        "200":
+          description: Card information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "401":
+          description: Unauthorized - Unison-Token header required
+        "404":
+          description: Card not found
+
+components:
+  securitySchemes:
+    UnisonToken:
+      type: apiKey
+      in: header
+      name: Unison-Token
+      description: Unison authentication token
+
+  schemas:
+    UpdateCardRequest:
+      type: object
+      required:
+        - cardId
+      properties:
+        cardId:
+          type: string
+          description: Card identifier
+          example: "TEST123"
+        userName:
+          type: string
+          description: Username associated with the card
+          example: "john.doe"
+        firstName:
+          type: string
+          description: First name of the card holder
+          example: "John"
+        lastName:
+          type: string
+          description: Last name of the card holder
+          example: "Doe"
+        email:
+          type: string
+          format: email
+          description: Email address of the card holder
+          example: "john.doe@example.com"
+        department:
+          type: string
+          description: Department of the card holder
+          example: "Engineering"
+        title:
+          type: string
+          description: Job title of the card holder
+          example: "Software Engineer"
+        isActive:
+          type: boolean
+          description: Whether the card is active
+          example: true
+        expirationDate:
+          type: string
+          format: date-time
+          description: Card expiration date
+          example: "2025-12-31T23:59:59Z"
+        customFields:
+          type: object
+          additionalProperties:
+            type: string
+          description: Additional custom fields for card update
+          example:
+            buildingAccess: "A,B,C"
+            emergencyContact: "555-1234"
+
+    UpdateCardResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the operation was successful
+          example: true
+        message:
+          type: string
+          description: Response message
+          example: "Card updated successfully"
+        cardId:
+          type: string
+          description: Card identifier that was updated
+          example: "TEST123"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the operation
+          example: "2025-09-08T10:30:00Z"
+        transactionId:
+          type: string
+          nullable: true
+          description: Transaction identifier for tracking
+          example: "TXN-001234"
+
+    UserResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: User identifier
+          example: "user123"
+        userName:
+          type: string
+          nullable: true
+          description: Username
+          example: "john.doe"
+        firstName:
+          type: string
+          nullable: true
+          description: First name
+          example: "John"
+        lastName:
+          type: string
+          nullable: true
+          description: Last name
+          example: "Doe"
+        email:
+          type: string
+          nullable: true
+          format: email
+          description: Email address
+          example: "john.doe@example.com"
+        department:
+          type: string
+          nullable: true
+          description: Department
+          example: "Engineering"
+        title:
+          type: string
+          nullable: true
+          description: Job title
+          example: "Software Engineer"
+        isActive:
+          type: boolean
+          description: Whether the user is active
+          example: true
+        success:
+          type: boolean
+          description: Whether the operation was successful
+          example: true
+        message:
+          type: string
+          nullable: true
+          description: Response message
+          example: "User found"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the operation
+          example: "2025-09-08T10:30:00Z"
+
+    HealthResponse:
+      type: object
+      properties:
+        isHealthy:
+          type: boolean
+          description: Whether the service is healthy
+          example: true
+        message:
+          type: string
+          description: Health status message
+          example: "Service is healthy"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the health check
+          example: "2025-09-08T10:30:00Z"
+        serviceVersion:
+          type: string
+          nullable: true
+          description: Version of the service
+          example: "1.0.0"
+        additionalInfo:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: Additional health information

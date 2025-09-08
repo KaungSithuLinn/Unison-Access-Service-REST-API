@@ -1,0 +1,293 @@
+{
+  "info": {
+    "name": "Unison REST Adapter API",
+    "description": "REST-to-SOAP adapter for Unison Access Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "unison-rest-adapter",
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 0
+    }
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health/ping",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health", "ping"]
+            },
+            "description": "Returns the health status of the API service"
+          },
+          "response": [
+            {
+              "name": "Service is healthy",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/health/ping",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "health", "ping"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"isHealthy\": true,\n  \"message\": \"Service is healthy\",\n  \"timestamp\": \"2025-09-08T10:30:00Z\",\n  \"serviceVersion\": \"1.0.0\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cards",
+      "item": [
+        {
+          "name": "Update Card",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Unison-Token",
+                "value": "{{unisonToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardId\": \"TEST123\",\n  \"userName\": \"john.doe\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"department\": \"Engineering\",\n  \"title\": \"Software Engineer\",\n  \"isActive\": true,\n  \"expirationDate\": \"2025-12-31T23:59:59Z\",\n  \"customFields\": {\n    \"buildingAccess\": \"A,B,C\",\n    \"emergencyContact\": \"555-1234\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cards/update",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cards", "update"]
+            },
+            "description": "Updates card information via SOAP backend service"
+          },
+          "response": [
+            {
+              "name": "Card updated successfully",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Unison-Token",
+                    "value": "{{unisonToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cardId\": \"TEST123\",\n  \"userName\": \"john.doe\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"department\": \"Engineering\",\n  \"title\": \"Software Engineer\",\n  \"isActive\": true,\n  \"expirationDate\": \"2025-12-31T23:59:59Z\",\n  \"customFields\": {\n    \"buildingAccess\": \"A,B,C\",\n    \"emergencyContact\": \"555-1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/cards/update",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "cards", "update"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Card updated successfully\",\n  \"cardId\": \"TEST123\",\n  \"timestamp\": \"2025-09-08T10:30:00Z\",\n  \"transactionId\": \"TXN-001234\"\n}"
+            },
+            {
+              "name": "Bad request or SOAP backend error",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Unison-Token",
+                    "value": "{{unisonToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cardId\": \"TEST123\",\n  \"userName\": \"john.doe\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"department\": \"Engineering\",\n  \"title\": \"Software Engineer\",\n  \"isActive\": true,\n  \"expirationDate\": \"2025-12-31T23:59:59Z\",\n  \"customFields\": {\n    \"buildingAccess\": \"A,B,C\",\n    \"emergencyContact\": \"555-1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/cards/update",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "cards", "update"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"HTTP Error: [HTML error from SOAP backend]\",\n  \"cardId\": \"TEST123\",\n  \"timestamp\": \"2025-09-08T10:30:00Z\",\n  \"transactionId\": null\n}"
+            },
+            {
+              "name": "Unauthorized - Unison-Token header required",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cardId\": \"TEST123\",\n  \"userName\": \"john.doe\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"department\": \"Engineering\",\n  \"title\": \"Software Engineer\",\n  \"isActive\": true,\n  \"expirationDate\": \"2025-12-31T23:59:59Z\",\n  \"customFields\": {\n    \"buildingAccess\": \"A,B,C\",\n    \"emergencyContact\": \"555-1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/cards/update",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "cards", "update"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": \"Unison-Token header is required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Card (Legacy)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Unison-Token",
+                "value": "{{unisonToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardId\": \"TEST123\",\n  \"userName\": \"john.doe\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"department\": \"Engineering\",\n  \"title\": \"Software Engineer\",\n  \"isActive\": true,\n  \"expirationDate\": \"2025-12-31T23:59:59Z\",\n  \"customFields\": {\n    \"buildingAccess\": \"A,B,C\",\n    \"emergencyContact\": \"555-1234\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/updatecard",
+              "host": ["{{baseUrl}}"],
+              "path": ["updatecard"]
+            },
+            "description": "Alternative endpoint for updating card information for backwards compatibility"
+          }
+        },
+        {
+          "name": "Get Card",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Unison-Token",
+                "value": "{{unisonToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cards/:cardId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cards", ":cardId"],
+              "variable": [
+                {
+                  "key": "cardId",
+                  "value": "TEST123",
+                  "description": "Card identifier"
+                }
+              ]
+            },
+            "description": "Retrieves card information by card ID"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://192.168.10.206:5001",
+      "type": "string"
+    },
+    {
+      "key": "unisonToken",
+      "value": "595d799a-example-token-placeholder",
+      "type": "string"
+    }
+  ]
+}
