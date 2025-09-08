@@ -1,0 +1,346 @@
+{
+    "projectName": "Unison Access Service REST API",
+    "phase": "3-tasks",
+    "generated": "2025-09-08",
+    "totalTasks": 12,
+    "estimatedHours": 16,
+    "tasks": [
+        {
+            "id": "TASK-001",
+            "title": "Convert REST Adapter to Windows Service",
+            "description": "Configure UnisonRestAdapter as Windows Service for automatic startup and process monitoring",
+            "category": "deployment",
+            "priority": "high",
+            "estimatedHours": 3,
+            "dependencies": [],
+            "acceptanceCriteria": [
+                "REST adapter runs as Windows Service",
+                "Automatic startup on server boot",
+                "Service restart capability on failure",
+                "Proper logging to Windows Event Log"
+            ],
+            "tags": [
+                "production",
+                "service",
+                "deployment"
+            ],
+            "files": [
+                "UnisonRestAdapter/Program.cs",
+                "install-service.ps1"
+            ],
+            "testable": true,
+            "githubLabel": "enhancement"
+        },
+        {
+            "id": "TASK-002",
+            "title": "Create SOAP Request Validation Templates",
+            "description": "Develop valid SOAP request templates and implement request validation in REST adapter",
+            "category": "validation",
+            "priority": "high",
+            "estimatedHours": 2,
+            "dependencies": [],
+            "acceptanceCriteria": [
+                "SOAP request templates for all operations",
+                "JSON-to-SOAP validation logic",
+                "Clear error messages for invalid requests",
+                "Unit tests for validation logic"
+            ],
+            "tags": [
+                "validation",
+                "soap",
+                "templates"
+            ],
+            "files": [
+                "UnisonRestAdapter/Services/ValidationService.cs",
+                "templates/"
+            ],
+            "testable": true,
+            "githubLabel": "enhancement"
+        },
+        {
+            "id": "TASK-003",
+            "title": "Generate OpenAPI Documentation",
+            "description": "Auto-generate OpenAPI/Swagger documentation from WSDL and REST endpoints",
+            "category": "documentation",
+            "priority": "medium",
+            "estimatedHours": 2,
+            "dependencies": [],
+            "acceptanceCriteria": [
+                "Complete OpenAPI 3.0 specification",
+                "Interactive Swagger UI available",
+                "Sample requests and responses",
+                "Authentication documentation"
+            ],
+            "tags": [
+                "documentation",
+                "openapi",
+                "swagger"
+            ],
+            "files": [
+                "docs/api-spec.json",
+                "UnisonRestAdapter/Startup.cs"
+            ],
+            "testable": true,
+            "githubLabel": "documentation"
+        },
+        {
+            "id": "TASK-004",
+            "title": "Implement Comprehensive Test Suite",
+            "description": "Develop automated test suite with unit, integration, and E2E tests",
+            "category": "testing",
+            "priority": "high",
+            "estimatedHours": 3,
+            "dependencies": [
+                "TASK-002"
+            ],
+            "acceptanceCriteria": [
+                "Unit tests for all service components",
+                "Integration tests for SOAP-REST proxy",
+                "E2E tests for UpdateCard workflow",
+                "Test coverage > 80%"
+            ],
+            "tags": [
+                "testing",
+                "automation",
+                "quality"
+            ],
+            "files": [
+                "UnisonRestAdapter.Tests/",
+                "tests/e2e/"
+            ],
+            "testable": true,
+            "githubLabel": "testing"
+        },
+        {
+            "id": "TASK-005",
+            "title": "Setup Continuous Endpoint Monitoring",
+            "description": "Implement health checks and monitoring for both SOAP and REST endpoints",
+            "category": "monitoring",
+            "priority": "medium",
+            "estimatedHours": 2,
+            "dependencies": [
+                "TASK-001"
+            ],
+            "acceptanceCriteria": [
+                "Health check endpoints implemented",
+                "Automated endpoint monitoring",
+                "Alert system for service failures",
+                "Performance metrics collection"
+            ],
+            "tags": [
+                "monitoring",
+                "health-checks",
+                "alerting"
+            ],
+            "files": [
+                "UnisonRestAdapter/Controllers/HealthController.cs",
+                "monitoring/"
+            ],
+            "testable": true,
+            "githubLabel": "monitoring"
+        },
+        {
+            "id": "TASK-006",
+            "title": "Enhanced Error Handling System",
+            "description": "Improve error message parsing, formatting, and structured JSON error responses",
+            "category": "error-handling",
+            "priority": "medium",
+            "estimatedHours": 2,
+            "dependencies": [],
+            "acceptanceCriteria": [
+                "Structured JSON error responses",
+                "SOAP fault to REST error mapping",
+                "Proper HTTP status codes",
+                "Error logging with correlation IDs"
+            ],
+            "tags": [
+                "error-handling",
+                "logging",
+                "json"
+            ],
+            "files": [
+                "UnisonRestAdapter/Middleware/ErrorHandlingMiddleware.cs"
+            ],
+            "testable": true,
+            "githubLabel": "bug"
+        },
+        {
+            "id": "TASK-007",
+            "title": "Token Management and Security",
+            "description": "Implement secure token storage, validation, and rotation procedures",
+            "category": "security",
+            "priority": "high",
+            "estimatedHours": 2,
+            "dependencies": [],
+            "acceptanceCriteria": [
+                "Secure token storage (encrypted config/Key Vault)",
+                "Token validation middleware",
+                "Token rotation procedures documented",
+                "Security audit log implementation"
+            ],
+            "tags": [
+                "security",
+                "authentication",
+                "tokens"
+            ],
+            "files": [
+                "UnisonRestAdapter/Security/",
+                "config/security.json"
+            ],
+            "testable": true,
+            "githubLabel": "security"
+        },
+        {
+            "id": "TASK-008",
+            "title": "Performance Optimization",
+            "description": "Implement connection pooling, caching, and performance optimizations",
+            "category": "performance",
+            "priority": "low",
+            "estimatedHours": 2,
+            "dependencies": [
+                "TASK-001"
+            ],
+            "acceptanceCriteria": [
+                "HTTP client connection pooling",
+                "Response caching for appropriate endpoints",
+                "Performance benchmarks established",
+                "Load testing results documented"
+            ],
+            "tags": [
+                "performance",
+                "caching",
+                "optimization"
+            ],
+            "files": [
+                "UnisonRestAdapter/Services/CacheService.cs"
+            ],
+            "testable": true,
+            "githubLabel": "performance"
+        },
+        {
+            "id": "TASK-009",
+            "title": "CI/CD Pipeline Setup",
+            "description": "Configure build, test, and deployment pipeline for automated releases",
+            "category": "devops",
+            "priority": "medium",
+            "estimatedHours": 2,
+            "dependencies": [
+                "TASK-004"
+            ],
+            "acceptanceCriteria": [
+                "Automated build on code changes",
+                "Test execution in pipeline",
+                "Automated deployment to staging",
+                "Manual approval for production"
+            ],
+            "tags": [
+                "cicd",
+                "automation",
+                "deployment"
+            ],
+            "files": [
+                ".github/workflows/",
+                "azure-pipelines.yml"
+            ],
+            "testable": true,
+            "githubLabel": "devops"
+        },
+        {
+            "id": "TASK-010",
+            "title": "Create cURL and PowerShell Examples",
+            "description": "Generate comprehensive API usage examples for different client types",
+            "category": "documentation",
+            "priority": "low",
+            "estimatedHours": 1,
+            "dependencies": [
+                "TASK-003"
+            ],
+            "acceptanceCriteria": [
+                "cURL examples for all endpoints",
+                "PowerShell examples with authentication",
+                "Postman collection export",
+                "Integration into API documentation"
+            ],
+            "tags": [
+                "documentation",
+                "examples",
+                "curl"
+            ],
+            "files": [
+                "docs/examples/",
+                "postman/collection.json"
+            ],
+            "testable": true,
+            "githubLabel": "documentation"
+        },
+        {
+            "id": "TASK-011",
+            "title": "Production Deployment Checklist",
+            "description": "Create comprehensive deployment and rollback procedures",
+            "category": "deployment",
+            "priority": "medium",
+            "estimatedHours": 1,
+            "dependencies": [
+                "TASK-001",
+                "TASK-007"
+            ],
+            "acceptanceCriteria": [
+                "Step-by-step deployment guide",
+                "Pre-deployment validation checklist",
+                "Rollback procedures documented",
+                "Environment configuration templates"
+            ],
+            "tags": [
+                "deployment",
+                "procedures",
+                "documentation"
+            ],
+            "files": [
+                "docs/deployment/",
+                "scripts/deploy.ps1"
+            ],
+            "testable": false,
+            "githubLabel": "documentation"
+        },
+        {
+            "id": "TASK-012",
+            "title": "Final Integration Testing and Handover",
+            "description": "Comprehensive end-to-end validation and stakeholder handover preparation",
+            "category": "validation",
+            "priority": "high",
+            "estimatedHours": 2,
+            "dependencies": [
+                "TASK-001",
+                "TASK-004",
+                "TASK-005"
+            ],
+            "acceptanceCriteria": [
+                "All endpoints tested in production environment",
+                "Performance benchmarks met",
+                "Documentation review completed",
+                "Stakeholder handover package ready"
+            ],
+            "tags": [
+                "integration",
+                "validation",
+                "handover"
+            ],
+            "files": [
+                "tests/integration/",
+                "docs/handover/"
+            ],
+            "testable": true,
+            "githubLabel": "validation"
+        }
+    ],
+    "metadata": {
+        "specKitVersion": "1.0",
+        "toolsRequired": [
+            "GitHub MCP",
+            "Playwright MCP",
+            "Codacy MCP"
+        ],
+        "nextPhase": "4-implement",
+        "readyForGitHubIssues": true
+    }
+}
