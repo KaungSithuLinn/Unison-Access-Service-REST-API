@@ -31,9 +31,10 @@ Development focused on REST-SOAP adapter and Unison Access Service integration. 
 ## Current State
 
 - **Active Branch**: `feature/issue-001-error-handling-enhancement`
+- **Pull Request**: #8 created and under Codacy analysis
 - **Service Status**: Running on localhost:5203
-- **Next Action**: Create PR for Issue #1, run Codacy checks, merge on green
-- **Next Issue**: ISSUE-002 (Structured Logging)
+- **Next Action**: Monitor PR #8 analysis, then proceed to ISSUE-002 (Structured Logging)
+- **PR Status**: Under review - https://github.com/KaungSithuLinn/Unison-Access-Service-REST-API/pull/8
 
 ## Features Implemented
 
