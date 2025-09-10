@@ -1,129 +1,122 @@
 [
   {
     "projectName": "Unison Access Service REST API",
-    "phase": "2-plan",
+    "phase": "3-tasks",
     "generated": "2025-09-10",
-    "totalTasks": 5,
-    "estimatedHours": 8,
-    "currentFocus": "Phase 2: Adapter Enhancement Planning & Migration Scenarios",
+    "totalTasks": 7,
+    "estimatedHours": 19.5,
+    "currentFocus": "Phase 3: GitHub Issues Generated - Ready for Phase 4 Implementation",
     "sessionUpdate": {
       "date": "2025-09-10",
-      "phase": "Plan",
-      "focus": "Plan adapter enhancements and document migration paths based on validated architecture",
-      "status": "Active - Phase 1 architecture validation complete, adapter confirmed as official gateway",
-      "nextAction": "Use MarkItDown MCP to create comprehensive plan.md with enhancement scenarios"
+      "phase": "Tasks",
+      "focus": "GitHub issues created from enhancement plan - adapter enhancements and integration testing",
+      "status": "Complete - 7 GitHub issues created for adapter enhancements",
+      "nextAction": "Phase 4: Implement top-priority GitHub issue (Error Handling & Fault Translation)"
     },
-    "tasks": [
+    "githubIssues": [
       {
-        "id": "TASK-015",
-        "title": "Create Adapter Enhancement Plan",
-        "description": "Use MarkItDown MCP to document comprehensive adapter enhancement scenarios including error handling, logging, performance, and additional endpoints",
-        "category": "planning",
+        "id": "ISSUE-001",
+        "title": "Enhance Error Handling and Fault Translation",
+        "url": "https://github.com/KaungSithuLinn/Unison-Access-Service-REST-API/issues/1",
         "priority": "critical",
-        "estimatedHours": 2,
-        "dependencies": [],
-        "acceptanceCriteria": [
-          "plan.md updated with adapter enhancement scenarios",
-          "Error handling and logging strategies documented",
-          "Performance optimization roadmap created",
-          "Additional endpoint expansion plan included",
-          "Monitoring and observability requirements specified"
-        ],
-        "tags": ["planning", "adapter", "enhancement", "documentation"],
-        "files": ["plan.md", "docs/adapter-enhancements.md"],
-        "testable": false,
-        "githubLabel": "planning",
-        "status": "ready"
+        "estimatedHours": 3,
+        "status": "open",
+        "labels": [
+          "enhancement",
+          "error-handling",
+          "critical"
+        ]
       },
       {
-        "id": "TASK-016",
-        "title": "Research REST-SOAP Adapter Best Practices",
-        "description": "Use Web-Search-for-Copilot to research industry best practices for REST-SOAP adapters, security patterns, and performance optimization",
-        "category": "research",
+        "id": "ISSUE-002",
+        "title": "Implement Structured Logging and Request Tracing",
+        "url": "https://github.com/KaungSithuLinn/Unison-Access-Service-REST-API/issues/2",
         "priority": "high",
-        "estimatedHours": 1.5,
-        "dependencies": [],
-        "acceptanceCriteria": [
-          "Best practices research completed and documented",
-          "Security patterns for REST-SOAP adapters identified",
-          "Performance optimization techniques researched",
-          "Industry standards and compliance requirements documented",
-          "Research findings integrated into plan.md"
-        ],
-        "tags": ["research", "best-practices", "security", "performance"],
-        "files": ["docs/research-findings.md", "plan.md"],
-        "testable": false,
-        "githubLabel": "research",
-        "status": "ready"
+        "estimatedHours": 2,
+        "status": "open",
+        "labels": [
+          "enhancement",
+          "logging",
+          "monitoring"
+        ]
       },
       {
-        "id": "TASK-017",
-        "title": "Document Native REST Migration Path",
-        "description": "Create comprehensive documentation for potential migration from adapter to native REST if Unison is reconfigured with webHttpBinding",
-        "category": "planning",
+        "id": "ISSUE-003",
+        "title": "Implement Performance Optimization",
+        "url": "https://github.com/KaungSithuLinn/Unison-Access-Service-REST-API/issues/3",
+        "priority": "high",
+        "estimatedHours": 2.5,
+        "status": "open",
+        "labels": [
+          "enhancement",
+          "performance",
+          "optimization"
+        ]
+      },
+      {
+        "id": "ISSUE-004",
+        "title": "Implement Security Hardening and OWASP Compliance",
+        "url": "https://github.com/KaungSithuLinn/Unison-Access-Service-REST-API/issues/4",
+        "priority": "critical",
+        "estimatedHours": 3,
+        "status": "open",
+        "labels": [
+          "security",
+          "critical",
+          "authentication",
+          "authorization"
+        ]
+      },
+      {
+        "id": "ISSUE-005",
+        "title": "Expand REST API Endpoint Coverage",
+        "url": "https://github.com/KaungSithuLinn/Unison-Access-Service-REST-API/issues/5",
         "priority": "medium",
+        "estimatedHours": 4,
+        "status": "open",
+        "labels": [
+          "enhancement",
+          "endpoints",
+          "api-expansion"
+        ]
+      },
+      {
+        "id": "ISSUE-006",
+        "title": "Implement Monitoring and Health Checks",
+        "url": "https://github.com/KaungSithuLinn/Unison-Access-Service-REST-API/issues/6",
+        "priority": "high",
         "estimatedHours": 2,
-        "dependencies": ["TASK-016"],
-        "acceptanceCriteria": [
-          "Migration scenarios documented with effort estimates",
-          "Risk assessment for native REST configuration changes",
-          "Step-by-step webHttpBinding configuration guide created",
-          "Decision framework for migration timing established",
-          "Rollback procedures documented"
-        ],
-        "tags": [
-          "migration",
-          "native-rest",
-          "risk-assessment",
-          "documentation"
-        ],
-        "files": ["docs/migration-guide.md", "plan.md"],
-        "testable": false,
-        "githubLabel": "planning",
-        "status": "blocked"
+        "status": "open",
+        "labels": [
+          "enhancement",
+          "monitoring",
+          "health-checks",
+          "observability"
+        ]
       },
       {
-        "id": "TASK-018",
-        "title": "Create Integration Test Plan",
-        "description": "Design comprehensive integration test scenarios using Playwright MCP for adapter endpoints and SOAP backend validation",
-        "category": "testing",
+        "id": "ISSUE-007",
+        "title": "Implement Integration Testing with Playwright",
+        "url": "https://github.com/KaungSithuLinn/Unison-Access-Service-REST-API/issues/7",
         "priority": "high",
-        "estimatedHours": 1.5,
-        "dependencies": ["TASK-015"],
-        "acceptanceCriteria": [
-          "Integration test scenarios defined for all adapter endpoints",
-          "SOAP backend validation tests planned",
-          "Error condition testing strategies documented",
-          "Performance benchmarking test plan created",
-          "Playwright test automation roadmap established"
-        ],
-        "tags": ["testing", "integration", "playwright", "automation"],
-        "files": ["docs/test-plan.md", "tests/integration/", "plan.md"],
-        "testable": true,
-        "githubLabel": "testing",
-        "status": "blocked"
-      },
-      {
-        "id": "TASK-019",
-        "title": "Security & Authentication Planning",
-        "description": "Plan security enhancements for the adapter including authentication, authorization, and secure communication patterns",
-        "category": "security",
-        "priority": "high",
-        "estimatedHours": 1,
-        "dependencies": ["TASK-016"],
-        "acceptanceCriteria": [
-          "Authentication mechanisms evaluated and planned",
-          "Authorization strategies documented",
-          "HTTPS/TLS configuration requirements specified",
-          "Security headers and middleware planned",
-          "Audit logging and monitoring requirements defined"
-        ],
-        "tags": ["security", "authentication", "https", "planning"],
-        "files": ["docs/security-plan.md", "plan.md"],
-        "testable": false,
-        "githubLabel": "security",
-        "status": "blocked"
+        "estimatedHours": 3,
+        "status": "open",
+        "labels": [
+          "testing",
+          "integration",
+          "playwright",
+          "automation"
+        ]
       }
+    ],
+    "implementationOrder": [
+      "ISSUE-001",
+      "ISSUE-002",
+      "ISSUE-004",
+      "ISSUE-006",
+      "ISSUE-003",
+      "ISSUE-007",
+      "ISSUE-005"
     ]
   }
 ]
