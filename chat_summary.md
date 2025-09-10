@@ -253,3 +253,44 @@ _Generated: September 10, 2025 - Status: Diagnostic phase in progress_
 ---
 
 _Status: Implement phase - Codacy script fixed and committed. Ready for token setup and re-run._
+
+## Current Session Update - September 10, 2025 (Hand-off to Specify Phase)
+
+### 🎯 Context Update
+
+- **Development Focus**: REST-SOAP adapter and Unison Access Service integration
+- **Key Discovery**: REST adapter deployed at `http://192.168.10.206:5001` (translates REST to SOAP)
+- **Critical Discrepancy**:
+  - Minh expects native REST endpoint from Unison Access Service
+  - WSDL analysis (`http://192.168.10.206:9003/Unison.AccessService`) confirms SOAP-only bindings
+  - No native REST endpoints discovered in Unison service
+
+### 🔍 Technical Validation
+
+- **Adapter Status**: Operational with cURL support for `updateCard`
+- **WSDL Findings**: Only `basicHttpBinding` and `mexHttpBinding` available
+- **Integration Gap**: Missing documentation/evidence of native Unison REST API
+
+### 🚫 Current Blockers
+
+1. **Architecture Decision**: Adapter vs. native REST approach unclear
+2. **Missing Documentation**: Minh to provide Unison REST API specs (if they exist)
+3. **Configuration Question**: Should Unison be reconfigured to expose REST bindings?
+
+### 📋 Mandatory Entry Actions Required
+
+- **Next Phase**: Specify (validate Unison configuration)
+- **Tools Needed**: Postman MCP for endpoint probing, Web-Search-for-Copilot for research
+- **Deliverables**: Updated spec.md with definitive integration approach
+
+### 🎯 Next Agent Instructions
+
+1. Pull latest from remote
+2. Use Postman MCP to probe `http://192.168.10.206:9003/Unison.AccessService` for REST endpoints
+3. Research Unison AccessService REST capabilities via web search
+4. Update `specs/latest/spec.md` based on findings
+5. Define clear integration interfaces in `specs/latest/interfaces.json`
+
+---
+
+_Hand-off Status: Ready for Specify phase - Unison REST validation required_

@@ -6,35 +6,56 @@
 **Status**: CI/CD Pipeline Implementation Complete - Codacy Integration In Progress
 **Last Updated**: September 10, 2025
 
-## Session Update - September 10, 2025
+## Session Update - September 10, 2025 - Hand-off to Specify Phase
 
-### ✅ Current Session Status
+### 🎯 Critical Discovery: REST-SOAP Integration Discrepancy
 
-- **Phase**: Implement (confirmed from `memory/current_phase.json`)
-- **Focus**: Codacy CLI JSON parse error diagnosis and Docker issue resolution
-- **Entry Actions**: Startup checklist completed, authoritative files re-read
-- **Next Priority**: Reproduce Codacy error with verbose logging, capture findings
+**Issue**: Architecture mismatch between expected and actual Unison service capabilities
 
-### 🔄 In Progress
+- **Expected**: Native REST API from Unison Access Service
+- **Actual**: SOAP-only service with REST adapter layer at `http://192.168.10.206:5001`
 
-1. **Codacy Analysis Execution**
-   - Docker image download for `codacy/codacy-analysis-cli` (completed)
-   - PowerShell script updated to forward CODACY_PROJECT_TOKEN (completed)
-   - Windows Docker Desktop volume mounting verified
-   - **Next**: Set token and re-run analysis
+### 🔍 Technical Analysis
 
-### 🚫 Pending Items
+1. **REST Adapter Status**
 
-1. **Repository Synchronization**
+   - **Endpoint**: `http://192.168.10.206:5001` (operational)
+   - **Function**: Translates REST requests to SOAP for Unison backend
+   - **Capability**: `updateCard` operation confirmed working via cURL
 
-   - Initial commit and push to GitHub repository (ready to execute)
-   - Branch strategy implementation (main/develop)
-   - GitHub Secrets configuration for sensitive tokens
+2. **Unison Service Investigation**
+   - **WSDL Location**: `http://192.168.10.206:9003/Unison.AccessService`
+   - **Bindings Found**: Only `basicHttpBinding` and `mexHttpBinding` (SOAP)
+   - **REST Bindings**: None discovered in WSDL analysis
 
-2. **Security Hardening**
-   - Move Codacy project token to environment variables
-   - Implement proper secret management in CI/CD pipelines
-   - Validate token scoping and permissions
+### 🚫 Current Blocker: Integration Architecture Decision
+
+**Stakeholder Discrepancy**:
+
+- **Minh's Position**: Native REST endpoint exists in Unison Access Service
+- **Technical Evidence**: WSDL confirms SOAP-only bindings
+- **Missing**: Documentation or evidence of native Unison REST capabilities
+
+### � Required Validation Actions
+
+**Phase Transition**: Moving from Implement → Specify for architectural clarification
+
+1. **Endpoint Validation**
+
+   - Use Postman MCP to probe `http://192.168.10.206:9003/Unison.AccessService` for REST endpoints
+   - Test `GET/POST` requests with `Accept: application/json` headers
+   - Document any discovered REST capabilities
+
+2. **Research & Documentation**
+
+   - Use Web-Search-for-Copilot to research Unison AccessService REST support
+   - Investigate if Unison can be configured to expose REST bindings
+   - Review product documentation for REST API capabilities
+
+3. **Architecture Decision**
+   - **If no native REST found**: Document adapter as official REST gateway
+   - **If native REST exists**: Plan migration from adapter to direct integration
+   - Update `specs/latest/interfaces.json` with chosen approach
 
 ## Current State Summary
 
