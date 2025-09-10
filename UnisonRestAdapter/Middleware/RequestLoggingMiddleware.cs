@@ -15,7 +15,6 @@ public class RequestLoggingMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<RequestLoggingMiddleware> _logger;
     private readonly RequestTracingOptions _options;
-    private readonly ICorrelationService _correlationService;
 
     private static readonly HashSet<string> SensitiveHeadersLowercase = new()
     {
@@ -32,31 +31,28 @@ public class RequestLoggingMiddleware
     /// <param name="next">The next middleware in the pipeline</param>
     /// <param name="logger">Logger instance</param>
     /// <param name="options">Request tracing options</param>
-    /// <param name="correlationService">Correlation service for request tracking</param>
     public RequestLoggingMiddleware(
         RequestDelegate next,
         ILogger<RequestLoggingMiddleware> logger,
-        IOptions<RequestTracingOptions> options,
-        ICorrelationService correlationService)
+        IOptions<RequestTracingOptions> options)
     {
         _next = next;
         _logger = logger;
         _options = options.Value;
-        _correlationService = correlationService;
     }
 
     /// <summary>
     /// Process the HTTP request and response logging
     /// </summary>
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, ICorrelationService correlationService)
     {
         ArgumentNullException.ThrowIfNull(context);
 
         // Set correlation ID early in the pipeline
         var correlationId = context.Request.Headers.TryGetValue("X-Correlation-ID", out var existingId) && !string.IsNullOrEmpty(existingId)
             ? existingId.ToString()
-            : _correlationService.GenerateCorrelationId();
-        _correlationService.SetCorrelationId(correlationId);
+            : correlationService.GenerateCorrelationId();
+        correlationService.SetCorrelationId(correlationId);
         context.Items["CorrelationId"] = correlationId;
 
         // Start timing the request

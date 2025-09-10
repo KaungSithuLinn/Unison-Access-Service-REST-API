@@ -30,13 +30,21 @@ try
             .Enrich.WithProperty("ApplicationName", "UnisonRestAdapter")
             .Enrich.WithProperty("Version", "1.0.0");
 
-        // Add Windows Event Log only on Windows platform
-        if (OperatingSystem.IsWindows())
+        // Add Windows Event Log only on Windows platform and if running as service or with admin rights
+        if (OperatingSystem.IsWindows() && !builder.Environment.IsDevelopment())
         {
-            configuration.WriteTo.EventLog(
-                source: "UnisonRestAdapter",
-                logName: "Application",
-                manageEventSource: true);
+            try
+            {
+                configuration.WriteTo.EventLog(
+                    source: "UnisonRestAdapter",
+                    logName: "Application",
+                    manageEventSource: false); // Don't try to create event source
+            }
+            catch (System.Security.SecurityException)
+            {
+                // Ignore if we don't have permissions to write to event log
+                Log.Warning("Event log sink not available due to insufficient permissions");
+            }
         }
     });
 
