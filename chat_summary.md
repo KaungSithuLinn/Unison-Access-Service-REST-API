@@ -248,8 +248,8 @@ _Generated: September 10, 2025 - Status: Diagnostic phase in progress_
 - **Git Status**: Clean working tree on `001-spec-kit-setup` branch
 - **Remote**: Origin configured, ready for push
 - **Docker**: Desktop running, images downloading
-- **Scripts**: `run-codacy-analysis.ps1` ready for testing
+- **Scripts**: `run-codacy-analysis.ps1` updated to forward CODACY_PROJECT_TOKEN to Docker
 
 ---
 
-_Status: Implement phase active - Codacy diagnosis in progress_
+_Status: Implement phase - Codacy script fixed and committed. Ready for token setup and re-run._
