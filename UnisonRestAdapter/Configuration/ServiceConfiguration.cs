@@ -1,4 +1,5 @@
 using UnisonRestAdapter.Services;
+using UnisonRestAdapter.Services.Resilience;
 using Microsoft.Extensions.Options;
 
 namespace UnisonRestAdapter.Configuration
@@ -56,9 +57,13 @@ namespace UnisonRestAdapter.Configuration
             // Configure Unison settings
             services.Configure<UnisonSettings>(configuration.GetSection(UnisonSettings.SectionName));
 
+            // Configure resilience settings
+            services.Configure<ResilienceSettings>(configuration.GetSection("Resilience"));
+
             // Register application services
             services.AddScoped<IUnisonService, UnisonService>();
             services.AddScoped<ISoapClientService, SoapClientService>();
+            services.AddScoped<IResilienceService, ResilienceService>();
 
             // Configure HTTP client for SOAP service
             services.AddHttpClient("UnisonSoapClient", client =>

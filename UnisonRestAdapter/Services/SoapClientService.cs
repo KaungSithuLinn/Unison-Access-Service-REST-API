@@ -1,5 +1,6 @@
 using UnisonRestAdapter.Models.Request;
 using UnisonRestAdapter.Services;
+using UnisonRestAdapter.Services.Resilience;
 using Microsoft.Extensions.Options;
 using UnisonRestAdapter.Configuration;
 using System.Text;
@@ -16,15 +17,18 @@ namespace UnisonRestAdapter.Services
         private readonly HttpClient _httpClient;
         private readonly UnisonSettings _settings;
         private readonly ILogger<SoapClientService> _logger;
+        private readonly IResilienceService _resilienceService;
 
         public SoapClientService(
             IHttpClientFactory httpClientFactory,
             IOptions<UnisonSettings> settings,
-            ILogger<SoapClientService> logger)
+            ILogger<SoapClientService> logger,
+            IResilienceService resilienceService)
         {
             _httpClient = httpClientFactory.CreateClient("UnisonSoapClient");
             _settings = settings.Value;
             _logger = logger;
+            _resilienceService = resilienceService;
         }
 
         public async Task<SoapUpdateCardResponse> UpdateCardAsync(UpdateCardRequest request, string token)
@@ -33,17 +37,20 @@ namespace UnisonRestAdapter.Services
             {
                 _logger.LogInformation("Calling SOAP UpdateCard for CardId: {CardId}", request.CardId);
 
-                // Strictly map REST request to required SOAP fields using PascalCase property names
-                var userId = request.UserName ?? "DEFAULT_USER";
-                var profileName = "Default";
-                var cardNumber = request.CardId ?? string.Empty;
-                var systemNumber = "001";
-                var versionNumber = "1";
-                var miscNumber = "000";
-                var cardStatus = request.IsActive.HasValue ? (request.IsActive.Value ? "1" : "0") : "1";
+                // Execute SOAP call with resilience policies
+                var response = await _resilienceService.ExecuteHttpAsync(async () =>
+                {
+                    // Strictly map REST request to required SOAP fields using PascalCase property names
+                    var userId = request.UserName ?? "DEFAULT_USER";
+                    var profileName = "Default";
+                    var cardNumber = request.CardId ?? string.Empty;
+                    var systemNumber = "001";
+                    var versionNumber = "1";
+                    var miscNumber = "000";
+                    var cardStatus = request.IsActive.HasValue ? (request.IsActive.Value ? "1" : "0") : "1";
 
-                // Build SOAP envelope exactly as required by backend according to WSDL/XSD
-                var soapEnvelope = $@"<?xml version='1.0' encoding='utf-8'?>
+                    // Build SOAP envelope exactly as required by backend according to WSDL/XSD
+                    var soapEnvelope = $@"<?xml version='1.0' encoding='utf-8'?>
 <soap:Envelope xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' xmlns:tem='http://tempuri.org/'>
     <soap:Body>
         <tem:UpdateCard>
@@ -59,21 +66,23 @@ namespace UnisonRestAdapter.Services
     </soap:Body>
 </soap:Envelope>";
 
-                // Log the full SOAP envelope for debugging
-                _logger.LogInformation("SOAP Envelope Sent:\n{Envelope}", soapEnvelope);
+                    // Log the full SOAP envelope for debugging
+                    _logger.LogDebug("SOAP Envelope Sent:\n{Envelope}", soapEnvelope);
 
-                var content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml");
-                content.Headers.Clear();
-                content.Headers.Add("Content-Type", "text/xml; charset=utf-8");
+                    var content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml");
+                    content.Headers.Clear();
+                    content.Headers.Add("Content-Type", "text/xml; charset=utf-8");
 
-                var requestMessage = new HttpRequestMessage(HttpMethod.Post, _settings.ServiceUrl)
-                {
-                    Content = content
-                };
-                requestMessage.Headers.Add("SOAPAction", "http://tempuri.org/IAccessService/UpdateCard");
+                    var requestMessage = new HttpRequestMessage(HttpMethod.Post, _settings.ServiceUrl)
+                    {
+                        Content = content
+                    };
+                    requestMessage.Headers.Add("SOAPAction", "http://tempuri.org/IAccessService/UpdateCard");
 
-                // Send SOAP request
-                var response = await _httpClient.SendAsync(requestMessage);
+                    // Send SOAP request
+                    return await _httpClient.SendAsync(requestMessage);
+                }, "UpdateCard");
+
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 _logger.LogInformation("SOAP Response: Status={StatusCode}, Content={Content}",
@@ -174,22 +183,27 @@ namespace UnisonRestAdapter.Services
             {
                 _logger.LogInformation("Calling SOAP GetUser for UserId: {UserId}", userId);
 
-                // Create SOAP envelope for GetUser operation
-                var soapEnvelope = CreateGetUserSoapEnvelope(userId, token);
-                var content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml");
-
-                // Set required SOAP headers
-                content.Headers.Clear();
-                content.Headers.Add("Content-Type", "text/xml; charset=utf-8");
-
-                var requestMessage = new HttpRequestMessage(HttpMethod.Post, _settings.ServiceUrl)
+                // Execute SOAP call with resilience policies
+                var response = await _resilienceService.ExecuteHttpAsync(async () =>
                 {
-                    Content = content
-                };
-                requestMessage.Headers.Add("SOAPAction", "http://tempuri.org/IAccessService/GetUser");
+                    // Create SOAP envelope for GetUser operation
+                    var soapEnvelope = CreateGetUserSoapEnvelope(userId, token);
+                    var content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml");
 
-                // Send SOAP request
-                var response = await _httpClient.SendAsync(requestMessage);
+                    // Set required SOAP headers
+                    content.Headers.Clear();
+                    content.Headers.Add("Content-Type", "text/xml; charset=utf-8");
+
+                    var requestMessage = new HttpRequestMessage(HttpMethod.Post, _settings.ServiceUrl)
+                    {
+                        Content = content
+                    };
+                    requestMessage.Headers.Add("SOAPAction", "http://tempuri.org/IAccessService/GetUser");
+
+                    // Send SOAP request
+                    return await _httpClient.SendAsync(requestMessage);
+                }, "GetUser");
+
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 _logger.LogDebug("SOAP GetUser Response: Status={StatusCode}, Content={Content}",
@@ -276,9 +290,13 @@ namespace UnisonRestAdapter.Services
             {
                 _logger.LogInformation("Performing SOAP health check");
 
-                // Use a simple WSDL request to check service health
-                var healthCheckUrl = $"{_settings.ServiceUrl}?wsdl";
-                var response = await _httpClient.GetAsync(healthCheckUrl);
+                // Execute health check with resilience policies
+                var response = await _resilienceService.ExecuteHttpAsync(async () =>
+                {
+                    // Use a simple WSDL request to check service health
+                    var healthCheckUrl = $"{_settings.ServiceUrl}?wsdl";
+                    return await _httpClient.GetAsync(healthCheckUrl);
+                }, "HealthCheck");
 
                 if (response.IsSuccessStatusCode)
                 {

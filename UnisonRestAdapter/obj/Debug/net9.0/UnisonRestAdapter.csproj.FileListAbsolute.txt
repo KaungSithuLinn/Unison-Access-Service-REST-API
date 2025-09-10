@@ -108,3 +108,8 @@ C:\Projects\Unison Access Service REST API\UnisonRestAdapter\bin\Debug\net9.0\Sy
 C:\Projects\Unison Access Service REST API\UnisonRestAdapter\bin\Debug\net9.0\runtimes\win\lib\net9.0\System.Diagnostics.EventLog.dll
 C:\Projects\Unison Access Service REST API\UnisonRestAdapter\bin\Debug\net9.0\runtimes\win\lib\net9.0\System.ServiceProcess.ServiceController.dll
 C:\Projects\Unison Access Service REST API\UnisonRestAdapter\bin\Debug\net9.0\UnisonRestAdapter.xml
+C:\Projects\Unison Access Service REST API\UnisonRestAdapter\obj\Debug\net9.0\UnisonRestAdapter.sourcelink.json
+C:\Projects\Unison Access Service REST API\UnisonRestAdapter\bin\Debug\net9.0\Microsoft.Extensions.Http.dll
+C:\Projects\Unison Access Service REST API\UnisonRestAdapter\bin\Debug\net9.0\Microsoft.Extensions.Http.Polly.dll
+C:\Projects\Unison Access Service REST API\UnisonRestAdapter\bin\Debug\net9.0\Polly.dll
+C:\Projects\Unison Access Service REST API\UnisonRestAdapter\bin\Debug\net9.0\Polly.Extensions.Http.dll
