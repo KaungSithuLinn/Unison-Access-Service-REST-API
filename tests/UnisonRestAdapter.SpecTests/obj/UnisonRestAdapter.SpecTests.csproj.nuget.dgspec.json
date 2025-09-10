@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Projects\\Unison Access Service REST API\\tests\\UnisonRestAdapter.SpecTests\\UnisonRestAdapter.SpecTests.csproj": {}
+    "C:\\Projects\\Unison Access Service REST API\\tests\\UnisonRestAdapter.SpecTests\\UnisonRestAdapter.SpecTests.csproj": {}
   },
   "projects": {
-    "c:\\Projects\\Unison Access Service REST API\\tests\\UnisonRestAdapter.SpecTests\\UnisonRestAdapter.SpecTests.csproj": {
+    "C:\\Projects\\Unison Access Service REST API\\tests\\UnisonRestAdapter.SpecTests\\UnisonRestAdapter.SpecTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Projects\\Unison Access Service REST API\\tests\\UnisonRestAdapter.SpecTests\\UnisonRestAdapter.SpecTests.csproj",
+        "projectUniqueName": "C:\\Projects\\Unison Access Service REST API\\tests\\UnisonRestAdapter.SpecTests\\UnisonRestAdapter.SpecTests.csproj",
         "projectName": "UnisonRestAdapter.SpecTests",
-        "projectPath": "c:\\Projects\\Unison Access Service REST API\\tests\\UnisonRestAdapter.SpecTests\\UnisonRestAdapter.SpecTests.csproj",
+        "projectPath": "C:\\Projects\\Unison Access Service REST API\\tests\\UnisonRestAdapter.SpecTests\\UnisonRestAdapter.SpecTests.csproj",
         "packagesPath": "C:\\Users\\Kaung Sithu Linn\\.nuget\\packages\\",
-        "outputPath": "c:\\Projects\\Unison Access Service REST API\\tests\\UnisonRestAdapter.SpecTests\\obj\\",
+        "outputPath": "C:\\Projects\\Unison Access Service REST API\\tests\\UnisonRestAdapter.SpecTests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Kaung Sithu Linn\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -27,8 +27,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj": {
-                "projectPath": "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj"
+              "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj": {
+                "projectPath": "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj"
               }
             }
           }
@@ -61,6 +61,10 @@
               "target": "Package",
               "version": "[17.7.2, )"
             },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
+            },
             "xunit": {
               "target": "Package",
               "version": "[2.5.3, )"
@@ -90,14 +94,14 @@
         }
       }
     },
-    "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj": {
+    "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj",
+        "projectUniqueName": "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj",
         "projectName": "UnisonRestAdapter",
-        "projectPath": "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj",
+        "projectPath": "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj",
         "packagesPath": "C:\\Users\\Kaung Sithu Linn\\.nuget\\packages\\",
-        "outputPath": "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\obj\\",
+        "outputPath": "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Kaung Sithu Linn\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -144,6 +148,10 @@
               "version": "[1.8.0, )"
             },
             "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Microsoft.Extensions.Hosting.WindowsServices": {
               "target": "Package",
               "version": "[9.0.8, )"
             },

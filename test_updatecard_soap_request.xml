@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:tem="http://tempuri.org/">
+    <soap:Header />
+    <soap:Body>
+        <tem:UpdateCard>
+            <tem:cardNumber>123456789</tem:cardNumber>
+            <tem:isActive>true</tem:isActive>
+        </tem:UpdateCard>
+    </soap:Body>
+</soap:Envelope>

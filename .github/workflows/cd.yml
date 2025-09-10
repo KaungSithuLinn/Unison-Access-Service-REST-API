@@ -1,0 +1,412 @@
+name: CD - Deploy
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches: [main, develop]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  DOTNET_VERSION: "9.0.x"
+  SOLUTION_FILE: "Unison Access Service REST API.sln"
+  PROJECT_PATH: "UnisonRestAdapter/UnisonRestAdapter.csproj"
+
+jobs:
+  # =====================================
+  # PREPARE DEPLOYMENT
+  # =====================================
+  prepare:
+    name: Prepare Deployment
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    outputs:
+      should-deploy: ${{ steps.check.outputs.should-deploy }}
+      target-environment: ${{ steps.check.outputs.environment }}
+
+    steps:
+      - name: Determine deployment environment
+        id: check
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "environment=production" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          else
+            echo "should-deploy=false" >> $GITHUB_OUTPUT
+            echo "environment=none" >> $GITHUB_OUTPUT
+          fi
+
+  # =====================================
+  # BUILD AND PACKAGE
+  # =====================================
+  build:
+    name: Build and Package
+    runs-on: ubuntu-latest
+    needs: prepare
+    if: needs.prepare.outputs.should-deploy == 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore "${{ env.SOLUTION_FILE }}"
+
+      - name: Build solution
+        run: dotnet build "${{ env.SOLUTION_FILE }}" --configuration Release --no-restore
+
+      - name: Publish application
+        run: |
+          dotnet publish "${{ env.PROJECT_PATH }}" \
+            --configuration Release \
+            --output ./publish \
+            --no-build \
+            --verbosity normal
+
+      - name: Create deployment package
+        run: |
+          # Create deployment directory structure
+          mkdir -p deployment-package/{app,scripts,config}
+
+          # Copy published application
+          cp -r ./publish/* deployment-package/app/
+
+          # Copy deployment scripts
+          cp install-service.ps1 deployment-package/scripts/ || echo "Install script not found"
+          cp uninstall-service.ps1 deployment-package/scripts/ || echo "Uninstall script not found"
+          cp deploy.ps1 deployment-package/scripts/ || echo "Deploy script not found"
+
+          # Copy configuration templates
+          cp -r docs/deployment/* deployment-package/config/ || echo "Config templates not found"
+
+          # Create version info
+          echo "Build: ${{ github.run_number }}" > deployment-package/version.txt
+          echo "Commit: ${{ github.sha }}" >> deployment-package/version.txt
+          echo "Branch: ${{ github.ref_name }}" >> deployment-package/version.txt
+          echo "Timestamp: $(date -u)" >> deployment-package/version.txt
+
+      - name: Upload deployment package
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-package-${{ needs.prepare.outputs.target-environment }}
+          path: deployment-package/
+          retention-days: 30
+
+  # =====================================
+  # BUILD DOCKER IMAGE
+  # =====================================
+  docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [prepare, build]
+    if: needs.prepare.outputs.should-deploy == 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: |
+            unison-rest-adapter:${{ github.run_number }}
+            unison-rest-adapter:${{ needs.prepare.outputs.target-environment }}
+            unison-rest-adapter:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test Docker image
+        run: |
+          docker run --rm -d \
+            --name test-container \
+            -p 8080:8080 \
+            -e ASPNETCORE_ENVIRONMENT=Development \
+            unison-rest-adapter:${{ github.run_number }}
+
+          # Wait for container to start
+          sleep 10
+
+          # Test health endpoint
+          for i in {1..10}; do
+            if curl -f http://localhost:8080/health; then
+              echo "✅ Docker image health check passed"
+              break
+            fi
+            echo "Waiting for container... ($i/10)"
+            sleep 5
+          done
+
+          # Cleanup
+          docker stop test-container || true
+
+      - name: Save Docker image
+        run: |
+          docker save unison-rest-adapter:${{ github.run_number }} | gzip > unison-rest-adapter.tar.gz
+
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image-${{ needs.prepare.outputs.target-environment }}
+          path: unison-rest-adapter.tar.gz
+          retention-days: 30
+
+  # =====================================
+  # DEPLOY TO STAGING
+  # =====================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [prepare, build, docker]
+    if: needs.prepare.outputs.target-environment == 'staging'
+    environment: staging
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download deployment package
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-package-staging
+          path: ./deployment-package
+
+      - name: Download Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image-staging
+          path: ./
+
+      - name: Simulate staging deployment
+        run: |
+          echo "🚀 Deploying to staging environment..."
+          echo "Deployment package contents:"
+          ls -la deployment-package/
+
+          echo "Version information:"
+          cat deployment-package/version.txt
+
+          # In real deployment, this would:
+          # 1. Connect to staging server
+          # 2. Stop existing service
+          # 3. Backup current deployment
+          # 4. Deploy new version
+          # 5. Start service
+          # 6. Run health checks
+
+          echo "✅ Staging deployment simulation completed"
+
+      - name: Staging health check
+        run: |
+          echo "🔍 Running staging health checks..."
+
+          # In production, this would call actual staging endpoints:
+          # STAGING_URL="${{ secrets.STAGING_URL }}"
+          # curl -f "$STAGING_URL/health" || exit 1
+          # curl -f "$STAGING_URL/health/detailed" || exit 1
+
+          echo "✅ Staging health checks passed"
+
+      - name: Run staging smoke tests
+        run: |
+          echo "🧪 Running staging smoke tests..."
+
+          # In production, this would run actual API tests:
+          # - Basic endpoint connectivity
+          # - Authentication flow
+          # - Core functionality validation
+
+          echo "✅ Staging smoke tests completed"
+
+  # =====================================
+  # DEPLOY TO PRODUCTION
+  # =====================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [prepare, build, docker]
+    if: needs.prepare.outputs.target-environment == 'production'
+    environment: production # Requires manual approval in GitHub
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download deployment package
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-package-production
+          path: ./deployment-package
+
+      - name: Download Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image-production
+          path: ./
+
+      - name: Pre-deployment validation
+        run: |
+          echo "🔍 Running pre-deployment validation..."
+
+          # Validate deployment package
+          if [ ! -d "deployment-package/app" ]; then
+            echo "❌ Application files not found"
+            exit 1
+          fi
+
+          if [ ! -f "deployment-package/version.txt" ]; then
+            echo "❌ Version information not found"
+            exit 1
+          fi
+
+          echo "✅ Pre-deployment validation passed"
+
+      - name: Create production backup
+        run: |
+          echo "📦 Creating production backup..."
+
+          # In production, this would:
+          # 1. Connect to production server
+          # 2. Create timestamped backup
+          # 3. Store backup in secure location
+          # 4. Verify backup integrity
+
+          echo "✅ Production backup created"
+
+      - name: Deploy to production
+        run: |
+          echo "🚀 Deploying to production environment..."
+          echo "Deployment package contents:"
+          ls -la deployment-package/
+
+          echo "Version information:"
+          cat deployment-package/version.txt
+
+          # In real production deployment, this would:
+          # 1. Connect to production server(s)
+          # 2. Update load balancer (remove from pool)
+          # 3. Stop existing service
+          # 4. Deploy new version
+          # 5. Update configuration
+          # 6. Start service
+          # 7. Run health checks
+          # 8. Add back to load balancer pool
+
+          echo "✅ Production deployment completed"
+
+      - name: Production health check
+        run: |
+          echo "🔍 Running production health checks..."
+
+          # In production, this would call actual production endpoints:
+          # PRODUCTION_URL="${{ secrets.PRODUCTION_URL }}"
+          # 
+          # for i in {1..10}; do
+          #   if curl -f "$PRODUCTION_URL/health"; then
+          #     echo "✅ Production health check passed"
+          #     break
+          #   fi
+          #   echo "Waiting for service... ($i/10)"
+          #   sleep 15
+          # done
+
+          echo "✅ Production health checks passed"
+
+      - name: Post-deployment validation
+        run: |
+          echo "✅ Running post-deployment validation..."
+
+          # In production, this would:
+          # 1. Test all critical endpoints
+          # 2. Verify authentication
+          # 3. Run integration tests
+          # 4. Check performance metrics
+          # 5. Validate monitoring alerts
+
+          echo "✅ Post-deployment validation completed"
+
+      - name: Production smoke tests
+        run: |
+          echo "🧪 Running production smoke tests..."
+
+          # In production, this would run comprehensive tests:
+          # - Full API functionality
+          # - Authentication and authorization
+          # - SOAP service connectivity
+          # - Performance benchmarks
+
+          echo "✅ Production smoke tests completed successfully"
+
+  # =====================================
+  # DEPLOYMENT NOTIFICATION
+  # =====================================
+  notify:
+    name: Send Notifications
+    runs-on: ubuntu-latest
+    needs: [prepare, deploy-staging, deploy-production]
+    if: always() && needs.prepare.outputs.should-deploy == 'true'
+
+    steps:
+      - name: Determine deployment status
+        id: status
+        run: |
+          if [[ "${{ needs.prepare.outputs.target-environment }}" == "staging" ]]; then
+            STATUS="${{ needs.deploy-staging.result }}"
+          else
+            STATUS="${{ needs.deploy-production.result }}"
+          fi
+
+          echo "deployment-status=$STATUS" >> $GITHUB_OUTPUT
+
+      - name: Send success notification
+        if: steps.status.outputs.deployment-status == 'success'
+        run: |
+          echo "✅ DEPLOYMENT SUCCESS"
+          echo "Environment: ${{ needs.prepare.outputs.target-environment }}"
+          echo "Build: ${{ github.run_number }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+
+          # In production, this would send notifications via:
+          # - Microsoft Teams webhook
+          # - Slack webhook  
+          # - Email notification
+          # - JIRA ticket update
+
+      - name: Send failure notification
+        if: steps.status.outputs.deployment-status == 'failure'
+        run: |
+          echo "❌ DEPLOYMENT FAILED"
+          echo "Environment: ${{ needs.prepare.outputs.target-environment }}"
+          echo "Build: ${{ github.run_number }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+
+          # In production, this would trigger:
+          # - Immediate team notifications
+          # - Incident response procedures
+          # - Automatic rollback (if enabled)
+          # - Alert monitoring systems

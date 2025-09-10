@@ -490,3 +490,8 @@ c:\Projects\Unison Access Service REST API\tests\UnisonRestAdapter.SpecTests\obj
 c:\Projects\Unison Access Service REST API\tests\UnisonRestAdapter.SpecTests\obj\Debug\net9.0\UnisonRestAdapter.SpecTests.pdb
 c:\Projects\Unison Access Service REST API\tests\UnisonRestAdapter.SpecTests\obj\Debug\net9.0\UnisonRestAdapter.SpecTests.genruntimeconfig.cache
 c:\Projects\Unison Access Service REST API\tests\UnisonRestAdapter.SpecTests\obj\Debug\net9.0\ref\UnisonRestAdapter.SpecTests.dll
+C:\Projects\Unison Access Service REST API\tests\UnisonRestAdapter.SpecTests\bin\Debug\net9.0\Microsoft.Extensions.Hosting.WindowsServices.dll
+C:\Projects\Unison Access Service REST API\tests\UnisonRestAdapter.SpecTests\bin\Debug\net9.0\System.ServiceProcess.ServiceController.dll
+C:\Projects\Unison Access Service REST API\tests\UnisonRestAdapter.SpecTests\bin\Debug\net9.0\runtimes\win\lib\net9.0\System.ServiceProcess.ServiceController.dll
+C:\Projects\Unison Access Service REST API\tests\UnisonRestAdapter.SpecTests\bin\Debug\net9.0\Castle.Core.dll
+C:\Projects\Unison Access Service REST API\tests\UnisonRestAdapter.SpecTests\bin\Debug\net9.0\Moq.dll

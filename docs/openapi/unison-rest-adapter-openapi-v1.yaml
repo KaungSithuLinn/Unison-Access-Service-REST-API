@@ -1,0 +1,715 @@
+openapi: 3.0.4
+info:
+  title: Unison REST Adapter API
+  version: 1.0.0
+  description: |
+    REST-to-SOAP adapter for Unison Access Service
+
+    This API provides JSON HTTP endpoints that proxy to an existing SOAP WCF service.
+    All endpoints require authentication via the `Unison-Token` header.
+
+    ## Authentication
+
+    This API uses a custom token-based authentication system. Include the `Unison-Token` header 
+    in all requests (except health checks).
+
+    Example:
+    ```
+    Unison-Token: 595d799a-9553-4ddf-8fd9-c27b1f233ce7
+    ```
+
+    ## Rate Limiting
+
+    Currently no rate limiting is implemented. This may be added in future versions.
+
+    ## Error Handling
+
+    The API returns structured JSON error responses with the following format:
+
+    ```json
+    {
+      "success": false,
+      "message": "Error description",
+      "timestamp": "2025-01-05T10:30:00Z",
+      "transactionId": "TXN-20250105-103000-CARD123"
+    }
+    ```
+
+    ## SOAP Backend
+
+    This REST API proxies requests to a SOAP WCF service located at:
+    - Endpoint: http://192.168.10.206:9003/Unison.AccessService
+    - WSDL: http://192.168.10.206:9003/Unison.AccessService?wsdl
+
+  contact:
+    name: Unison Support
+    email: support@company.com
+  license:
+    name: Proprietary
+
+servers:
+  - url: http://localhost:5203
+    description: Development server
+  - url: https://api.company.com
+    description: Production server
+
+security:
+  - UnisonToken: []
+
+paths:
+  /health:
+    get:
+      summary: Basic health check
+      description: |
+        Simple health check that doesn't require authentication - designed for load balancers and monitoring tools.
+        Returns basic service status including version and environment information.
+      operationId: getHealth
+      tags:
+        - Health
+      security: [] # No authentication required for basic health check
+      responses:
+        "200":
+          description: Service is healthy and operational
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Healthy"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2025-01-05T10:30:00Z"
+                  service:
+                    type: string
+                    example: "UnisonRestAdapter"
+                  version:
+                    type: string
+                    example: "1.0.0"
+                  environment:
+                    type: string
+                    example: "Development"
+              examples:
+                healthy:
+                  summary: Healthy service response
+                  value:
+                    status: "Healthy"
+                    timestamp: "2025-01-05T10:30:00Z"
+                    service: "UnisonRestAdapter"
+                    version: "1.0.0"
+                    environment: "Development"
+
+  /health/detailed:
+    get:
+      summary: Detailed health check
+      description: |
+        Comprehensive health check with SOAP service connectivity validation and system metrics.
+        Provides detailed information about all dependencies and system status.
+
+        If a valid `Unison-Token` is provided in the header, it will also test connectivity 
+        to the SOAP backend service.
+      operationId: getDetailedHealth
+      tags:
+        - Health
+      security:
+        - UnisonToken: []
+        - {} # Optional authentication
+      responses:
+        "200":
+          description: Detailed health information including dependency status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DetailedHealthResponse"
+        "503":
+          description: Service unhealthy - one or more dependencies failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DetailedHealthResponse"
+
+  /health/ready:
+    get:
+      summary: Kubernetes readiness probe
+      description: |
+        Readiness probe endpoint for Kubernetes deployments.
+        Returns 200 when the service is ready to accept traffic.
+      operationId: getReadiness
+      tags:
+        - Health
+      security: []
+      responses:
+        "200":
+          description: Service is ready to accept traffic
+        "503":
+          description: Service is not ready
+
+  /health/live:
+    get:
+      summary: Kubernetes liveness probe
+      description: |
+        Liveness probe endpoint for Kubernetes deployments.
+        Returns 200 when the service is alive and should not be restarted.
+      operationId: getLiveness
+      tags:
+        - Health
+      security: []
+      responses:
+        "200":
+          description: Service is alive
+        "503":
+          description: Service is not alive and should be restarted
+
+  /api/cards/update:
+    put:
+      summary: Update card information
+      description: |
+        Updates card information in the Unison system.
+
+        This endpoint accepts card update requests and proxies them to the SOAP backend service.
+        All fields except `cardId` are optional. Only provided fields will be updated.
+
+        ## Request Validation
+
+        - `cardId`: Required, 1-50 characters, alphanumeric
+        - `email`: Must be valid email format if provided
+        - `expirationDate`: Must be valid ISO 8601 date if provided
+        - `customFields`: Optional dictionary for additional properties
+
+        ## SOAP Mapping
+
+        This REST endpoint maps to the `UpdateCard` SOAP operation on the backend service.
+      operationId: updateCard
+      tags:
+        - Cards
+      security:
+        - UnisonToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCardRequest"
+            examples:
+              full_update:
+                summary: Complete card update
+                value:
+                  cardId: "CARD123"
+                  userName: "john.doe"
+                  firstName: "John"
+                  lastName: "Doe"
+                  email: "john.doe@company.com"
+                  department: "Engineering"
+                  title: "Software Developer"
+                  isActive: true
+                  expirationDate: "2025-12-31T00:00:00Z"
+                  customFields:
+                    building: "Building A"
+                    floor: "3"
+              minimal_update:
+                summary: Minimal card update
+                value:
+                  cardId: "CARD456"
+                  firstName: "Jane"
+                  isActive: false
+      responses:
+        "200":
+          description: Card updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateCardResponse"
+              examples:
+                success:
+                  summary: Successful update
+                  value:
+                    success: true
+                    message: "Card updated successfully"
+                    cardId: "CARD123"
+                    timestamp: "2025-01-05T10:30:00Z"
+                    transactionId: "TXN-20250105-103000-CARD123"
+        "400":
+          description: Invalid request data or update failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateCardResponse"
+              examples:
+                validation_error:
+                  summary: Validation error
+                  value:
+                    success: false
+                    message: "CardId is required and must be 1-50 characters"
+                    cardId: ""
+                    timestamp: "2025-01-05T10:30:00Z"
+                    transactionId: null
+                soap_error:
+                  summary: SOAP service error
+                  value:
+                    success: false
+                    message: "Card not found in system"
+                    cardId: "INVALID123"
+                    timestamp: "2025-01-05T10:30:00Z"
+                    transactionId: "TXN-20250105-103000-INVALID123"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateCardResponse"
+
+  /updatecard:
+    post:
+      summary: Update card information (alternative route)
+      description: |
+        Alternative POST endpoint for card updates to maintain backward compatibility.
+
+        This endpoint provides the same functionality as `PUT /api/cards/update` but uses
+        the POST method for clients that may not support PUT requests.
+      operationId: updateCardPost
+      tags:
+        - Cards
+      deprecated: true
+      security:
+        - UnisonToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCardRequest"
+      responses:
+        "200":
+          description: Card updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateCardResponse"
+        "400":
+          description: Invalid request data or update failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateCardResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /api/cards/{cardId}:
+    get:
+      summary: Get card information
+      description: |
+        Retrieves card information by card ID.
+
+        This endpoint queries the SOAP backend service to retrieve user information
+        associated with the specified card ID.
+      operationId: getCard
+      tags:
+        - Cards
+      security:
+        - UnisonToken: []
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          description: Card identifier to retrieve information for
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 50
+            pattern: "^[a-zA-Z0-9]+$"
+          example: "CARD123"
+      responses:
+        "200":
+          description: Card information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+              examples:
+                active_user:
+                  summary: Active user card
+                  value:
+                    userId: "USER123"
+                    userName: "john.doe"
+                    firstName: "John"
+                    lastName: "Doe"
+                    email: "john.doe@company.com"
+                    department: "Engineering"
+                    title: "Software Developer"
+                    isActive: true
+                    success: true
+                    message: "User information retrieved successfully"
+                    timestamp: "2025-01-05T10:30:00Z"
+        "404":
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+              examples:
+                not_found:
+                  summary: Card not found
+                  value:
+                    userId: ""
+                    userName: null
+                    firstName: null
+                    lastName: null
+                    email: null
+                    department: null
+                    title: null
+                    isActive: false
+                    success: false
+                    message: "Card not found"
+                    timestamp: "2025-01-05T10:30:00Z"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /api/users/{userId}:
+    get:
+      summary: Get user information
+      description: |
+        Retrieves user information by user ID.
+
+        This endpoint is similar to the card lookup but uses user ID instead of card ID.
+      operationId: getUser
+      tags:
+        - Users
+      security:
+        - UnisonToken: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User identifier to retrieve information for
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 50
+          example: "USER123"
+      responses:
+        "200":
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+components:
+  securitySchemes:
+    UnisonToken:
+      type: apiKey
+      in: header
+      name: Unison-Token
+      description: |
+        Unison authentication token required for all API operations (except health checks).
+
+        The token should be included in the `Unison-Token` header for all requests.
+
+        Example: `Unison-Token: 595d799a-9553-4ddf-8fd9-c27b1f233ce7`
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized - Unison-Token header missing or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unison-Token header is required"
+              timestamp:
+                type: string
+                format: date-time
+                example: "2025-01-05T10:30:00Z"
+          examples:
+            missing_token:
+              summary: Missing token
+              value:
+                error: "Unison-Token header is required"
+                timestamp: "2025-01-05T10:30:00Z"
+            invalid_token:
+              summary: Invalid token
+              value:
+                error: "Invalid or expired token"
+                timestamp: "2025-01-05T10:30:00Z"
+
+  schemas:
+    UpdateCardRequest:
+      type: object
+      required:
+        - cardId
+      properties:
+        cardId:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: "^[a-zA-Z0-9]+$"
+          description: Unique identifier for the card (required, 1-50 characters, alphanumeric)
+          example: "CARD123"
+        userName:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 100
+          description: User's login name
+          example: "john.doe"
+        firstName:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 100
+          description: User's first name
+          example: "John"
+        lastName:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 100
+          description: User's last name
+          example: "Doe"
+        email:
+          type: string
+          nullable: true
+          format: email
+          maxLength: 255
+          description: User's email address
+          example: "john.doe@company.com"
+        department:
+          type: string
+          nullable: true
+          maxLength: 100
+          description: User's department
+          example: "Engineering"
+        title:
+          type: string
+          nullable: true
+          maxLength: 100
+          description: User's job title
+          example: "Software Developer"
+        isActive:
+          type: boolean
+          nullable: true
+          description: Whether the card is active
+          example: true
+        expirationDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: Card expiration date in ISO 8601 format
+          example: "2025-12-31T00:00:00Z"
+        customFields:
+          type: object
+          nullable: true
+          additionalProperties:
+            type: string
+          description: Additional custom fields for card update
+          example:
+            building: "Building A"
+            floor: "3"
+
+    UpdateCardResponse:
+      type: object
+      required:
+        - success
+        - message
+        - cardId
+        - timestamp
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the update operation was successful
+          example: true
+        message:
+          type: string
+          description: Human-readable message describing the result
+          example: "Card updated successfully"
+        cardId:
+          type: string
+          description: The card ID that was updated
+          example: "CARD123"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the operation was completed
+          example: "2025-01-05T10:30:00Z"
+        transactionId:
+          type: string
+          nullable: true
+          description: Unique identifier for this transaction
+          example: "TXN-20250105-103000-CARD123"
+
+    UserResponse:
+      type: object
+      required:
+        - userId
+        - isActive
+        - success
+        - timestamp
+      properties:
+        userId:
+          type: string
+          description: Unique identifier for the user
+          example: "USER123"
+        userName:
+          type: string
+          nullable: true
+          description: User's login name
+          example: "john.doe"
+        firstName:
+          type: string
+          nullable: true
+          description: User's first name
+          example: "John"
+        lastName:
+          type: string
+          nullable: true
+          description: User's last name
+          example: "Doe"
+        email:
+          type: string
+          nullable: true
+          format: email
+          description: User's email address
+          example: "john.doe@company.com"
+        department:
+          type: string
+          nullable: true
+          description: User's department
+          example: "Engineering"
+        title:
+          type: string
+          nullable: true
+          description: User's job title
+          example: "Software Developer"
+        isActive:
+          type: boolean
+          description: Whether the user is active
+          example: true
+        success:
+          type: boolean
+          description: Indicates whether the operation was successful
+          example: true
+        message:
+          type: string
+          nullable: true
+          description: Human-readable message describing the result
+          example: "User information retrieved successfully"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the operation was completed
+          example: "2025-01-05T10:30:00Z"
+
+    DetailedHealthResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+        - service
+        - version
+        - checks
+      properties:
+        status:
+          type: string
+          enum: [Healthy, Degraded, Unhealthy]
+          description: Overall health status
+          example: "Healthy"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the health check was performed
+          example: "2025-01-05T10:30:00Z"
+        service:
+          type: string
+          description: Name of the service
+          example: "UnisonRestAdapter"
+        version:
+          type: string
+          description: Version of the service
+          example: "1.0.0"
+        environment:
+          type: string
+          description: Environment where the service is running
+          example: "Development"
+        responseTime:
+          type: integer
+          description: Response time for the health check in milliseconds
+          example: 25
+        checks:
+          type: object
+          description: Detailed health check results for each dependency
+          properties:
+            Application:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "Healthy"
+                uptime:
+                  type: string
+                  example: "2 days, 4 hours"
+                memory:
+                  type: string
+                  example: "45 MB"
+                processId:
+                  type: integer
+                  example: 12345
+            SOAPService:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "Healthy"
+                details:
+                  type: string
+                  example: "SOAP service connectivity verified"
+                responseTime:
+                  type: integer
+                  example: 150
+            Configuration:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "Healthy"
+                details:
+                  type: string
+                  example: "All required configuration values present"
+
+tags:
+  - name: Health
+    description: |
+      Health check and monitoring endpoints
+
+      These endpoints provide various levels of health information for the service,
+      from basic status checks suitable for load balancers to detailed diagnostic
+      information for troubleshooting.
+  - name: Cards
+    description: |
+      Card management operations
+
+      These endpoints handle card-related operations including updating card information
+      and retrieving card details. All operations are proxied to the SOAP backend service.
+  - name: Users
+    description: |
+      User management operations
+
+      These endpoints handle user-related operations for retrieving user information
+      by various identifiers.
+
+externalDocs:
+  description: Find out more about Unison Access Service
+  url: https://docs.company.com/unison-access-service

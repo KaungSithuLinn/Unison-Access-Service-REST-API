@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj": {}
+    "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj": {}
   },
   "projects": {
-    "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj": {
+    "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj",
+        "projectUniqueName": "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj",
         "projectName": "UnisonRestAdapter",
-        "projectPath": "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj",
+        "projectPath": "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\UnisonRestAdapter.csproj",
         "packagesPath": "C:\\Users\\Kaung Sithu Linn\\.nuget\\packages\\",
-        "outputPath": "c:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\obj\\",
+        "outputPath": "C:\\Projects\\Unison Access Service REST API\\UnisonRestAdapter\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Kaung Sithu Linn\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -61,6 +61,10 @@
               "target": "Package",
               "version": "[9.0.8, )"
             },
+            "Microsoft.Extensions.Hosting.WindowsServices": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[9.0.4, )"
@@ -85,7 +89,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

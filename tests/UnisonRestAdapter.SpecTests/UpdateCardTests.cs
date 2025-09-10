@@ -44,7 +44,7 @@ namespace UnisonRestAdapter.SpecTests
             {
                 Content = JsonContent.Create(req)
             };
-            message.Headers.Add("Unison-Token", "test-token");
+            message.Headers.Add("Unison-Token", "595d799a-9553-4ddf-8fd9-c27b1f233ce7");
 
             var res = await _client.SendAsync(message);
             // Fake service returns BadRequest in controller for success=false

@@ -1,0 +1,1357 @@
+{
+  "config": {
+    "configFile": "C:\\Projects\\Unison Access Service REST API\\tests\\playwright.config.ts",
+    "rootDir": "C:/Projects/Unison Access Service REST API/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 7
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "test-results/junit-results.xml"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Projects/Unison Access Service REST API/tests/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "api-tests",
+        "name": "api-tests",
+        "testDir": "C:/Projects/Unison Access Service REST API/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.55.0",
+    "workers": 7,
+    "webServer": {
+      "command": "dotnet run --project ../UnisonRestAdapter",
+      "port": 5203,
+      "reuseExistingServer": true,
+      "timeout": 30000
+    }
+  },
+  "suites": [
+    {
+      "title": "updatecard-workflow.spec.ts",
+      "file": "updatecard-workflow.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "UpdateCard Complete Workflow",
+          "file": "updatecard-workflow.spec.ts",
+          "line": 14,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Health Check Validation",
+              "file": "updatecard-workflow.spec.ts",
+              "line": 21,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "health endpoint should be accessible without authentication",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 0,
+                          "parallelIndex": 0,
+                          "status": "failed",
+                          "duration": 19,
+                          "error": {
+                            "message": "Error: apiRequestContext.get: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.get: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:23:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 41,
+                              "line": 23
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 21 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Health Check Validation\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 22 |\u001b[39m     test(\u001b[32m\"health endpoint should be accessible without authentication\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 23 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m`${API_BASE_URL}/health`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 24 |\u001b[39m\n \u001b[90m 25 |\u001b[39m       expect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 26 |\u001b[39m       \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 41,
+                                "line": 23
+                              },
+                              "message": "Error: apiRequestContext.get: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 21 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Health Check Validation\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 22 |\u001b[39m     test(\u001b[32m\"health endpoint should be accessible without authentication\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 23 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m`${API_BASE_URL}/health`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 24 |\u001b[39m\n \u001b[90m 25 |\u001b[39m       expect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 26 |\u001b[39m       \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:23:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:04.938Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 41,
+                            "line": 23
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-edfdccaffa2a52e44f9e",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 22,
+                  "column": 9
+                },
+                {
+                  "title": "health endpoint should return quickly (< 2 seconds)",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 10,
+                          "parallelIndex": 0,
+                          "status": "failed",
+                          "duration": 70,
+                          "error": {
+                            "message": "Error: apiRequestContext.get: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.get: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:32:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 41,
+                              "line": 32
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 30 |\u001b[39m     test(\u001b[32m\"health endpoint should return quickly (< 2 seconds)\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 31 |\u001b[39m       \u001b[36mconst\u001b[39m startTime \u001b[33m=\u001b[39m \u001b[33mDate\u001b[39m\u001b[33m.\u001b[39mnow()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m`${API_BASE_URL}/health`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m       \u001b[36mconst\u001b[39m endTime \u001b[33m=\u001b[39m \u001b[33mDate\u001b[39m\u001b[33m.\u001b[39mnow()\u001b[33m;\u001b[39m\n \u001b[90m 34 |\u001b[39m\n \u001b[90m 35 |\u001b[39m       expect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 41,
+                                "line": 32
+                              },
+                              "message": "Error: apiRequestContext.get: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 30 |\u001b[39m     test(\u001b[32m\"health endpoint should return quickly (< 2 seconds)\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 31 |\u001b[39m       \u001b[36mconst\u001b[39m startTime \u001b[33m=\u001b[39m \u001b[33mDate\u001b[39m\u001b[33m.\u001b[39mnow()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m`${API_BASE_URL}/health`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m       \u001b[36mconst\u001b[39m endTime \u001b[33m=\u001b[39m \u001b[33mDate\u001b[39m\u001b[33m.\u001b[39mnow()\u001b[33m;\u001b[39m\n \u001b[90m 34 |\u001b[39m\n \u001b[90m 35 |\u001b[39m       expect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:32:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:08.610Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 41,
+                            "line": 32
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-8ceee15b22d905df3f01",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 30,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Authentication Flow",
+              "file": "updatecard-workflow.spec.ts",
+              "line": 40,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should reject requests without Unison-Token header",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 1,
+                          "parallelIndex": 1,
+                          "status": "failed",
+                          "duration": 18,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:42:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 41,
+                              "line": 42
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 40 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Authentication Flow\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 41 |\u001b[39m     test(\u001b[32m\"should reject requests without Unison-Token header\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 42 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 43 |\u001b[39m         data\u001b[33m:\u001b[39m {\n \u001b[90m 44 |\u001b[39m           \u001b[33mCardId\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"TEST123\"\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 45 |\u001b[39m           \u001b[33mUserName\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"test.user\"\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 41,
+                                "line": 42
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 40 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Authentication Flow\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 41 |\u001b[39m     test(\u001b[32m\"should reject requests without Unison-Token header\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 42 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 43 |\u001b[39m         data\u001b[33m:\u001b[39m {\n \u001b[90m 44 |\u001b[39m           \u001b[33mCardId\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"TEST123\"\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 45 |\u001b[39m           \u001b[33mUserName\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"test.user\"\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:42:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:04.313Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 41,
+                            "line": 42
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-635bc2c12e2d52cf6cf9",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 41,
+                  "column": 9
+                },
+                {
+                  "title": "should reject requests with invalid Unison-Token",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 8,
+                          "parallelIndex": 1,
+                          "status": "failed",
+                          "duration": 14,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:59:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 41,
+                              "line": 59
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m\"should reject requests with invalid Unison-Token\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 59 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 60 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 61 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mINVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 62 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 41,
+                                "line": 59
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m\"should reject requests with invalid Unison-Token\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 59 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 60 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 61 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mINVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 62 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:59:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:08.108Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 41,
+                            "line": 59
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-7c83c2b6ae394eb2a071",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 58,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Request Validation",
+              "file": "updatecard-workflow.spec.ts",
+              "line": 79,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should validate required CardId field",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 2,
+                          "parallelIndex": 2,
+                          "status": "failed",
+                          "duration": 14,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:81:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 41,
+                              "line": 81
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 79 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Request Validation\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 80 |\u001b[39m     test(\u001b[32m\"should validate required CardId field\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 81 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 82 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 83 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 84 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 41,
+                                "line": 81
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 79 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Request Validation\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 80 |\u001b[39m     test(\u001b[32m\"should validate required CardId field\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 81 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 82 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 83 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 84 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:81:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:05.071Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 41,
+                            "line": 81
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-9ebab97e3195899881e4",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 80,
+                  "column": 9
+                },
+                {
+                  "title": "should validate CardId format (alphanumeric, 1-50 chars)",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 11,
+                          "parallelIndex": 2,
+                          "status": "failed",
+                          "duration": 13,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:108:43",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 43,
+                              "line": 108
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 106 |\u001b[39m\n \u001b[90m 107 |\u001b[39m       \u001b[36mfor\u001b[39m (\u001b[36mconst\u001b[39m testCase \u001b[36mof\u001b[39m testCases) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 108 |\u001b[39m         \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 109 |\u001b[39m           headers\u001b[33m:\u001b[39m {\n \u001b[90m 110 |\u001b[39m             \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 111 |\u001b[39m           }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 43,
+                                "line": 108
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 106 |\u001b[39m\n \u001b[90m 107 |\u001b[39m       \u001b[36mfor\u001b[39m (\u001b[36mconst\u001b[39m testCase \u001b[36mof\u001b[39m testCases) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 108 |\u001b[39m         \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 109 |\u001b[39m           headers\u001b[33m:\u001b[39m {\n \u001b[90m 110 |\u001b[39m             \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 111 |\u001b[39m           }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:108:43\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:08.444Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 43,
+                            "line": 108
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-a2d39a95a453881bd603",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 99,
+                  "column": 9
+                },
+                {
+                  "title": "should validate email format",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 3,
+                          "status": "failed",
+                          "duration": 11,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:139:43",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 43,
+                              "line": 139
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 137 |\u001b[39m\n \u001b[90m 138 |\u001b[39m       \u001b[36mfor\u001b[39m (\u001b[36mconst\u001b[39m email \u001b[36mof\u001b[39m invalidEmails) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 139 |\u001b[39m         \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 140 |\u001b[39m           headers\u001b[33m:\u001b[39m {\n \u001b[90m 141 |\u001b[39m             \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 142 |\u001b[39m           }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 43,
+                                "line": 139
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 137 |\u001b[39m\n \u001b[90m 138 |\u001b[39m       \u001b[36mfor\u001b[39m (\u001b[36mconst\u001b[39m email \u001b[36mof\u001b[39m invalidEmails) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 139 |\u001b[39m         \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 140 |\u001b[39m           headers\u001b[33m:\u001b[39m {\n \u001b[90m 141 |\u001b[39m             \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 142 |\u001b[39m           }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:139:43\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:04.222Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 43,
+                            "line": 139
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-92503648b24d2d8bca32",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 128,
+                  "column": 9
+                },
+                {
+                  "title": "should validate expiration date is not in the past",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 7,
+                          "parallelIndex": 3,
+                          "status": "failed",
+                          "duration": 19,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:163:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 41,
+                              "line": 163
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 161 |\u001b[39m       pastDate\u001b[33m.\u001b[39msetFullYear(pastDate\u001b[33m.\u001b[39mgetFullYear() \u001b[33m-\u001b[39m \u001b[35m1\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 162 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 163 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 164 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 165 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 166 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 41,
+                                "line": 163
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 161 |\u001b[39m       pastDate\u001b[33m.\u001b[39msetFullYear(pastDate\u001b[33m.\u001b[39mgetFullYear() \u001b[33m-\u001b[39m \u001b[35m1\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 162 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 163 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 164 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 165 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 166 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:163:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:07.834Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 41,
+                            "line": 163
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-4f0e1bbfb735c5e705aa",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 159,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "SOAP Integration (Happy Path)",
+              "file": "updatecard-workflow.spec.ts",
+              "line": 184,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should handle valid UpdateCard request",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 4,
+                          "status": "failed",
+                          "duration": 39,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:189:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 41,
+                              "line": 189
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 187 |\u001b[39m       futureDate\u001b[33m.\u001b[39msetFullYear(futureDate\u001b[33m.\u001b[39mgetFullYear() \u001b[33m+\u001b[39m \u001b[35m1\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 188 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 189 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 190 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 191 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 192 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 41,
+                                "line": 189
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 187 |\u001b[39m       futureDate\u001b[33m.\u001b[39msetFullYear(futureDate\u001b[33m.\u001b[39mgetFullYear() \u001b[33m+\u001b[39m \u001b[35m1\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 188 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 189 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 190 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 191 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 192 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:189:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:05.033Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 41,
+                            "line": 189
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-abd6f93dc03715b0ab01",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 185,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Error Handling",
+              "file": "updatecard-workflow.spec.ts",
+              "line": 221,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should handle malformed JSON gracefully",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 13,
+                          "parallelIndex": 4,
+                          "status": "failed",
+                          "duration": 30,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:223:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 41,
+                              "line": 223
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 221 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Error Handling\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 222 |\u001b[39m     test(\u001b[32m\"should handle malformed JSON gracefully\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 223 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 224 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 225 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 226 |\u001b[39m           \u001b[32m\"Content-Type\"\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"application/json\"\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 41,
+                                "line": 223
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 221 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Error Handling\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 222 |\u001b[39m     test(\u001b[32m\"should handle malformed JSON gracefully\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 223 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 224 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 225 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 226 |\u001b[39m           \u001b[32m\"Content-Type\"\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"application/json\"\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:223:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:08.595Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 41,
+                            "line": 223
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-13c9cd4ca5111c632cbb",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 222,
+                  "column": 9
+                },
+                {
+                  "title": "should include correlation ID in all error responses",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 5,
+                          "parallelIndex": 5,
+                          "status": "failed",
+                          "duration": 14,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:238:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 41,
+                              "line": 238
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 236 |\u001b[39m\n \u001b[90m 237 |\u001b[39m     test(\u001b[32m\"should include correlation ID in all error responses\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 238 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 239 |\u001b[39m         data\u001b[33m:\u001b[39m { \u001b[33mCardId\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"\"\u001b[39m }\u001b[33m,\u001b[39m\n \u001b[90m 240 |\u001b[39m       })\u001b[33m;\u001b[39m\n \u001b[90m 241 |\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 41,
+                                "line": 238
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 236 |\u001b[39m\n \u001b[90m 237 |\u001b[39m     test(\u001b[32m\"should include correlation ID in all error responses\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 238 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 239 |\u001b[39m         data\u001b[33m:\u001b[39m { \u001b[33mCardId\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"\"\u001b[39m }\u001b[33m,\u001b[39m\n \u001b[90m 240 |\u001b[39m       })\u001b[33m;\u001b[39m\n \u001b[90m 241 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:238:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:05.165Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 41,
+                            "line": 238
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-09fa1c284f9654ab2552",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 237,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Performance",
+              "file": "updatecard-workflow.spec.ts",
+              "line": 249,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "validation should complete within 1 second",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 12,
+                          "parallelIndex": 5,
+                          "status": "failed",
+                          "duration": 27,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:253:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                              "column": 41,
+                              "line": 253
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 251 |\u001b[39m       \u001b[36mconst\u001b[39m startTime \u001b[33m=\u001b[39m \u001b[33mDate\u001b[39m\u001b[33m.\u001b[39mnow()\u001b[33m;\u001b[39m\n \u001b[90m 252 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 253 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 254 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 255 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 256 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                                "column": 41,
+                                "line": 253
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 251 |\u001b[39m       \u001b[36mconst\u001b[39m startTime \u001b[33m=\u001b[39m \u001b[33mDate\u001b[39m\u001b[33m.\u001b[39mnow()\u001b[33m;\u001b[39m\n \u001b[90m 252 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 253 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 254 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 255 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 256 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts:253:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:08.716Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\updatecard-workflow.spec.ts",
+                            "column": 41,
+                            "line": 253
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "26ebcc0684a95735d2e0-2df6b308d4ad245e3a4b",
+                  "file": "updatecard-workflow.spec.ts",
+                  "line": 250,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "validation.spec.ts",
+      "file": "validation.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "UpdateCard Validation",
+          "file": "validation.spec.ts",
+          "line": 12,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Authentication Validation",
+              "file": "validation.spec.ts",
+              "line": 19,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should return 401 for missing Unison-Token header",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 6,
+                          "parallelIndex": 6,
+                          "status": "failed",
+                          "duration": 33,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:21:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                              "column": 41,
+                              "line": 21
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 19 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Authentication Validation\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 20 |\u001b[39m     test(\u001b[32m\"should return 401 for missing Unison-Token header\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 21 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 22 |\u001b[39m         data\u001b[33m:\u001b[39m {\n \u001b[90m 23 |\u001b[39m           \u001b[33mCardNumber\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"12345\"\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 24 |\u001b[39m           \u001b[33mAction\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"update\"\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                                "column": 41,
+                                "line": 21
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 19 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Authentication Validation\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 20 |\u001b[39m     test(\u001b[32m\"should return 401 for missing Unison-Token header\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 21 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 22 |\u001b[39m         data\u001b[33m:\u001b[39m {\n \u001b[90m 23 |\u001b[39m           \u001b[33mCardNumber\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"12345\"\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 24 |\u001b[39m           \u001b[33mAction\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"update\"\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:21:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:04.414Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                            "column": 41,
+                            "line": 21
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "1c599a7f4afdfa3cc2e4-93fc82b4519167b9dc66",
+                  "file": "validation.spec.ts",
+                  "line": 20,
+                  "column": 9
+                },
+                {
+                  "title": "should return 401 for invalid Unison-Token header",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 9,
+                          "parallelIndex": 6,
+                          "status": "failed",
+                          "duration": 32,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:37:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                              "column": 41,
+                              "line": 37
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 35 |\u001b[39m\n \u001b[90m 36 |\u001b[39m     test(\u001b[32m\"should return 401 for invalid Unison-Token header\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 37 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 38 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 39 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"invalid-token\"\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 40 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                                "column": 41,
+                                "line": 37
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 35 |\u001b[39m\n \u001b[90m 36 |\u001b[39m     test(\u001b[32m\"should return 401 for invalid Unison-Token header\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 37 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 38 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 39 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[32m\"invalid-token\"\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 40 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:37:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:08.066Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                            "column": 41,
+                            "line": 37
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "1c599a7f4afdfa3cc2e4-3d85e5d25110348a6c30",
+                  "file": "validation.spec.ts",
+                  "line": 36,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "JSON Schema Validation",
+              "file": "validation.spec.ts",
+              "line": 51,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should validate required fields in UpdateCard request",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 14,
+                          "parallelIndex": 3,
+                          "status": "failed",
+                          "duration": 8,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:53:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                              "column": 41,
+                              "line": 53
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 51 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"JSON Schema Validation\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 52 |\u001b[39m     test(\u001b[32m\"should validate required fields in UpdateCard request\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 55 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 56 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                                "column": 41,
+                                "line": 53
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 51 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"JSON Schema Validation\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 52 |\u001b[39m     test(\u001b[32m\"should validate required fields in UpdateCard request\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 55 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 56 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:53:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:11.614Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                            "column": 41,
+                            "line": 53
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "1c599a7f4afdfa3cc2e4-df6e7e1ce02c35449f98",
+                  "file": "validation.spec.ts",
+                  "line": 52,
+                  "column": 9
+                },
+                {
+                  "title": "should validate CardNumber format",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 19,
+                          "parallelIndex": 2,
+                          "status": "failed",
+                          "duration": 41,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:69:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                              "column": 41,
+                              "line": 69
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 67 |\u001b[39m\n \u001b[90m 68 |\u001b[39m     test(\u001b[32m\"should validate CardNumber format\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 69 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 70 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 71 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 72 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                                "column": 41,
+                                "line": 69
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 67 |\u001b[39m\n \u001b[90m 68 |\u001b[39m     test(\u001b[32m\"should validate CardNumber format\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 69 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 70 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 71 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 72 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:69:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:14.611Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                            "column": 41,
+                            "line": 69
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "1c599a7f4afdfa3cc2e4-b9a3c96c8d4d0fc3c892",
+                  "file": "validation.spec.ts",
+                  "line": 68,
+                  "column": 9
+                },
+                {
+                  "title": "should validate Action enum values",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 15,
+                          "parallelIndex": 6,
+                          "status": "failed",
+                          "duration": 10,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:88:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                              "column": 41,
+                              "line": 88
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     test(\u001b[32m\"should validate Action enum values\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 88 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 89 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 90 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 91 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                                "column": 41,
+                                "line": 88
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     test(\u001b[32m\"should validate Action enum values\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 88 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 89 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 90 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 91 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:88:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:11.556Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                            "column": 41,
+                            "line": 88
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "1c599a7f4afdfa3cc2e4-58afa60ea2c904792580",
+                  "file": "validation.spec.ts",
+                  "line": 87,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "SOAP Template Generation",
+              "file": "validation.spec.ts",
+              "line": 107,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should accept valid UpdateCard request and generate proper SOAP envelope",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 18,
+                          "parallelIndex": 1,
+                          "status": "failed",
+                          "duration": 13,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:110:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                              "column": 41,
+                              "line": 110
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 108 |\u001b[39m     test(\u001b[32m\"should accept valid UpdateCard request and generate proper SOAP envelope\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 109 |\u001b[39m       \u001b[90m// Mock the SOAP service to return success\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 110 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 111 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 112 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 113 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                                "column": 41,
+                                "line": 110
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 108 |\u001b[39m     test(\u001b[32m\"should accept valid UpdateCard request and generate proper SOAP envelope\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 109 |\u001b[39m       \u001b[90m// Mock the SOAP service to return success\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 110 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 111 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 112 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 113 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:110:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:14.551Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                            "column": 41,
+                            "line": 110
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "1c599a7f4afdfa3cc2e4-37dd825c2f494388500b",
+                  "file": "validation.spec.ts",
+                  "line": 108,
+                  "column": 9
+                },
+                {
+                  "title": "should handle SOAP backend HTML errors gracefully",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 16,
+                          "parallelIndex": 1,
+                          "status": "failed",
+                          "duration": 6,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:133:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                              "column": 41,
+                              "line": 133
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 131 |\u001b[39m     test(\u001b[32m\"should handle SOAP backend HTML errors gracefully\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 132 |\u001b[39m       \u001b[90m// This test requires mocking the SOAP service to return HTML error\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 133 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 134 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 135 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 136 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                                "column": 41,
+                                "line": 133
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 131 |\u001b[39m     test(\u001b[32m\"should handle SOAP backend HTML errors gracefully\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 132 |\u001b[39m       \u001b[90m// This test requires mocking the SOAP service to return HTML error\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 133 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 134 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 135 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 136 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:133:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:11.513Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                            "column": 41,
+                            "line": 133
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "1c599a7f4afdfa3cc2e4-e83d92027920eb9e6b78",
+                  "file": "validation.spec.ts",
+                  "line": 131,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Error Response Structure",
+              "file": "validation.spec.ts",
+              "line": 152,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should return structured JSON error responses",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "api-tests",
+                      "projectName": "api-tests",
+                      "results": [
+                        {
+                          "workerIndex": 17,
+                          "parallelIndex": 0,
+                          "status": "failed",
+                          "duration": 27,
+                          "error": {
+                            "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.",
+                            "stack": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:154:41",
+                            "location": {
+                              "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                              "column": 41,
+                              "line": 154
+                            },
+                            "snippet": "\u001b[0m \u001b[90m 152 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Error Response Structure\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 153 |\u001b[39m     test(\u001b[32m\"should return structured JSON error responses\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 154 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 155 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 156 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 157 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                                "column": 41,
+                                "line": 154
+                              },
+                              "message": "Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.\n  - Recommended fix: use a separate { request } in the test.\n  - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.\nSee https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.\n\n\u001b[0m \u001b[90m 152 |\u001b[39m   test\u001b[33m.\u001b[39mdescribe(\u001b[32m\"Error Response Structure\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m 153 |\u001b[39m     test(\u001b[32m\"should return structured JSON error responses\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 154 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m`${API_BASE_URL}/updatecard`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m     |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 155 |\u001b[39m         headers\u001b[33m:\u001b[39m {\n \u001b[90m 156 |\u001b[39m           \u001b[32m\"Unison-Token\"\u001b[39m\u001b[33m:\u001b[39m \u001b[33mVALID_TOKEN\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 157 |\u001b[39m         }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts:154:41\u001b[22m"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-09T07:25:14.500Z",
+                          "annotations": [],
+                          "attachments": [],
+                          "errorLocation": {
+                            "file": "C:\\Projects\\Unison Access Service REST API\\tests\\e2e\\validation.spec.ts",
+                            "column": 41,
+                            "line": 154
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "1c599a7f4afdfa3cc2e4-61292a3bb2de0c9f81e7",
+                  "file": "validation.spec.ts",
+                  "line": 153,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-09-09T07:25:00.753Z",
+    "duration": 14489.159000000001,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 20,
+    "flaky": 0
+  }
+}

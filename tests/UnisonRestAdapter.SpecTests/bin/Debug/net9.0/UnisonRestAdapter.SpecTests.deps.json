@@ -40,6 +40,7 @@
           "FluentAssertions": "6.9.0",
           "Microsoft.AspNetCore.Mvc.Testing": "9.0.8",
           "Microsoft.NET.Test.Sdk": "17.7.2",
+          "Moq": "4.20.72",
           "UnisonRestAdapter": "1.0.0",
           "xunit": "2.5.3",
           "xunit.runner.visualstudio": "2.5.3",
@@ -380,6 +381,20 @@
         },
         "compile": {
           "lib/netstandard2.1/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
+        }
+      },
+      "Castle.Core/5.1.1": {
+        "dependencies": {
+          "System.Diagnostics.EventLog": "9.0.8"
+        },
+        "runtime": {
+          "lib/net6.0/Castle.Core.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.1.1.0"
+          }
+        },
+        "compile": {
+          "lib/net6.0/Castle.Core.dll": {}
         }
       },
       "CoreWCF.Http/1.8.0": {
@@ -923,6 +938,22 @@
           }
         }
       },
+      "Microsoft.Extensions.Hosting.WindowsServices/9.0.8": {
+        "dependencies": {
+          "Microsoft.Extensions.Hosting": "9.0.8",
+          "Microsoft.Extensions.Logging.EventLog": "9.0.8",
+          "System.ServiceProcess.ServiceController": "9.0.8"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Hosting.WindowsServices.dll": {
+            "assemblyVersion": "9.0.0.8",
+            "fileVersion": "9.0.825.36511"
+          }
+        },
+        "compile": {
+          "lib/net9.0/Microsoft.Extensions.Hosting.WindowsServices.dll": {}
+        }
+      },
       "Microsoft.Extensions.Logging/9.0.8": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "9.0.8",
@@ -1462,6 +1493,20 @@
         "dependencies": {
           "System.Security.AccessControl": "4.5.0",
           "System.Security.Principal.Windows": "5.0.0"
+        }
+      },
+      "Moq/4.20.72": {
+        "dependencies": {
+          "Castle.Core": "5.1.1"
+        },
+        "runtime": {
+          "lib/net6.0/Moq.dll": {
+            "assemblyVersion": "4.20.72.0",
+            "fileVersion": "4.20.72.0"
+          }
+        },
+        "compile": {
+          "lib/net6.0/Moq.dll": {}
         }
       },
       "NETStandard.Library/1.6.1": {
@@ -2222,6 +2267,28 @@
         }
       },
       "System.Security.Principal.Windows/5.0.0": {},
+      "System.ServiceProcess.ServiceController/9.0.8": {
+        "dependencies": {
+          "System.Diagnostics.EventLog": "9.0.8"
+        },
+        "runtime": {
+          "lib/net9.0/System.ServiceProcess.ServiceController.dll": {
+            "assemblyVersion": "9.0.0.8",
+            "fileVersion": "9.0.825.36511"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net9.0/System.ServiceProcess.ServiceController.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "9.0.0.8",
+            "fileVersion": "9.0.825.36511"
+          }
+        },
+        "compile": {
+          "lib/net9.0/System.ServiceProcess.ServiceController.dll": {}
+        }
+      },
       "System.Text.Encoding/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "2.0.0",
@@ -2428,6 +2495,7 @@
           "CoreWCF.Http": "1.8.0",
           "CoreWCF.Primitives": "1.8.0",
           "Microsoft.AspNetCore.OpenApi": "9.0.8",
+          "Microsoft.Extensions.Hosting.WindowsServices": "9.0.8",
           "Swashbuckle.AspNetCore": "9.0.4"
         },
         "runtime": {
@@ -4274,6 +4342,13 @@
       "path": "automapper.extensions.microsoft.dependencyinjection/12.0.1",
       "hashPath": "automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512"
     },
+    "Castle.Core/5.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rpYtIczkzGpf+EkZgDr9CClTdemhsrwA/W5hMoPjLkRFnXzH44zDLoovXeKtmxb1ykXK9aJVODSpiJml8CTw2g==",
+      "path": "castle.core/5.1.1",
+      "hashPath": "castle.core.5.1.1.nupkg.sha512"
+    },
     "CoreWCF.Http/1.8.0": {
       "type": "package",
       "serviceable": true,
@@ -4596,6 +4671,13 @@
       "path": "microsoft.extensions.hosting.abstractions/9.0.8",
       "hashPath": "microsoft.extensions.hosting.abstractions.9.0.8.nupkg.sha512"
     },
+    "Microsoft.Extensions.Hosting.WindowsServices/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4D52PlSX2wjagHGDfHVg4fGN1KCub8DB1kZEahyhn4DMNfY9SWlAdyNQJA0PmTsWnhdGiNzNFeC2S58uAa01sA==",
+      "path": "microsoft.extensions.hosting.windowsservices/9.0.8",
+      "hashPath": "microsoft.extensions.hosting.windowsservices.9.0.8.nupkg.sha512"
+    },
     "Microsoft.Extensions.Logging/9.0.8": {
       "type": "package",
       "serviceable": true,
@@ -4791,6 +4873,13 @@
       "sha512": "sha512-+FWlwd//+Tt56316p00hVePBCouXyEzT86Jb3+AuRotTND0IYn0OO3obs1gnQEs/txEnt+rF2JBGLItTG+Be6A==",
       "path": "microsoft.win32.registry/4.5.0",
       "hashPath": "microsoft.win32.registry.4.5.0.nupkg.sha512"
+    },
+    "Moq/4.20.72": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-EA55cjyNn8eTNWrgrdZJH5QLFp2L43oxl1tlkoYUKIE9pRwL784OWiTXeCV5ApS+AMYEAlt7Fo03A2XfouvHmQ==",
+      "path": "moq/4.20.72",
+      "hashPath": "moq.4.20.72.nupkg.sha512"
     },
     "NETStandard.Library/1.6.1": {
       "type": "package",
@@ -5351,6 +5440,13 @@
       "sha512": "sha512-t0MGLukB5WAVU9bO3MGzvlGnyJPgUlcwerXn1kzBRjwLKixT96XV0Uza41W49gVd8zEMFu9vQEFlv0IOrytICA==",
       "path": "system.security.principal.windows/5.0.0",
       "hashPath": "system.security.principal.windows.5.0.0.nupkg.sha512"
+    },
+    "System.ServiceProcess.ServiceController/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ze4X8bOF6tVAVZM3ogiBr8ZgcD8Zs25H93zEyne739ZRva/q8sVjuWwP0B8kwWEq7XUVRDOz+X3RP5/o36hfJw==",
+      "path": "system.serviceprocess.servicecontroller/9.0.8",
+      "hashPath": "system.serviceprocess.servicecontroller.9.0.8.nupkg.sha512"
     },
     "System.Text.Encoding/4.3.0": {
       "type": "package",

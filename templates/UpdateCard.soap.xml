@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  SOAP Template for UpdateCard Operation
+  TASK-002: SOAP Request Validation Templates
+  Template supports all UpdateCard request parameters with proper XML escaping
+-->
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:uni="http://tempuri.org/">
+    <soap:Header>
+        <uni:AuthenticationToken>{Token}</uni:AuthenticationToken>
+    </soap:Header>
+    <soap:Body>
+        <uni:UpdateCard>
+            <uni:request>
+                <uni:CardId>{CardId}</uni:CardId>
+                <uni:UserName>{UserName}</uni:UserName>
+                <uni:FirstName>{FirstName}</uni:FirstName>
+                <uni:LastName>{LastName}</uni:LastName>
+                <uni:Email>{Email}</uni:Email>
+                <uni:Department>{Department}</uni:Department>
+                <uni:Title>{Title}</uni:Title>
+                <uni:IsActive>{IsActive}</uni:IsActive>
+                <uni:ExpirationDate>{ExpirationDate}</uni:ExpirationDate>
+            </uni:request>
+        </uni:UpdateCard>
+    </soap:Body>
+</soap:Envelope>

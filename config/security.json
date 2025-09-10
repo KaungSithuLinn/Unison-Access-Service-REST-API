@@ -1,0 +1,24 @@
+{
+  "Security": {
+    "TokenConfigSection": "Security",
+    "EncryptionKey": "UnisonRestAdapter2025SecureKey!",
+    "EncryptTokensInStorage": true,
+    "AllowFallbackToken": false,
+    "FallbackToken": "595d799a-9553-4ddf-8fd9-c27b1f233ce7",
+    "ValidTokens": ["595d799a-9553-4ddf-8fd9-c27b1f233ce7"],
+    "TokenExpiryHours": 24,
+    "EnableTokenRotation": true,
+    "MaxRequestsPerHour": 1000,
+    "EnableRateLimiting": true,
+    "AllowedIpAddresses": [],
+    "EnableIpWhitelist": false,
+    "LogSecurityEvents": true
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "UnisonRestAdapter.Security": "Warning",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  }
+}

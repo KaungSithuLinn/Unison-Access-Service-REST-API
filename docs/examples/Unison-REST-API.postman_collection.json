@@ -1,0 +1,1098 @@
+{
+  "info": {
+    "name": "Unison REST Adapter API",
+    "description": "Complete collection for the Unison REST Adapter API with all endpoints, authentication, and example requests.",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Unison-Token",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{unison_token}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Generate correlation ID for tracking",
+          "const correlationId = 'postman-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);",
+          "pm.globals.set('correlation_id', correlationId);",
+          "",
+          "// Set timestamp",
+          "pm.globals.set('timestamp', new Date().toISOString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Common response validation",
+          "pm.test('Status code is successful', function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+          "});",
+          "",
+          "pm.test('Response time is acceptable', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "// Check for correlation ID in response (if JSON)",
+          "if (pm.response.headers.get('Content-Type')?.includes('application/json')) {",
+          "    try {",
+          "        const responseJson = pm.response.json();",
+          "        if (responseJson.correlationId) {",
+          "            pm.test('Response includes correlation ID', function () {",
+          "                pm.expect(responseJson.correlationId).to.be.a('string');",
+          "                pm.expect(responseJson.correlationId.length).to.be.greaterThan(0);",
+          "            });",
+          "        }",
+          "    } catch (e) {",
+          "        // Response is not JSON, skip correlation ID test",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5203",
+      "type": "string",
+      "description": "Base URL for the Unison REST Adapter API"
+    },
+    {
+      "key": "unison_token",
+      "value": "your-token-here",
+      "type": "string",
+      "description": "Authentication token for the Unison API"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Checks",
+      "description": "Health monitoring endpoints",
+      "item": [
+        {
+          "name": "Basic Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Basic health check endpoint that requires no authentication. Returns the overall status of the API."
+          },
+          "response": [
+            {
+              "name": "Healthy Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/health",
+                  "host": ["{{base_url}}"],
+                  "path": ["health"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"Healthy\",\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Health status is Healthy', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.status).to.eql('Healthy');",
+                  "});",
+                  "",
+                  "pm.test('Response includes timestamp', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.timestamp).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Detailed Health Check",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/health/detailed",
+              "host": ["{{base_url}}"],
+              "path": ["health", "detailed"]
+            },
+            "description": "Detailed health check with authentication. Provides comprehensive status including SOAP service connectivity."
+          },
+          "response": [
+            {
+              "name": "Healthy Detailed Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/health/detailed",
+                  "host": ["{{base_url}}"],
+                  "path": ["health", "detailed"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"Healthy\",\n    \"soapService\": {\n        \"status\": \"Healthy\",\n        \"responseTime\": \"25ms\",\n        \"lastCheck\": \"2025-01-09T10:30:00.000Z\"\n    },\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"health-check-12345\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Detailed health includes SOAP service status', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.soapService).to.be.an('object');",
+                  "    pm.expect(responseJson.soapService.status).to.be.a('string');",
+                  "    pm.expect(responseJson.soapService.responseTime).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Card Management",
+      "description": "Card CRUD operations",
+      "item": [
+        {
+          "name": "Create Card",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardId\": \"POSTMAN001\",\n  \"userName\": \"john.doe\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/cards",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cards"]
+            },
+            "description": "Create a new card in the Unison system"
+          },
+          "response": [
+            {
+              "name": "Card Created Successfully",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cardId\": \"POSTMAN001\",\n  \"userName\": \"john.doe\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"isActive\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/cards",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "cards"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Card created successfully\",\n    \"cardId\": \"POSTMAN001\",\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"create-card-12345\"\n}"
+            },
+            {
+              "name": "Card Already Exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cardId\": \"EXISTING001\",\n  \"userName\": \"existing.user\",\n  \"firstName\": \"Existing\",\n  \"lastName\": \"User\",\n  \"isActive\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/cards",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "cards"]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": false,\n    \"error\": \"Card with ID 'EXISTING001' already exists\",\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"create-card-error-12345\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.test('Card creation successful', function () {",
+                  "        const responseJson = pm.response.json();",
+                  "        pm.expect(responseJson.success).to.be.true;",
+                  "        pm.expect(responseJson.cardId).to.be.a('string');",
+                  "    });",
+                  "    ",
+                  "    // Store card ID for other tests",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.globals.set('created_card_id', responseJson.cardId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Card",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardId\": \"POSTMAN001\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Updated\",\n  \"isActive\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/cards/update",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cards", "update"]
+            },
+            "description": "Update an existing card's information"
+          },
+          "response": [
+            {
+              "name": "Card Updated Successfully",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cardId\": \"POSTMAN001\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Updated\",\n  \"isActive\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/cards/update",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "cards", "update"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Card updated successfully\",\n    \"cardId\": \"POSTMAN001\",\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"update-card-12345\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Card update successful', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.success).to.be.true;",
+                  "    pm.expect(responseJson.message).to.include('updated successfully');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Card Details",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cards/:cardId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cards", ":cardId"],
+              "variable": [
+                {
+                  "key": "cardId",
+                  "value": "POSTMAN001",
+                  "description": "The ID of the card to retrieve"
+                }
+              ]
+            },
+            "description": "Retrieve details for a specific card"
+          },
+          "response": [
+            {
+              "name": "Card Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/cards/POSTMAN001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "cards", "POSTMAN001"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"card\": {\n        \"cardId\": \"POSTMAN001\",\n        \"userName\": \"john.doe\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"isActive\": true,\n        \"createdDate\": \"2025-01-09T10:30:00.000Z\",\n        \"lastModified\": \"2025-01-09T10:30:00.000Z\"\n    },\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"get-card-12345\"\n}"
+            },
+            {
+              "name": "Card Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/cards/NONEXISTENT",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "cards", "NONEXISTENT"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": false,\n    \"error\": \"Card not found: NONEXISTENT\",\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"get-card-error-12345\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Card details retrieved successfully', function () {",
+                  "        const responseJson = pm.response.json();",
+                  "        pm.expect(responseJson.success).to.be.true;",
+                  "        pm.expect(responseJson.card).to.be.an('object');",
+                  "        pm.expect(responseJson.card.cardId).to.be.a('string');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Card",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cards/:cardId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cards", ":cardId"],
+              "variable": [
+                {
+                  "key": "cardId",
+                  "value": "POSTMAN001",
+                  "description": "The ID of the card to delete"
+                }
+              ]
+            },
+            "description": "Delete a specific card from the system"
+          },
+          "response": [
+            {
+              "name": "Card Deleted Successfully",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/cards/POSTMAN001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "cards", "POSTMAN001"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Card deleted successfully\",\n    \"cardId\": \"POSTMAN001\",\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"delete-card-12345\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Card deletion successful', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.success).to.be.true;",
+                  "    pm.expect(responseJson.message).to.include('deleted successfully');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "description": "User CRUD operations",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"jane.smith\",\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"email\": \"jane.smith@company.com\",\n  \"department\": \"Engineering\",\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Create a new user in the system"
+          },
+          "response": [
+            {
+              "name": "User Created Successfully",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userName\": \"jane.smith\",\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"email\": \"jane.smith@company.com\",\n  \"department\": \"Engineering\",\n  \"isActive\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/users",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "users"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"message\": \"User created successfully\",\n    \"userId\": \"USER123\",\n    \"userName\": \"jane.smith\",\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"create-user-12345\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.test('User creation successful', function () {",
+                  "        const responseJson = pm.response.json();",
+                  "        pm.expect(responseJson.success).to.be.true;",
+                  "        pm.expect(responseJson.userId).to.be.a('string');",
+                  "        pm.expect(responseJson.userName).to.be.a('string');",
+                  "    });",
+                  "    ",
+                  "    // Store user ID for other tests",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.globals.set('created_user_id', responseJson.userId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Updated\",\n  \"department\": \"Senior Engineering\",\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/:userId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", ":userId"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "USER123",
+                  "description": "The ID of the user to update"
+                }
+              ]
+            },
+            "description": "Update an existing user's information"
+          },
+          "response": [
+            {
+              "name": "User Updated Successfully",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Updated\",\n  \"department\": \"Senior Engineering\",\n  \"isActive\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/users/USER123",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "users", "USER123"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"message\": \"User updated successfully\",\n    \"userId\": \"USER123\",\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"update-user-12345\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('User update successful', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.success).to.be.true;",
+                  "    pm.expect(responseJson.message).to.include('updated successfully');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User Details",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/:userId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", ":userId"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "USER123",
+                  "description": "The ID of the user to retrieve"
+                }
+              ]
+            },
+            "description": "Retrieve details for a specific user"
+          },
+          "response": [
+            {
+              "name": "User Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/users/USER123",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "users", "USER123"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"user\": {\n        \"userId\": \"USER123\",\n        \"userName\": \"jane.smith\",\n        \"firstName\": \"Jane\",\n        \"lastName\": \"Smith\",\n        \"email\": \"jane.smith@company.com\",\n        \"department\": \"Engineering\",\n        \"isActive\": true,\n        \"createdDate\": \"2025-01-09T10:30:00.000Z\",\n        \"lastModified\": \"2025-01-09T10:30:00.000Z\"\n    },\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"get-user-12345\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('User details retrieved successfully', function () {",
+                  "        const responseJson = pm.response.json();",
+                  "        pm.expect(responseJson.success).to.be.true;",
+                  "        pm.expect(responseJson.user).to.be.an('object');",
+                  "        pm.expect(responseJson.user.userId).to.be.a('string');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/:userId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", ":userId"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "USER123",
+                  "description": "The ID of the user to delete"
+                }
+              ]
+            },
+            "description": "Delete a specific user from the system"
+          },
+          "response": [
+            {
+              "name": "User Deleted Successfully",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Unison-Token",
+                    "value": "test-token"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/users/USER123",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "users", "USER123"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"message\": \"User deleted successfully\",\n    \"userId\": \"USER123\",\n    \"timestamp\": \"2025-01-09T10:30:00.000Z\",\n    \"correlationId\": \"delete-user-12345\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('User deletion successful', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.success).to.be.true;",
+                  "    pm.expect(responseJson.message).to.include('deleted successfully');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Test Workflows",
+      "description": "Pre-configured test workflows for common scenarios",
+      "item": [
+        {
+          "name": "Complete Card Lifecycle Test",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "This request starts a workflow that tests the complete card lifecycle: Create → Read → Update → Delete"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Set up test data",
+                  "const testCardId = 'LIFECYCLE-' + Date.now();",
+                  "pm.globals.set('test_card_id', testCardId);",
+                  "",
+                  "// Chain to create card",
+                  "pm.test('Health check for lifecycle test', function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "// Set the next request in runner",
+                  "postman.setNextRequest('Create Card');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Authentication Test",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Unison-Token",
+                "value": "invalid-token",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/health/detailed",
+              "host": ["{{base_url}}"],
+              "path": ["health", "detailed"]
+            },
+            "description": "Test authentication with an invalid token (should return 401)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Invalid token returns 401', function () {",
+                  "    pm.expect(pm.response.code).to.equal(401);",
+                  "});",
+                  "",
+                  "pm.test('Error message mentions authentication', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error.toLowerCase()).to.include('unauthorized');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Performance Baseline Test",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health/detailed",
+              "host": ["{{base_url}}"],
+              "path": ["health", "detailed"]
+            },
+            "description": "Baseline performance test for the detailed health endpoint"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Response time under 1 second', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "",
+                  "pm.test('Response time under 500ms (good performance)', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);",
+                  "});",
+                  "",
+                  "// Log performance metrics",
+                  "console.log('Performance metrics:');",
+                  "console.log('Response time: ' + pm.response.responseTime + 'ms');",
+                  "console.log('Response size: ' + pm.response.responseSize + ' bytes');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

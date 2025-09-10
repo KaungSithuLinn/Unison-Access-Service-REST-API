@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UnisonRestAdapter.SpecTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bef5f2a6425f9b82ca8054037cf137fd451f02c4")]
 [assembly: System.Reflection.AssemblyProductAttribute("UnisonRestAdapter.SpecTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UnisonRestAdapter.SpecTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

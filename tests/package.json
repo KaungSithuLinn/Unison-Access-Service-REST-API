@@ -1,0 +1,16 @@
+{
+  "name": "unison-rest-adapter-e2e-tests",
+  "version": "1.0.0",
+  "description": "E2E tests for Unison REST Adapter API",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.0",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.0"
+  }
+}

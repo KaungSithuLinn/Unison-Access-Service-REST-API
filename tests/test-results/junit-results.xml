@@ -1,0 +1,406 @@
+<testsuites id="" name="" tests="20" failures="20" skipped="0" errors="0" time="14.489159">
+<testsuite name="updatecard-workflow.spec.ts" timestamp="2025-09-09T07:25:00.799Z" hostname="api-tests" tests="12" failures="12" skipped="0" time="0.288" errors="0">
+<testcase name="UpdateCard Complete Workflow › Health Check Validation › health endpoint should be accessible without authentication" classname="updatecard-workflow.spec.ts" time="0.019">
+<failure message="updatecard-workflow.spec.ts:22:9 health endpoint should be accessible without authentication" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:22:9 › UpdateCard Complete Workflow › Health Check Validation › health endpoint should be accessible without authentication 
+
+    Error: apiRequestContext.get: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      21 |   test.describe("Health Check Validation", () => {
+      22 |     test("health endpoint should be accessible without authentication", async () => {
+    > 23 |       const response = await apiContext.get(`${API_BASE_URL}/health`);
+         |                                         ^
+      24 |
+      25 |       expect(response.status()).toBe(200);
+      26 |       const body = await response.text();
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:23:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › Health Check Validation › health endpoint should return quickly (&lt; 2 seconds)" classname="updatecard-workflow.spec.ts" time="0.07">
+<failure message="updatecard-workflow.spec.ts:30:9 health endpoint should return quickly (&lt; 2 seconds)" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:30:9 › UpdateCard Complete Workflow › Health Check Validation › health endpoint should return quickly (< 2 seconds) 
+
+    Error: apiRequestContext.get: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      30 |     test("health endpoint should return quickly (< 2 seconds)", async () => {
+      31 |       const startTime = Date.now();
+    > 32 |       const response = await apiContext.get(`${API_BASE_URL}/health`);
+         |                                         ^
+      33 |       const endTime = Date.now();
+      34 |
+      35 |       expect(response.status()).toBe(200);
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:32:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › Authentication Flow › should reject requests without Unison-Token header" classname="updatecard-workflow.spec.ts" time="0.018">
+<failure message="updatecard-workflow.spec.ts:41:9 should reject requests without Unison-Token header" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:41:9 › UpdateCard Complete Workflow › Authentication Flow › should reject requests without Unison-Token header 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      40 |   test.describe("Authentication Flow", () => {
+      41 |     test("should reject requests without Unison-Token header", async () => {
+    > 42 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+         |                                         ^
+      43 |         data: {
+      44 |           CardId: "TEST123",
+      45 |           UserName: "test.user",
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:42:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › Authentication Flow › should reject requests with invalid Unison-Token" classname="updatecard-workflow.spec.ts" time="0.014">
+<failure message="updatecard-workflow.spec.ts:58:9 should reject requests with invalid Unison-Token" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:58:9 › UpdateCard Complete Workflow › Authentication Flow › should reject requests with invalid Unison-Token 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      57 |
+      58 |     test("should reject requests with invalid Unison-Token", async () => {
+    > 59 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+         |                                         ^
+      60 |         headers: {
+      61 |           "Unison-Token": INVALID_TOKEN,
+      62 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:59:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › Request Validation › should validate required CardId field" classname="updatecard-workflow.spec.ts" time="0.014">
+<failure message="updatecard-workflow.spec.ts:80:9 should validate required CardId field" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:80:9 › UpdateCard Complete Workflow › Request Validation › should validate required CardId field 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      79 |   test.describe("Request Validation", () => {
+      80 |     test("should validate required CardId field", async () => {
+    > 81 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+         |                                         ^
+      82 |         headers: {
+      83 |           "Unison-Token": VALID_TOKEN,
+      84 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:81:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › Request Validation › should validate CardId format (alphanumeric, 1-50 chars)" classname="updatecard-workflow.spec.ts" time="0.013">
+<failure message="updatecard-workflow.spec.ts:99:9 should validate CardId format (alphanumeric, 1-50 chars)" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:99:9 › UpdateCard Complete Workflow › Request Validation › should validate CardId format (alphanumeric, 1-50 chars) 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      106 |
+      107 |       for (const testCase of testCases) {
+    > 108 |         const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+          |                                           ^
+      109 |           headers: {
+      110 |             "Unison-Token": VALID_TOKEN,
+      111 |           },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:108:43
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › Request Validation › should validate email format" classname="updatecard-workflow.spec.ts" time="0.011">
+<failure message="updatecard-workflow.spec.ts:128:9 should validate email format" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:128:9 › UpdateCard Complete Workflow › Request Validation › should validate email format 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      137 |
+      138 |       for (const email of invalidEmails) {
+    > 139 |         const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+          |                                           ^
+      140 |           headers: {
+      141 |             "Unison-Token": VALID_TOKEN,
+      142 |           },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:139:43
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › Request Validation › should validate expiration date is not in the past" classname="updatecard-workflow.spec.ts" time="0.019">
+<failure message="updatecard-workflow.spec.ts:159:9 should validate expiration date is not in the past" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:159:9 › UpdateCard Complete Workflow › Request Validation › should validate expiration date is not in the past 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      161 |       pastDate.setFullYear(pastDate.getFullYear() - 1);
+      162 |
+    > 163 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+          |                                         ^
+      164 |         headers: {
+      165 |           "Unison-Token": VALID_TOKEN,
+      166 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:163:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › SOAP Integration (Happy Path) › should handle valid UpdateCard request" classname="updatecard-workflow.spec.ts" time="0.039">
+<failure message="updatecard-workflow.spec.ts:185:9 should handle valid UpdateCard request" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:185:9 › UpdateCard Complete Workflow › SOAP Integration (Happy Path) › should handle valid UpdateCard request 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      187 |       futureDate.setFullYear(futureDate.getFullYear() + 1);
+      188 |
+    > 189 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+          |                                         ^
+      190 |         headers: {
+      191 |           "Unison-Token": VALID_TOKEN,
+      192 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:189:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › Error Handling › should handle malformed JSON gracefully" classname="updatecard-workflow.spec.ts" time="0.03">
+<failure message="updatecard-workflow.spec.ts:222:9 should handle malformed JSON gracefully" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:222:9 › UpdateCard Complete Workflow › Error Handling › should handle malformed JSON gracefully 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      221 |   test.describe("Error Handling", () => {
+      222 |     test("should handle malformed JSON gracefully", async () => {
+    > 223 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+          |                                         ^
+      224 |         headers: {
+      225 |           "Unison-Token": VALID_TOKEN,
+      226 |           "Content-Type": "application/json",
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:223:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › Error Handling › should include correlation ID in all error responses" classname="updatecard-workflow.spec.ts" time="0.014">
+<failure message="updatecard-workflow.spec.ts:237:9 should include correlation ID in all error responses" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:237:9 › UpdateCard Complete Workflow › Error Handling › should include correlation ID in all error responses 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      236 |
+      237 |     test("should include correlation ID in all error responses", async () => {
+    > 238 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+          |                                         ^
+      239 |         data: { CardId: "" },
+      240 |       });
+      241 |
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:238:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Complete Workflow › Performance › validation should complete within 1 second" classname="updatecard-workflow.spec.ts" time="0.027">
+<failure message="updatecard-workflow.spec.ts:250:9 validation should complete within 1 second" type="FAILURE">
+<![CDATA[  [api-tests] › updatecard-workflow.spec.ts:250:9 › UpdateCard Complete Workflow › Performance › validation should complete within 1 second 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      251 |       const startTime = Date.now();
+      252 |
+    > 253 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+          |                                         ^
+      254 |         headers: {
+      255 |           "Unison-Token": VALID_TOKEN,
+      256 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\updatecard-workflow.spec.ts:253:41
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="validation.spec.ts" timestamp="2025-09-09T07:25:00.799Z" hostname="api-tests" tests="8" failures="8" skipped="0" time="0.17" errors="0">
+<testcase name="UpdateCard Validation › Authentication Validation › should return 401 for missing Unison-Token header" classname="validation.spec.ts" time="0.033">
+<failure message="validation.spec.ts:20:9 should return 401 for missing Unison-Token header" type="FAILURE">
+<![CDATA[  [api-tests] › validation.spec.ts:20:9 › UpdateCard Validation › Authentication Validation › should return 401 for missing Unison-Token header 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      19 |   test.describe("Authentication Validation", () => {
+      20 |     test("should return 401 for missing Unison-Token header", async () => {
+    > 21 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+         |                                         ^
+      22 |         data: {
+      23 |           CardNumber: "12345",
+      24 |           Action: "update",
+        at C:\Projects\Unison Access Service REST API\tests\e2e\validation.spec.ts:21:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Validation › Authentication Validation › should return 401 for invalid Unison-Token header" classname="validation.spec.ts" time="0.032">
+<failure message="validation.spec.ts:36:9 should return 401 for invalid Unison-Token header" type="FAILURE">
+<![CDATA[  [api-tests] › validation.spec.ts:36:9 › UpdateCard Validation › Authentication Validation › should return 401 for invalid Unison-Token header 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      35 |
+      36 |     test("should return 401 for invalid Unison-Token header", async () => {
+    > 37 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+         |                                         ^
+      38 |         headers: {
+      39 |           "Unison-Token": "invalid-token",
+      40 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\validation.spec.ts:37:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Validation › JSON Schema Validation › should validate required fields in UpdateCard request" classname="validation.spec.ts" time="0.008">
+<failure message="validation.spec.ts:52:9 should validate required fields in UpdateCard request" type="FAILURE">
+<![CDATA[  [api-tests] › validation.spec.ts:52:9 › UpdateCard Validation › JSON Schema Validation › should validate required fields in UpdateCard request 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      51 |   test.describe("JSON Schema Validation", () => {
+      52 |     test("should validate required fields in UpdateCard request", async () => {
+    > 53 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+         |                                         ^
+      54 |         headers: {
+      55 |           "Unison-Token": VALID_TOKEN,
+      56 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\validation.spec.ts:53:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Validation › JSON Schema Validation › should validate CardNumber format" classname="validation.spec.ts" time="0.041">
+<failure message="validation.spec.ts:68:9 should validate CardNumber format" type="FAILURE">
+<![CDATA[  [api-tests] › validation.spec.ts:68:9 › UpdateCard Validation › JSON Schema Validation › should validate CardNumber format 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      67 |
+      68 |     test("should validate CardNumber format", async () => {
+    > 69 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+         |                                         ^
+      70 |         headers: {
+      71 |           "Unison-Token": VALID_TOKEN,
+      72 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\validation.spec.ts:69:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Validation › JSON Schema Validation › should validate Action enum values" classname="validation.spec.ts" time="0.01">
+<failure message="validation.spec.ts:87:9 should validate Action enum values" type="FAILURE">
+<![CDATA[  [api-tests] › validation.spec.ts:87:9 › UpdateCard Validation › JSON Schema Validation › should validate Action enum values 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      86 |
+      87 |     test("should validate Action enum values", async () => {
+    > 88 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+         |                                         ^
+      89 |         headers: {
+      90 |           "Unison-Token": VALID_TOKEN,
+      91 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\validation.spec.ts:88:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Validation › SOAP Template Generation › should accept valid UpdateCard request and generate proper SOAP envelope" classname="validation.spec.ts" time="0.013">
+<failure message="validation.spec.ts:108:9 should accept valid UpdateCard request and generate proper SOAP envelope" type="FAILURE">
+<![CDATA[  [api-tests] › validation.spec.ts:108:9 › UpdateCard Validation › SOAP Template Generation › should accept valid UpdateCard request and generate proper SOAP envelope 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      108 |     test("should accept valid UpdateCard request and generate proper SOAP envelope", async () => {
+      109 |       // Mock the SOAP service to return success
+    > 110 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+          |                                         ^
+      111 |         headers: {
+      112 |           "Unison-Token": VALID_TOKEN,
+      113 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\validation.spec.ts:110:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Validation › SOAP Template Generation › should handle SOAP backend HTML errors gracefully" classname="validation.spec.ts" time="0.006">
+<failure message="validation.spec.ts:131:9 should handle SOAP backend HTML errors gracefully" type="FAILURE">
+<![CDATA[  [api-tests] › validation.spec.ts:131:9 › UpdateCard Validation › SOAP Template Generation › should handle SOAP backend HTML errors gracefully 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      131 |     test("should handle SOAP backend HTML errors gracefully", async () => {
+      132 |       // This test requires mocking the SOAP service to return HTML error
+    > 133 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+          |                                         ^
+      134 |         headers: {
+      135 |           "Unison-Token": VALID_TOKEN,
+      136 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\validation.spec.ts:133:41
+]]>
+</failure>
+</testcase>
+<testcase name="UpdateCard Validation › Error Response Structure › should return structured JSON error responses" classname="validation.spec.ts" time="0.027">
+<failure message="validation.spec.ts:153:9 should return structured JSON error responses" type="FAILURE">
+<![CDATA[  [api-tests] › validation.spec.ts:153:9 › UpdateCard Validation › Error Response Structure › should return structured JSON error responses 
+
+    Error: apiRequestContext.post: Fixture { request } from beforeAll cannot be reused in a test.
+      - Recommended fix: use a separate { request } in the test.
+      - Alternatively, manually create APIRequestContext in beforeAll and dispose it in afterAll.
+    See https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests for more details.
+
+      152 |   test.describe("Error Response Structure", () => {
+      153 |     test("should return structured JSON error responses", async () => {
+    > 154 |       const response = await apiContext.post(`${API_BASE_URL}/updatecard`, {
+          |                                         ^
+      155 |         headers: {
+      156 |           "Unison-Token": VALID_TOKEN,
+      157 |         },
+        at C:\Projects\Unison Access Service REST API\tests\e2e\validation.spec.ts:154:41
+]]>
+</failure>
+</testcase>
+</testsuite>
+</testsuites>

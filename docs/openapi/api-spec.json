@@ -1,0 +1,563 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Unison REST Adapter API",
+    "description": "REST-to-SOAP adapter for Unison Access Service",
+    "contact": {
+      "name": "Unison Support",
+      "email": "support@company.com"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Cards/update": {
+      "put": {
+        "tags": [
+          "Cards"
+        ],
+        "summary": "Updates card information",
+        "description": "Sample request:\r\n\r\n    PUT /api/cards/update\r\n    {\r\n        \"cardId\": \"CARD123\",\r\n        \"userName\": \"john.doe\",\r\n        \"firstName\": \"John\",\r\n        \"lastName\": \"Doe\",\r\n        \"email\": \"john.doe@company.com\",\r\n        \"department\": \"Engineering\",\r\n        \"title\": \"Software Developer\",\r\n        \"isActive\": true,\r\n        \"expirationDate\": \"2025-12-31T00:00:00Z\"\r\n    }\r\n\r\nRequires Unison-Token header with valid authentication token.",
+        "requestBody": {
+          "description": "Card update request containing the card information to be updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCardRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCardRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCardRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Card updated successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCardResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCardResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data or update failed",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Unison-Token header missing or invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/updatecard": {
+      "post": {
+        "tags": [
+          "Cards"
+        ],
+        "summary": "Updates card information - Alternative route for compatibility",
+        "requestBody": {
+          "description": "Card update request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCardRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCardRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCardRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCardResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCardResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Cards/{cardId}": {
+      "get": {
+        "tags": [
+          "Cards"
+        ],
+        "summary": "Gets card information by card ID",
+        "description": "Sample request:\r\n\r\n    GET /api/cards/CARD123\r\n\r\nRequires Unison-Token header with valid authentication token.",
+        "parameters": [
+          {
+            "name": "cardId",
+            "in": "path",
+            "description": "Card identifier to retrieve information for",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Card information retrieved successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Card not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Unison-Token header missing or invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Simple health check that doesn't require authentication - for load balancers/monitoring",
+        "description": "This endpoint is designed for load balancers and monitoring tools.\r\nIt does not require authentication and provides basic service status.\r\n\r\nSample response:\r\n\r\n    {\r\n        \"status\": \"Healthy\",\r\n        \"timestamp\": \"2025-01-05T10:30:00Z\",\r\n        \"service\": \"UnisonRestAdapter\",\r\n        \"version\": \"1.0.0\",\r\n        \"environment\": \"Development\"\r\n    }",
+        "responses": {
+          "200": {
+            "description": "Service is healthy and operational"
+          }
+        }
+      }
+    },
+    "/Health/detailed": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Detailed health check with SOAP service connectivity validation",
+        "description": "This endpoint provides comprehensive health information including:\r\n- Application status and uptime\r\n- Memory usage and system metrics\r\n- SOAP service connectivity (if Unison-Token provided)\r\n- Configuration validation\r\n\r\nOptional Unison-Token header enables SOAP service connectivity testing.",
+        "responses": {
+          "200": {
+            "description": "Detailed health information including dependency status"
+          },
+          "503": {
+            "description": "Service unhealthy - one or more dependencies failed"
+          }
+        }
+      }
+    },
+    "/Health/ready": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Readiness probe for Kubernetes/container orchestration",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/Health/live": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Liveness probe for Kubernetes/container orchestration",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Users/{userId}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Gets user information by user ID",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "UpdateCardRequest": {
+        "required": [
+          "cardId"
+        ],
+        "type": "object",
+        "properties": {
+          "cardId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Unique identifier for the card (required, 1-50 characters, alphanumeric)",
+            "example": "CARD123"
+          },
+          "userName": {
+            "type": "string",
+            "description": "User's login name",
+            "nullable": true,
+            "example": "john.doe"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name",
+            "nullable": true,
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name",
+            "nullable": true,
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email address",
+            "nullable": true,
+            "example": "john.doe@company.com"
+          },
+          "department": {
+            "type": "string",
+            "description": "User's department",
+            "nullable": true,
+            "example": "Engineering"
+          },
+          "title": {
+            "type": "string",
+            "description": "User's job title",
+            "nullable": true,
+            "example": "Software Developer"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Whether the card is active",
+            "nullable": true,
+            "example": true
+          },
+          "expirationDate": {
+            "type": "string",
+            "description": "Card expiration date",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2025-12-31T00:00:00Z"
+          },
+          "customFields": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Additional custom fields for card update",
+            "nullable": true,
+            "example": {
+              "building": "Building A",
+              "floor": "3"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request model for updating card information"
+      },
+      "UpdateCardResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates whether the update operation was successful",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable message describing the result",
+            "nullable": true,
+            "example": "Card updated successfully"
+          },
+          "cardId": {
+            "type": "string",
+            "description": "The card ID that was updated",
+            "nullable": true,
+            "example": "CARD123"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp when the operation was completed",
+            "format": "date-time",
+            "example": "2025-01-05T10:30:00Z"
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Unique identifier for this transaction",
+            "nullable": true,
+            "example": "TXN-20250105-103000-CARD123"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response model for card update operations"
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "Unique identifier for the user",
+            "nullable": true,
+            "example": "USER123"
+          },
+          "userName": {
+            "type": "string",
+            "description": "User's login name",
+            "nullable": true,
+            "example": "john.doe"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name",
+            "nullable": true,
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name",
+            "nullable": true,
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email address",
+            "nullable": true,
+            "example": "john.doe@company.com"
+          },
+          "department": {
+            "type": "string",
+            "description": "User's department",
+            "nullable": true,
+            "example": "Engineering"
+          },
+          "title": {
+            "type": "string",
+            "description": "User's job title",
+            "nullable": true,
+            "example": "Software Developer"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Whether the user is active",
+            "example": true
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Indicates whether the operation was successful",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable message describing the result",
+            "nullable": true,
+            "example": "User information retrieved successfully"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp when the operation was completed",
+            "format": "date-time",
+            "example": "2025-01-05T10:30:00Z"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response model for user information"
+      }
+    },
+    "securitySchemes": {
+      "UnisonToken": {
+        "type": "apiKey",
+        "description": "Unison authentication token",
+        "name": "Unison-Token",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "UnisonToken": [ ]
+    }
+  ]
+}

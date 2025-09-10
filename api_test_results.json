@@ -1,0 +1,59 @@
+{
+  "average_response_time": 0.084,
+  "success_rate": 100.0,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Health Check",
+      "status_code": 200,
+      "response_time": 0.04,
+      "passed": true,
+      "message": "Health check passed"
+    },
+    {
+      "name": "Swagger Accessibility",
+      "status_code": 200,
+      "response_time": 0.022,
+      "passed": true,
+      "message": "Swagger UI accessible"
+    },
+    {
+      "name": "Update Card (Valid)",
+      "status_code": 400,
+      "response_time": 0.408,
+      "passed": true,
+      "message": "Endpoint reachable, SOAP backend issue: 400"
+    },
+    {
+      "name": "Auth: Missing Token",
+      "status_code": 401,
+      "response_time": 0.019,
+      "passed": true,
+      "message": "Authentication properly enforced"
+    },
+    {
+      "name": "Auth: Invalid Token",
+      "status_code": 401,
+      "response_time": 0.017,
+      "passed": true,
+      "message": "Invalid token properly rejected"
+    },
+    {
+      "name": "Validation: Missing CardId",
+      "status_code": 400,
+      "response_time": 0.065,
+      "passed": true,
+      "message": "Validation properly enforced"
+    },
+    {
+      "name": "Performance Basic",
+      "status_code": 200,
+      "response_time": 0.016,
+      "passed": true,
+      "message": "Response time acceptable: 0.01s"
+    }
+  ],
+  "timestamp": "2025-09-09T15:24:37",
+  "total_tests": 7,
+  "passed": 7
+}

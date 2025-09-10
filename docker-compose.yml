@@ -1,0 +1,156 @@
+# Docker Compose for Unison REST Adapter
+# TASK-009: CI/CD Pipeline Setup - Local Development Support
+
+version: "3.8"
+
+services:
+  # =====================================
+  # UNISON REST ADAPTER - DEVELOPMENT
+  # =====================================
+  unison-api-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final
+    container_name: unison-api-development
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - Unison__SoapEndpoint=http://192.168.10.206:9003/Unison.AccessService
+      - Unison__TimeoutSeconds=60
+      - Unison__RetryAttempts=1
+      - Security__RequireHttps=false
+      - Security__ValidTokens=dev-token-123,test-token-456
+      - Logging__LogLevel__Default=Debug
+      - Logging__LogLevel__UnisonRestAdapter=Trace
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - unison-network
+
+  # =====================================
+  # UNISON REST ADAPTER - STAGING
+  # =====================================
+  unison-api-staging:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final
+    container_name: unison-api-staging
+    ports:
+      - "6000:8080"
+      - "6001:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+      - ASPNETCORE_URLS=http://+:8080
+      - Unison__SoapEndpoint=http://192.168.10.206:9003/Unison.AccessService
+      - Unison__TimeoutSeconds=30
+      - Unison__RetryAttempts=3
+      - Security__RequireHttps=false
+      - Security__ValidTokens=staging-test-token-2025,integration-test-token
+      - Logging__LogLevel__Default=Information
+      - Logging__LogLevel__UnisonRestAdapter=Debug
+    volumes:
+      - ./logs-staging:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - unison-network
+    profiles:
+      - staging
+
+  # =====================================
+  # UNISON REST ADAPTER - PRODUCTION
+  # =====================================
+  unison-api-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final
+    container_name: unison-api-production
+    ports:
+      - "80:8080"
+      - "443:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080;https://+:8081
+      - Unison__SoapEndpoint=http://192.168.10.206:9003/Unison.AccessService
+      - Unison__TimeoutSeconds=30
+      - Unison__RetryAttempts=3
+      - Security__RequireHttps=true
+      - Security__ValidTokens=${UNISON_PRODUCTION_TOKEN}
+      - Security__TokenRotationEnabled=true
+      - Security__MaxTokenAge=24:00:00
+      - Logging__LogLevel__Default=Information
+      - Logging__LogLevel__Microsoft.AspNetCore=Warning
+      - Logging__LogLevel__UnisonRestAdapter=Information
+    volumes:
+      - ./logs-production:/app/logs:rw
+      - ./certs:/app/certs:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - unison-network
+    profiles:
+      - production
+
+  # =====================================
+  # NGINX REVERSE PROXY (OPTIONAL)
+  # =====================================
+  nginx:
+    image: nginx:alpine
+    container_name: unison-nginx
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+      - ./logs-nginx:/var/log/nginx:rw
+    depends_on:
+      - unison-api-dev
+    networks:
+      - unison-network
+    profiles:
+      - proxy
+    restart: unless-stopped
+
+# =====================================
+# NETWORKS
+# =====================================
+networks:
+  unison-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# =====================================
+# VOLUMES
+# =====================================
+volumes:
+  unison-logs:
+    driver: local
+  unison-certs:
+    driver: local

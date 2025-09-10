@@ -1,0 +1,52 @@
+# Codacy CLI v2 Configuration
+# For security: Use environment variable CODACY_PROJECT_TOKEN instead of hardcoding token
+# project_token: ${CODACY_PROJECT_TOKEN}  # Set as environment variable or CI secret
+
+# Tools configuration for .NET/C# project
+tools:
+  # .NET/C# static analysis
+  - name: semgrep
+    enabled: true
+
+  # Security analysis
+  - name: trivy
+    enabled: true
+
+  # General code quality
+  - name: remark-lint
+    enabled: true
+
+  # JavaScript/TypeScript (if any frontend components)
+  - name: eslint
+    enabled: true
+
+  # YAML linting for CI files
+  - name: yamllint
+    enabled: true
+
+# Exclude patterns
+exclude_patterns:
+  - "bin/**"
+  - "obj/**"
+  - "packages/**"
+  - "node_modules/**"
+  - "*.log"
+  - "logs/**"
+  - "*.exe"
+  - "*.dll"
+  - "*.pdb"
+  - ".vs/**"
+  - ".vscode/**"
+  - "TestResults/**"
+
+# File extensions to analyze
+extensions:
+  - ".cs"
+  - ".csproj"
+  - ".sln"
+  - ".json"
+  - ".yml"
+  - ".yaml"
+  - ".md"
+  - ".xml"
+  - ".config"

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <startup>
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.8" />
+    </startup>
+
+    <!-- Add WCF Diagnostics Configuration -->
+    <system.diagnostics>
+        <sources>
+            <!-- WCF Service Model Trace Source -->
+            <source name="System.ServiceModel" switchValue="Information, ActivityTracing" propagateActivity="true">
+                <listeners>
+                    <add name="wcfTraceListener" type="System.Diagnostics.XmlWriterTraceListener" initializeData="C:\logs\WCFTrace.svclog" />
+                </listeners>
+            </source>
+
+            <!-- WCF Message Logging Trace Source -->
+            <source name="System.ServiceModel.MessageLogging">
+                <listeners>
+                    <add name="messageTraceListener" type="System.Diagnostics.XmlWriterTraceListener" initializeData="C:\logs\WCFMessages.svclog" />
+                </listeners>
+            </source>
+
+            <!-- System Diagnostics Source for general .NET Framework tracing -->
+            <source name="System.Runtime.Serialization">
+                <listeners>
+                    <add name="serializationTraceListener" type="System.Diagnostics.XmlWriterTraceListener" initializeData="C:\logs\Serialization.svclog" />
+                </listeners>
+            </source>
+        </sources>
+        <trace autoflush="true" />
+    </system.diagnostics>
+
+    <system.serviceModel>
+        <!-- Enable Message Logging -->
+        <diagnostics>
+            <messageLogging logEntireMessage="true" logMalformedMessages="true" logMessagesAtServiceLevel="true" logMessagesAtTransportLevel="true" maxSizeOfMessageToLog="65536" maxMessagesToLog="3000" />
+        </diagnostics>
+
+        <behaviors>
+            <serviceBehaviors>
+                <behavior name="AccessServiceBehavior">
+                    <serviceMetadata httpGetEnabled="true" />
+                    <serviceDebug includeExceptionDetailInFaults="true" />
+                </behavior>
+            </serviceBehaviors>
+        </behaviors>
+        <services>
+            <service behaviorConfiguration="AccessServiceBehavior" name="Pacom.Unison.AccessService">
+                <endpoint address="" binding="basicHttpBinding" contract="Pacom.Unison.IAccessService" />
+                <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
+                <host>
+                    <baseAddresses>
+                        <add baseAddress="http://192.168.10.206:9003/Unison.AccessService" />
+                    </baseAddresses>
+                </host>
+            </service>
+        </services>
+    </system.serviceModel>
+
+    <runtime>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="System.Resources.Extensions" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.0" newVersion="9.0.0.0" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.AspNetCore.Cryptography.KeyDerivation" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.1.0" newVersion="9.0.1.0" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Configuration" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Configuration.Abstractions" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Configuration.Binder" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.DependencyInjection" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.DependencyInjection.Abstractions" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Diagnostics.Abstractions" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Hosting.Abstractions" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Logging" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Logging.Abstractions" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Logging.Configuration" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Logging.Debug" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Options" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="Microsoft.Extensions.Options.ConfigurationExtensions" publicKeyToken="adb9793829ddae60" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="System.Buffers" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-4.0.3.0" newVersion="4.0.3.0" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="System.Diagnostics.DiagnosticSource" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="System.Memory" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-4.0.1.2" newVersion="4.0.1.2" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="System.Runtime.CompilerServices.Unsafe" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-6.0.0.0" newVersion="6.0.0.0" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="System.Security.Cryptography.ProtectedData" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+        <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            <dependentAssembly>
+                <assemblyIdentity name="System.Text.Json" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+                <bindingRedirect oldVersion="0.0.0.0-9.0.0.1" newVersion="9.0.0.1" />
+            </dependentAssembly>
+        </assemblyBinding>
+    </runtime>
+</configuration>

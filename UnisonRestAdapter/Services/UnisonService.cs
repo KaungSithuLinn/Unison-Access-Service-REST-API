@@ -81,6 +81,7 @@ namespace UnisonRestAdapter.Services
 
         public async Task<HealthResponse> CheckHealthAsync(string token)
         {
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
                 _logger.LogInformation("Processing health check request");
@@ -88,21 +89,26 @@ namespace UnisonRestAdapter.Services
                 // This will be implemented after SOAP client proxy is generated
                 var isHealthy = await _soapClientService.CheckHealthAsync(token);
 
+                stopwatch.Stop();
+
                 return new HealthResponse
                 {
                     IsHealthy = isHealthy,
                     Message = isHealthy ? "Service is healthy" : "Service is unhealthy",
-                    Timestamp = DateTime.UtcNow
+                    Timestamp = DateTime.UtcNow,
+                    ResponseTime = stopwatch.ElapsedMilliseconds
                 };
             }
             catch (Exception ex)
             {
+                stopwatch.Stop();
                 _logger.LogError(ex, "Error during health check");
                 return new HealthResponse
                 {
                     IsHealthy = false,
                     Message = $"Health check failed: {ex.Message}",
-                    Timestamp = DateTime.UtcNow
+                    Timestamp = DateTime.UtcNow,
+                    ResponseTime = stopwatch.ElapsedMilliseconds
                 };
             }
         }
