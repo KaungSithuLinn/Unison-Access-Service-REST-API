@@ -74,6 +74,47 @@ try
     builder.Services.Configure<SecurityOptions>(builder.Configuration.GetSection(SecurityOptions.SectionName));
     builder.Services.AddScoped<ITokenService, TokenService>();
 
+    // Add memory cache for rate limiting
+    builder.Services.AddMemoryCache();
+
+    // Configure CORS
+    var securityOptions = builder.Configuration.GetSection(SecurityOptions.SectionName).Get<SecurityOptions>();
+    if (securityOptions?.EnableCors == true)
+    {
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                if (securityOptions.AllowedOrigins?.Any() == true)
+                {
+                    policy.WithOrigins(securityOptions.AllowedOrigins.ToArray());
+                }
+                else
+                {
+                    policy.AllowAnyOrigin();
+                }
+
+                if (securityOptions.AllowedMethods?.Any() == true)
+                {
+                    policy.WithMethods(securityOptions.AllowedMethods.ToArray());
+                }
+                else
+                {
+                    policy.AllowAnyMethod();
+                }
+
+                if (securityOptions.AllowedHeaders?.Any() == true)
+                {
+                    policy.WithHeaders(securityOptions.AllowedHeaders.ToArray());
+                }
+                else
+                {
+                    policy.AllowAnyHeader();
+                }
+            });
+        });
+    }
+
     // Add health checks
     builder.Services.AddHealthChecks();
 
@@ -172,13 +213,45 @@ try
     // Add health checks endpoint
     app.MapHealthChecks("/health");
 
-    // Add request logging middleware (before error handling)
+    // Configure CORS if enabled
+    var securityConfig = app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<SecurityOptions>>().Value;
+    if (securityConfig.EnableCors)
+    {
+        app.UseCors();
+    }
+
+    // Add security middleware pipeline (in order of execution)
+    // 1. Security headers (first for all responses)
+    app.UseSecurityHeaders();
+
+    // 2. IP whitelist check (early security gate)
+    if (securityConfig.EnableIpWhitelist)
+    {
+        app.UseIpWhitelist();
+    }
+
+    // 3. Rate limiting (after IP check, before expensive operations)
+    if (securityConfig.EnableRateLimiting)
+    {
+        app.UseMiddleware<UnisonRestAdapter.Security.RateLimitingMiddleware>();
+    }
+
+    // 4. Request validation (after rate limiting, before processing)
+    if (securityConfig.EnableRequestValidation)
+    {
+        app.UseMiddleware<UnisonRestAdapter.Security.RequestValidationMiddleware>();
+    }
+
+    // Add request logging middleware (after security checks)
     app.UseMiddleware<RequestLoggingMiddleware>();
 
-    // Add error handling middleware (after request logging)
+    // Add performance monitoring middleware (after request logging)
+    app.UseMiddleware<PerformanceMonitoringMiddleware>();
+
+    // Add error handling middleware (after request logging and performance monitoring)
     app.UseMiddleware<ErrorHandlingMiddleware>();
 
-    // Add token validation middleware
+    // Add token validation middleware (after error handling, before business logic)
     app.UseMiddleware<TokenValidationMiddleware>();
 
     app.UseHttpsRedirection();
