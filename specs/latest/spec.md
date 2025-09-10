@@ -53,9 +53,30 @@
    - Review product documentation for REST API capabilities
 
 3. **Architecture Decision**
-   - **If no native REST found**: Document adapter as official REST gateway
-   - **If native REST exists**: Plan migration from adapter to direct integration
-   - Update `specs/latest/interfaces.json` with chosen approach
+   - **Option A (Current)**: Use REST adapter as official gateway - adapter handles REST-to-SOAP translation
+   - **Option B (Alternative)**: Reconfigure Unison to add `webHttpBinding` endpoint for native REST
+
+### 📋 Investigation Results - CONFIRMED
+
+**Web Research Findings**:
+
+- WCF services CAN expose REST endpoints using `webHttpBinding`
+- REST endpoints require explicit configuration and method attributes (`[WebGet]`, `[WebInvoke]`)
+- Both SOAP and REST can coexist in same WCF service
+
+**Configuration Analysis**:
+
+- Current `AccessService_corrected_config.xml` shows only SOAP bindings:
+  - `basicHttpBinding` (SOAP endpoint)
+  - `mexHttpBinding` (metadata exchange)
+- No `webHttpBinding` configured for REST endpoints
+- Service contract `Pacom.Unison.IAccessService` would need REST attributes
+
+**Architectural Decision**: **Option A - Adapter as Official Gateway**
+
+- **Rationale**: Adapter is operational and provides clean REST interface
+- **Benefits**: No service reconfiguration, maintains SOAP compatibility
+- **Trade-offs**: Additional layer, potential performance overhead
 
 ## Current State Summary
 

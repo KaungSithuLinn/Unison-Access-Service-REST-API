@@ -1,0 +1,110 @@
+{
+  "projectName": "Unison Access Service REST API",
+  "version": "1.0.0",
+  "lastUpdated": "2025-09-10",
+  "architecture": "REST-SOAP Adapter Gateway",
+  "interfaces": {
+    "restAdapter": {
+      "description": "Official REST gateway translating to Unison SOAP service",
+      "baseUrl": "http://192.168.10.206:5001",
+      "protocols": ["HTTP", "HTTPS"],
+      "contentType": "application/json",
+      "endpoints": {
+        "updateCard": {
+          "method": "POST",
+          "path": "/updateCard",
+          "description": "Update card information in Unison system",
+          "requestSchema": {
+            "type": "object",
+            "properties": {
+              "cardNumber": {
+                "type": "string",
+                "description": "Card identifier"
+              },
+              "holderName": {
+                "type": "string",
+                "description": "Card holder name"
+              },
+              "expirationDate": {
+                "type": "string",
+                "format": "date",
+                "description": "Card expiration"
+              }
+            },
+            "required": ["cardNumber"]
+          },
+          "responseSchema": {
+            "type": "object",
+            "properties": {
+              "success": { "type": "boolean" },
+              "message": { "type": "string" },
+              "errorCode": { "type": "string", "optional": true }
+            }
+          },
+          "curlExample": "curl -X POST http://192.168.10.206:5001/updateCard -H 'Content-Type: application/json' -d '{\"cardNumber\":\"123456789\"}'"
+        }
+      }
+    },
+    "unisonSoapService": {
+      "description": "Backend SOAP service (internal use via adapter)",
+      "baseUrl": "http://192.168.10.206:9003/Unison.AccessService",
+      "protocols": ["SOAP/HTTP"],
+      "wsdl": "http://192.168.10.206:9003/Unison.AccessService?wsdl",
+      "bindings": {
+        "basicHttpBinding": {
+          "description": "Primary SOAP endpoint",
+          "contract": "Pacom.Unison.IAccessService"
+        },
+        "mexHttpBinding": {
+          "description": "Metadata exchange endpoint",
+          "address": "mex",
+          "contract": "IMetadataExchange"
+        }
+      },
+      "operations": {
+        "updateCard": {
+          "description": "SOAP operation for card updates",
+          "soapAction": "http://tempuri.org/IAccessService/UpdateCard",
+          "inputMessage": "UpdateCardRequest",
+          "outputMessage": "UpdateCardResponse"
+        }
+      }
+    }
+  },
+  "integrationFlow": {
+    "description": "REST client -> Adapter -> SOAP service flow",
+    "steps": [
+      "Client sends REST POST to adapter (port 5001)",
+      "Adapter validates and transforms JSON to SOAP envelope",
+      "Adapter forwards SOAP request to Unison service (port 9003)",
+      "Unison processes request via basicHttpBinding",
+      "SOAP response transformed back to JSON by adapter",
+      "JSON response returned to REST client"
+    ]
+  },
+  "alternatives": {
+    "nativeRest": {
+      "description": "Potential native REST via webHttpBinding",
+      "feasible": true,
+      "requirements": [
+        "Add webHttpBinding endpoint to AccessService_corrected_config.xml",
+        "Annotate IAccessService contract methods with [WebGet]/[WebInvoke]",
+        "Configure webHttpBehavior in service behaviors",
+        "Restart Unison AccessService"
+      ],
+      "tradeOffs": {
+        "pros": [
+          "Direct REST access",
+          "No adapter dependency",
+          "Lower latency"
+        ],
+        "cons": [
+          "Service reconfiguration required",
+          "Deployment complexity",
+          "Potential compatibility issues"
+        ]
+      },
+      "recommendation": "Consider for future enhancement, use adapter for immediate needs"
+    }
+  }
+}
