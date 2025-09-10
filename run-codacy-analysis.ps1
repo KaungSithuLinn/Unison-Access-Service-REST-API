@@ -28,15 +28,22 @@ if (!(Test-Path "codacy.yml")) {
 $currentPath = (Get-Location).ProviderPath
 Write-Host "Current project path: $currentPath" -ForegroundColor Cyan
 
+# Dump Codacy-related environment variables to a timed log to help diagnose missing credentials
+$envLog = "logs\env-codacy-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+Write-Host "Writing Codacy-related environment variables to: $envLog" -ForegroundColor Gray
+[Environment]::GetEnvironmentVariables().GetEnumerator() |
+Where-Object { $_.Key -like 'CODACY*' -or $_.Key -like 'CODACY_*' } |
+ForEach-Object { "{0}={1}" -f $_.Key, $_.Value } | Out-File -FilePath $envLog -Encoding utf8
+
 # Run Codacy CLI analysis with verbose output and logging
 Write-Host "Running Codacy CLI analysis with Docker..." -ForegroundColor Cyan
-Write-Host "Command: docker run --rm -v `"${currentPath}:/src`" codacy/codacy-analysis-cli analyze" -ForegroundColor Gray
+Write-Host "Command: docker run --rm -e CODACY_PROJECT_TOKEN=$env:CODACY_PROJECT_TOKEN -v `"${currentPath}:/src`" codacy/codacy-analysis-cli analyze" -ForegroundColor Gray
 
 # Capture output to both console and log file
 $logFile = "logs\codacy-analyze-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
 Write-Host "Logging output to: $logFile" -ForegroundColor Gray
 
-docker run --rm -v "${currentPath}:/src" codacy/codacy-analysis-cli analyze 2>&1 | Tee-Object -FilePath $logFile
+docker run --rm -e CODACY_PROJECT_TOKEN=$env:CODACY_PROJECT_TOKEN -v "${currentPath}:/src" codacy/codacy-analysis-cli analyze 2>&1 | Tee-Object -FilePath $logFile
 
 $exitCode = $LASTEXITCODE
 Write-Host "Docker command completed with exit code: $exitCode" -ForegroundColor $(if ($exitCode -eq 0) { "Green" } else { "Red" })
