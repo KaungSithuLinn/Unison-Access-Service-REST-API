@@ -248,6 +248,9 @@ try
     // Add performance monitoring middleware (after request logging)
     app.UseMiddleware<PerformanceMonitoringMiddleware>();
 
+    // Add metrics collection middleware (after performance monitoring)
+    app.UseMiddleware<UnisonRestAdapter.Middleware.MetricsCollectionMiddleware>();
+
     // Add error handling middleware (after request logging and performance monitoring)
     app.UseMiddleware<ErrorHandlingMiddleware>();
 

@@ -9,29 +9,54 @@ namespace UnisonRestAdapter.Services
 {
     /// <summary>
     /// Implementation of SOAP client service using HttpClient
-    /// Implements direct SOAP calls to Unison Access Service
+    /// Implements direct SOAP calls to Unison Access Service with performance optimization
     /// </summary>
     public class SoapClientService : ISoapClientService
     {
         private readonly HttpClient _httpClient;
         private readonly UnisonSettings _settings;
         private readonly ILogger<SoapClientService> _logger;
+        private readonly IResponseCacheService _cacheService;
+        private readonly IPerformanceMonitoringService _performanceMonitoring;
 
+        /// <summary>
+        /// Initializes a new instance of the SoapClientService with performance optimization
+        /// </summary>
+        /// <param name="httpClientFactory">HTTP client factory</param>
+        /// <param name="settings">Unison settings</param>
+        /// <param name="logger">Logger instance</param>
+        /// <param name="cacheService">Response cache service</param>
+        /// <param name="performanceMonitoring">Performance monitoring service</param>
         public SoapClientService(
             IHttpClientFactory httpClientFactory,
             IOptions<UnisonSettings> settings,
-            ILogger<SoapClientService> logger)
+            ILogger<SoapClientService> logger,
+            IResponseCacheService cacheService,
+            IPerformanceMonitoringService performanceMonitoring)
         {
             _httpClient = httpClientFactory.CreateClient("UnisonSoapClient");
             _settings = settings.Value;
             _logger = logger;
+            _cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
+            _performanceMonitoring = performanceMonitoring ?? throw new ArgumentNullException(nameof(performanceMonitoring));
         }
 
+        /// <summary>
+        /// Updates a card in the Unison system with performance monitoring
+        /// </summary>
+        /// <param name="request">Update card request</param>
+        /// <param name="token">Authentication token</param>
+        /// <returns>Update card response</returns>
         public async Task<SoapUpdateCardResponse> UpdateCardAsync(UpdateCardRequest request, string token)
         {
+            var correlationId = Guid.NewGuid().ToString("N")[..8];
+            var stopwatch = _performanceMonitoring.StartTiming("UpdateCard", correlationId);
+            var success = false;
+
             try
             {
-                _logger.LogInformation("Calling SOAP UpdateCard for CardId: {CardId}", request.CardId);
+                _logger.LogInformation("Calling SOAP UpdateCard for CardId: {CardId}, CorrelationId: {CorrelationId}",
+                    request.CardId, correlationId);
 
                 // Strictly map REST request to required SOAP fields using PascalCase property names
                 var userId = request.UserName ?? "DEFAULT_USER";
@@ -80,11 +105,30 @@ namespace UnisonRestAdapter.Services
                     response.StatusCode, responseContent);
 
                 // Parse SOAP response
-                return ParseUpdateCardResponse(responseContent, response.IsSuccessStatusCode);
+                var result = ParseUpdateCardResponse(responseContent, response.IsSuccessStatusCode);
+                success = result.Success;
+
+                // Record performance metrics
+                _performanceMonitoring.StopTiming(stopwatch, "UpdateCard", correlationId, success, new Dictionary<string, object>
+                {
+                    ["CardId"] = request.CardId ?? "unknown",
+                    ["Operation"] = "UpdateCard"
+                });
+
+                return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "SOAP UpdateCard failed for CardId: {CardId}", request.CardId);
+                _logger.LogError(ex, "SOAP UpdateCard failed for CardId: {CardId}, CorrelationId: {CorrelationId}",
+                    request.CardId, correlationId);
+
+                _performanceMonitoring.StopTiming(stopwatch, "UpdateCard", correlationId, false, new Dictionary<string, object>
+                {
+                    ["CardId"] = request.CardId ?? "unknown",
+                    ["Operation"] = "UpdateCard",
+                    ["Error"] = ex.Message
+                });
+
                 return new SoapUpdateCardResponse
                 {
                     Success = false,
@@ -126,11 +170,11 @@ namespace UnisonRestAdapter.Services
 
                 if (updateCardResponse != null)
                 {
-                    var result = updateCardResponse.Element(ns + "UpdateCardResult")?.Value;
+                    var resultValue = updateCardResponse.Element(ns + "UpdateCardResult")?.Value;
                     return new SoapUpdateCardResponse
                     {
                         Success = true,
-                        Message = result ?? "Card updated successfully"
+                        Message = resultValue ?? "Card updated successfully"
                     };
                 }
 
@@ -144,6 +188,7 @@ namespace UnisonRestAdapter.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error parsing SOAP response: {Response}", responseContent);
+
                 return new SoapUpdateCardResponse
                 {
                     Success = false,
@@ -168,6 +213,12 @@ namespace UnisonRestAdapter.Services
             }
         }
 
+        /// <summary>
+        /// Gets user information from the Unison system
+        /// </summary>
+        /// <param name="userId">User ID to retrieve</param>
+        /// <param name="token">Authentication token</param>
+        /// <returns>User response</returns>
         public async Task<SoapUserResponse> GetUserAsync(string userId, string token)
         {
             try
@@ -270,6 +321,11 @@ namespace UnisonRestAdapter.Services
             }
         }
 
+        /// <summary>
+        /// Checks the health of the Unison system
+        /// </summary>
+        /// <param name="token">Authentication token</param>
+        /// <returns>True if system is healthy, false otherwise</returns>
         public async Task<bool> CheckHealthAsync(string token)
         {
             try

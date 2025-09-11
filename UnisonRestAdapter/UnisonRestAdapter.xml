@@ -4,9 +4,129 @@
         <name>UnisonRestAdapter</name>
     </assembly>
     <members>
+        <member name="T:UnisonRestAdapter.Configuration.HttpClientOptions">
+            <summary>
+            Configuration options for HTTP client performance optimization
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Configuration.HttpClientOptions.SectionName">
+            <summary>
+            Configuration section name
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.HttpClientOptions.MaxConnectionsPerEndpoint">
+            <summary>
+            Maximum number of connections per endpoint
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.HttpClientOptions.ConnectionTimeoutSeconds">
+            <summary>
+            Connection timeout in seconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.HttpClientOptions.RequestTimeoutSeconds">
+            <summary>
+            Request timeout in seconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.HttpClientOptions.PooledConnectionLifetimeSeconds">
+            <summary>
+            Connection pool timeout in seconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.HttpClientOptions.PooledConnectionIdleTimeoutSeconds">
+            <summary>
+            Connection pool idle timeout in seconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.HttpClientOptions.MaxAutomaticRedirections">
+            <summary>
+            Maximum automatic redirections
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.HttpClientOptions.EnableConnectionPooling">
+            <summary>
+            Enable connection pooling
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.HttpClientOptions.EnableKeepAlive">
+            <summary>
+            Enable keep-alive connections
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.HttpClientOptions.TcpKeepAliveTime">
+            <summary>
+            TCP keep-alive time in seconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.HttpClientOptions.TcpKeepAliveInterval">
+            <summary>
+            TCP keep-alive interval in seconds
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Configuration.RequestTracingOptions">
+            <summary>
+            Configuration options for request tracing and logging
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Configuration.RequestTracingOptions.SectionName">
+            <summary>
+            Configuration section name
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.LogRequests">
+            <summary>
+            Whether to log incoming HTTP requests
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.LogResponses">
+            <summary>
+            Whether to log outgoing HTTP responses
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.LogHeaders">
+            <summary>
+            Whether to log HTTP headers (may contain sensitive data)
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.LogBody">
+            <summary>
+            Whether to log request/response body content
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.MaxBodySize">
+            <summary>
+            Maximum size of request/response body to log (bytes)
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.SensitiveHeaders">
+            <summary>
+            Headers that should be masked in logs for security
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.SensitiveBodyPaths">
+            <summary>
+            JSON paths that should be masked in request/response bodies
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.LogPerformanceMetrics">
+            <summary>
+            Whether to include performance metrics in logs
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.SlowRequestThresholdMs">
+            <summary>
+            Minimum duration (ms) to log slow requests
+            </summary>
+        </member>
         <member name="T:UnisonRestAdapter.Configuration.SecurityOptions">
             <summary>
             Security configuration options for the Unison REST Adapter
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Configuration.SecurityOptions.SectionName">
+            <summary>
+            Configuration section name
             </summary>
         </member>
         <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.TokenConfigSection">
@@ -59,6 +179,21 @@
             Enable request rate limiting
             </summary>
         </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.MaxRequestsPerMinute">
+            <summary>
+            Rate limiting settings
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.RateLimitWindowMinutes">
+            <summary>
+            Rate limiting window duration in minutes
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.TemporaryBlockDurationMinutes">
+            <summary>
+            Duration to temporarily block IPs that exceed rate limits (in minutes)
+            </summary>
+        </member>
         <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.AllowedIpAddresses">
             <summary>
             Allowed IP addresses (empty = allow all)
@@ -79,9 +214,79 @@
             Block suspicious requests
             </summary>
         </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.RequireHttps">
+            <summary>
+            Require HTTPS for all requests
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.EnableHsts">
+            <summary>
+            Enable HTTP Strict Transport Security (HSTS)
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.HstsMaxAge">
+            <summary>
+            HSTS max age in seconds (1 year default)
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.EnableCors">
+            <summary>
+            Enable Cross-Origin Resource Sharing (CORS)
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.AllowedOrigins">
+            <summary>
+            Allowed origins for CORS
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.AllowedMethods">
+            <summary>
+            Allowed CORS methods
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.AllowedHeaders">
+            <summary>
+            Allowed CORS headers
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.MaxRequestSizeBytes">
+            <summary>
+            Maximum request size in bytes (1MB default)
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.EnableApiKeyAuthentication">
+            <summary>
+            Enable API key authentication
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.ApiKeyHeaderName">
+            <summary>
+            API key header name
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.EnableRequestValidation">
+            <summary>
+            Enable request validation against malicious patterns
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.BlockMaliciousPatterns">
+            <summary>
+            Block requests with malicious patterns
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.SecurityOptions.EnableContentSecurityPolicy">
+            <summary>
+            Enable Content Security Policy headers
+            </summary>
+        </member>
         <member name="T:UnisonRestAdapter.Configuration.UnisonSettings">
             <summary>
             Configuration settings for Unison Access Service
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Configuration.UnisonSettings.SectionName">
+            <summary>
+            Configuration section name
             </summary>
         </member>
         <member name="P:UnisonRestAdapter.Configuration.UnisonSettings.ServiceUrl">
@@ -195,6 +400,89 @@
             Requires Unison-Token header with valid authentication token.
             </remarks>
         </member>
+        <member name="M:UnisonRestAdapter.Controllers.CardsController.ValidateCard(UnisonRestAdapter.Models.Request.CardValidationRequest)">
+            <summary>
+            Validates card information
+            </summary>
+            <param name="request">Card validation request</param>
+            <returns>Validation result with card status information</returns>
+            <response code="200">Card validation completed</response>
+            <response code="400">Invalid request data or validation failed</response>
+            <response code="401">Unauthorized - Unison-Token header missing or invalid</response>
+            <remarks>
+            Sample request:
+            
+                POST /api/cards/validate
+                {
+                    "cardId": "CARD123",
+                    "userId": "john.doe",
+                    "profileName": "StandardProfile"
+                }
+            
+            Requires Unison-Token header with valid authentication token.
+            </remarks>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.CardsController.ActivateCard(UnisonRestAdapter.Models.Request.CardActivationRequest)">
+            <summary>
+            Activates a card
+            </summary>
+            <param name="request">Card activation request</param>
+            <returns>Activation result</returns>
+            <response code="200">Card activated successfully</response>
+            <response code="400">Invalid request data or activation failed</response>
+            <response code="401">Unauthorized - Unison-Token header missing or invalid</response>
+            <remarks>
+            Sample request:
+            
+                POST /api/cards/activate
+                {
+                    "cardId": "CARD123",
+                    "userId": "john.doe",
+                    "profileName": "StandardProfile"
+                }
+            
+            Requires Unison-Token header with valid authentication token.
+            </remarks>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.CardsController.DeactivateCard(UnisonRestAdapter.Models.Request.CardActivationRequest)">
+            <summary>
+            Deactivates a card
+            </summary>
+            <param name="request">Card deactivation request</param>
+            <returns>Deactivation result</returns>
+            <response code="200">Card deactivated successfully</response>
+            <response code="400">Invalid request data or deactivation failed</response>
+            <response code="401">Unauthorized - Unison-Token header missing or invalid</response>
+            <remarks>
+            Sample request:
+            
+                POST /api/cards/deactivate
+                {
+                    "cardId": "CARD123",
+                    "userId": "john.doe",
+                    "profileName": "StandardProfile"
+                }
+            
+            Requires Unison-Token header with valid authentication token.
+            </remarks>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.CardsController.GetCardStatus(System.String)">
+            <summary>
+            Gets card status by card ID
+            </summary>
+            <param name="cardId">Card identifier to get status for</param>
+            <returns>Card status information</returns>
+            <response code="200">Card status retrieved successfully</response>
+            <response code="404">Card not found</response>
+            <response code="401">Unauthorized - Unison-Token header missing or invalid</response>
+            <remarks>
+            Sample request:
+            
+                GET /api/cards/status/CARD123
+            
+            Requires Unison-Token header with valid authentication token.
+            </remarks>
+        </member>
         <member name="T:UnisonRestAdapter.Controllers.HealthController">
             <summary>
             REST API controller for health check and monitoring operations
@@ -256,6 +544,152 @@
             Liveness probe for Kubernetes/container orchestration
             </summary>
         </member>
+        <member name="T:UnisonRestAdapter.Controllers.MetricsController">
+            <summary>
+            REST API controller for service metrics
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.MetricsController.#ctor(Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Controllers.MetricsController})">
+            <summary>
+            Initializes a new instance of the MetricsController
+            </summary>
+            <param name="logger">Logger for tracking controller operations</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.MetricsController.GetMetrics">
+            <summary>
+            Gets basic service metrics and statistics
+            </summary>
+            <returns>Service metrics including uptime, memory usage, and system information</returns>
+            <response code="200">Metrics retrieved successfully</response>
+            <remarks>
+            Sample request:
+            
+                GET /api/metrics
+            
+            No authentication required for basic metrics.
+            
+            Sample response:
+            
+                {
+                    "service": "UnisonRestAdapter",
+                    "version": "1.0.0",
+                    "uptime": "2.00:30:45",
+                    "environment": "Development",
+                    "system": {
+                        "processId": 12345,
+                        "workingSetMemory": 52428800,
+                        "gcTotalMemory": 10485760,
+                        "threadCount": 25
+                    },
+                    "timestamp": "2025-09-11T10:00:00Z"
+                }
+            </remarks>
+        </member>
+        <member name="T:UnisonRestAdapter.Controllers.PerformanceController">
+            <summary>
+            Controller for performance monitoring and statistics
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.PerformanceController.#ctor(UnisonRestAdapter.Services.IPerformanceMonitoringService,UnisonRestAdapter.Services.IResponseCacheService,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Controllers.PerformanceController})">
+            <summary>
+            Initializes a new instance of the PerformanceController
+            </summary>
+            <param name="performanceMonitoring">Performance monitoring service</param>
+            <param name="cacheService">Response cache service</param>
+            <param name="logger">Logger instance</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.PerformanceController.GetStatistics">
+            <summary>
+            Gets current performance statistics
+            </summary>
+            <returns>Performance statistics</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.PerformanceController.GetHealth">
+            <summary>
+            Gets system health status with performance metrics
+            </summary>
+            <returns>System health information</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.PerformanceController.ClearCache(System.String)">
+            <summary>
+            Clears the response cache
+            </summary>
+            <param name="pattern">Optional pattern to match for selective clearing</param>
+            <returns>Cache clear result</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.PerformanceController.ForceGarbageCollection">
+            <summary>
+            Forces garbage collection (use with caution)
+            </summary>
+            <returns>Memory usage before and after GC</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Controllers.SystemController">
+            <summary>
+            REST API controller for system operations
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.SystemController.#ctor(UnisonRestAdapter.Services.IUnisonService,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Controllers.SystemController})">
+            <summary>
+            Initializes a new instance of the SystemController
+            </summary>
+            <param name="unisonService">Service for communicating with the SOAP backend</param>
+            <param name="logger">Logger for tracking controller operations</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.SystemController.GetVersion">
+            <summary>
+            Gets system version information
+            </summary>
+            <returns>Version information including API and backend versions</returns>
+            <response code="200">Version information retrieved successfully</response>
+            <response code="401">Unauthorized - Unison-Token header missing or invalid</response>
+            <response code="500">Internal server error retrieving version information</response>
+            <remarks>
+            Sample request:
+            
+                GET /api/system/version
+            
+            Requires Unison-Token header with valid authentication token.
+            
+            Sample response:
+            
+                {
+                    "success": true,
+                    "message": "Version information retrieved",
+                    "apiVersion": "1.0.0",
+                    "backendVersion": "Connected",
+                    "buildInfo": {
+                        "buildDate": "2025-09-11T10:00:00Z",
+                        "environment": "Development",
+                        "runtimeVersion": "9.0.0"
+                    },
+                    "timestamp": "2025-09-11T10:00:00Z"
+                }
+            </remarks>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.SystemController.Ping">
+            <summary>
+            Pings the backend service to test connectivity
+            </summary>
+            <returns>Ping result indicating backend service connectivity status</returns>
+            <response code="200">Backend service is reachable</response>
+            <response code="401">Unauthorized - Unison-Token header missing or invalid</response>
+            <response code="503">Backend service is not reachable</response>
+            <remarks>
+            Sample request:
+            
+                GET /api/system/ping
+            
+            Requires Unison-Token header with valid authentication token.
+            
+            Sample response:
+            
+                {
+                    "success": true,
+                    "message": "Backend service is reachable",
+                    "timestamp": "2025-09-11T10:00:00Z"
+                }
+            </remarks>
+        </member>
         <member name="T:UnisonRestAdapter.Controllers.UsersController">
             <summary>
             REST API controller for user operations
@@ -292,6 +726,104 @@
             <param name="message">The error message</param>
             <param name="innerException">The inner exception</param>
         </member>
+        <member name="T:UnisonRestAdapter.Middleware.PerformanceMonitoringMiddleware">
+            <summary>
+            Middleware for automatic performance monitoring of API requests
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.PerformanceMonitoringMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Middleware.PerformanceMonitoringMiddleware})">
+            <summary>
+            Initializes a new instance of the PerformanceMonitoringMiddleware
+            </summary>
+            <param name="next">Next middleware in pipeline</param>
+            <param name="logger">Logger instance</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.PerformanceMonitoringMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,UnisonRestAdapter.Services.IPerformanceMonitoringService,UnisonRestAdapter.Services.Tracing.ICorrelationService)">
+            <summary>
+            Process the HTTP context with performance monitoring
+            </summary>
+            <param name="context">HTTP context</param>
+            <param name="performanceMonitoring">Performance monitoring service</param>
+            <param name="correlationService">Correlation service</param>
+        </member>
+        <member name="T:UnisonRestAdapter.Middleware.RequestLoggingMiddleware">
+            <summary>
+            Middleware for logging HTTP requests and responses with structured logging
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Middleware.RequestLoggingMiddleware},Microsoft.Extensions.Options.IOptions{UnisonRestAdapter.Configuration.RequestTracingOptions})">
+            <summary>
+            Initializes a new instance of the RequestLoggingMiddleware
+            </summary>
+            <param name="next">The next middleware in the pipeline</param>
+            <param name="logger">Logger instance</param>
+            <param name="options">Request tracing options</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,UnisonRestAdapter.Services.Tracing.ICorrelationService)">
+            <summary>
+            Process the HTTP request and response logging
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.LogRequestAsync(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Log incoming HTTP request details
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.LogResponseAsync(Microsoft.AspNetCore.Http.HttpContext,System.String,System.IO.MemoryStream,System.Int64)">
+            <summary>
+            Log outgoing HTTP response details
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.LogPerformanceMetrics(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Int64,System.DateTimeOffset)">
+            <summary>
+            Log performance metrics for the request
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.LogRequestException(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Exception,System.Int64)">
+            <summary>
+            Log request processing exceptions
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.ReadRequestBodyAsync(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Read and sanitize request body content
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.ReadResponseBodyAsync(System.IO.MemoryStream)">
+            <summary>
+            Read and sanitize response body content
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.SanitizeHeaders(Microsoft.AspNetCore.Http.IHeaderDictionary)">
+            <summary>
+            Sanitize headers by masking sensitive values
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.SanitizeBodyContent(System.String)">
+            <summary>
+            Sanitize body content by masking sensitive data
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.IsJsonContent(System.String)">
+            <summary>
+            Check if content appears to be JSON
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.SanitizeJsonBody(System.String)">
+            <summary>
+            Sanitize JSON body by masking sensitive paths
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.SanitizeTextBody(System.String)">
+            <summary>
+            Basic text sanitization for non-JSON content
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.GetLogLevelForStatusCode(System.Int32)">
+            <summary>
+            Get appropriate log level based on HTTP status code
+            </summary>
+        </member>
         <member name="T:UnisonRestAdapter.Middleware.SecurityMiddleware">
             <summary>
             Enhanced security middleware for token validation, rate limiting, and IP filtering
@@ -300,6 +832,46 @@
         <member name="T:UnisonRestAdapter.Middleware.TokenUsage">
             <summary>
             Token usage tracking
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Request.CardActivationRequest">
+            <summary>
+            Request model for card activation operation
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Request.CardActivationRequest.CardId">
+            <summary>
+            Card identifier to activate
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Request.CardActivationRequest.UserId">
+            <summary>
+            User identifier for activation
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Request.CardActivationRequest.ProfileName">
+            <summary>
+            Profile name for activation
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Request.CardValidationRequest">
+            <summary>
+            Request model for card validation operation
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Request.CardValidationRequest.CardId">
+            <summary>
+            Card identifier to validate
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Request.CardValidationRequest.UserId">
+            <summary>
+            User identifier for validation context
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Request.CardValidationRequest.ProfileName">
+            <summary>
+            Profile name for validation
             </summary>
         </member>
         <member name="T:UnisonRestAdapter.Models.Request.UpdateCardRequest">
@@ -420,6 +992,81 @@
         <member name="P:UnisonRestAdapter.Models.Responses.ErrorDetail.Details">
             <summary>
             Additional error details (optional)
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Response.CardActivationResponse">
+            <summary>
+            Response model for card activation operation
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardActivationResponse.Success">
+            <summary>
+            Indicates if the operation was successful
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardActivationResponse.Message">
+            <summary>
+            Operation message
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardActivationResponse.CardId">
+            <summary>
+            Card identifier that was processed
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardActivationResponse.UserId">
+            <summary>
+            User identifier associated with the card
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardActivationResponse.NewStatus">
+            <summary>
+            New card status after activation/deactivation
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardActivationResponse.Timestamp">
+            <summary>
+            Response timestamp
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Response.CardValidationResponse">
+            <summary>
+            Response model for card validation operation
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardValidationResponse.Success">
+            <summary>
+            Indicates if the operation was successful
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardValidationResponse.Message">
+            <summary>
+            Operation message
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardValidationResponse.CardId">
+            <summary>
+            Card identifier that was validated
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardValidationResponse.IsValid">
+            <summary>
+            Card validation status
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardValidationResponse.CardStatus">
+            <summary>
+            Card status information
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardValidationResponse.ValidationDetails">
+            <summary>
+            Additional validation details
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.CardValidationResponse.Timestamp">
+            <summary>
+            Response timestamp
             </summary>
         </member>
         <member name="T:UnisonRestAdapter.Models.Response.UpdateCardResponse">
@@ -570,6 +1217,190 @@
             </summary>
             <example>25</example>
         </member>
+        <member name="T:UnisonRestAdapter.Models.Response.VersionResponse">
+            <summary>
+            Response model for system version information
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.VersionResponse.Success">
+            <summary>
+            Indicates if the operation was successful
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.VersionResponse.Message">
+            <summary>
+            Operation message
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.VersionResponse.ApiVersion">
+            <summary>
+            API adapter version
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.VersionResponse.BackendVersion">
+            <summary>
+            Backend service version from SOAP service
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.VersionResponse.BuildInfo">
+            <summary>
+            System build information
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.VersionResponse.Timestamp">
+            <summary>
+            Response timestamp
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Response.BuildInfo">
+            <summary>
+            Build information details
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.BuildInfo.BuildDate">
+            <summary>
+            Build timestamp
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.BuildInfo.Environment">
+            <summary>
+            Runtime environment
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Response.BuildInfo.RuntimeVersion">
+            <summary>
+            .NET runtime version
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Security.IpWhitelistMiddleware">
+            <summary>
+            Middleware to enforce IP address whitelist
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.IpWhitelistMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Security.IpWhitelistMiddleware},Microsoft.Extensions.Options.IOptions{UnisonRestAdapter.Configuration.SecurityOptions})">
+            <summary>
+            Initializes a new instance of the IpWhitelistMiddleware
+            </summary>
+            <param name="next">Next middleware in pipeline</param>
+            <param name="logger">Logger instance</param>
+            <param name="securityOptions">Security configuration options</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.IpWhitelistMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Invokes the middleware to enforce IP whitelist
+            </summary>
+            <param name="context">HTTP context</param>
+            <returns>Task representing the async operation</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Security.IpWhitelistMiddlewareExtensions">
+            <summary>
+            Extension methods for registering IP whitelist middleware
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.IpWhitelistMiddlewareExtensions.UseIpWhitelist(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adds IP whitelist middleware to the pipeline
+            </summary>
+            <param name="builder">Application builder</param>
+            <returns>Application builder</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Security.RateLimitingMiddleware">
+            <summary>
+            Middleware to implement rate limiting per IP address
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.RateLimitingMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Security.RateLimitingMiddleware},Microsoft.Extensions.Options.IOptions{UnisonRestAdapter.Configuration.SecurityOptions},Microsoft.Extensions.Caching.Memory.IMemoryCache)">
+            <summary>
+            Initializes a new instance of the RateLimitingMiddleware
+            </summary>
+            <param name="next">Next middleware in pipeline</param>
+            <param name="logger">Logger instance</param>
+            <param name="securityOptions">Security configuration options</param>
+            <param name="cache">Memory cache for storing rate limit data</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.RateLimitingMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Invokes the middleware to enforce rate limiting
+            </summary>
+            <param name="context">HTTP context</param>
+            <returns>Task representing the async operation</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Security.RateLimitingMiddlewareExtensions">
+            <summary>
+            Extension methods for registering rate limiting middleware
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.RateLimitingMiddlewareExtensions.UseRateLimiting(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adds rate limiting middleware to the pipeline
+            </summary>
+            <param name="builder">Application builder</param>
+            <returns>Application builder</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Security.RequestValidationMiddleware">
+            <summary>
+            Middleware to validate requests and block malicious patterns
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.RequestValidationMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Security.RequestValidationMiddleware},Microsoft.Extensions.Options.IOptions{UnisonRestAdapter.Configuration.SecurityOptions})">
+            <summary>
+            Initializes a new instance of the RequestValidationMiddleware
+            </summary>
+            <param name="next">Next middleware in pipeline</param>
+            <param name="logger">Logger instance</param>
+            <param name="securityOptions">Security configuration options</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.RequestValidationMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Invokes the middleware to validate requests
+            </summary>
+            <param name="context">HTTP context</param>
+            <returns>Task representing the async operation</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Security.RequestValidationMiddlewareExtensions">
+            <summary>
+            Extension methods for registering request validation middleware
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.RequestValidationMiddlewareExtensions.UseRequestValidation(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adds request validation middleware to the pipeline
+            </summary>
+            <param name="builder">Application builder</param>
+            <returns>Application builder</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Security.SecurityHeadersMiddleware">
+            <summary>
+            Middleware to add security headers following OWASP guidelines
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.SecurityHeadersMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Security.SecurityHeadersMiddleware},Microsoft.Extensions.Options.IOptions{UnisonRestAdapter.Configuration.SecurityOptions})">
+            <summary>
+            Initializes a new instance of the SecurityHeadersMiddleware
+            </summary>
+            <param name="next">Next middleware in pipeline</param>
+            <param name="logger">Logger instance</param>
+            <param name="securityOptions">Security configuration options</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.SecurityHeadersMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Invokes the middleware to add security headers
+            </summary>
+            <param name="context">HTTP context</param>
+            <returns>Task representing the async operation</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Security.SecurityHeadersMiddlewareExtensions">
+            <summary>
+            Extension methods for registering security headers middleware
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Security.SecurityHeadersMiddlewareExtensions.UseSecurityHeaders(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adds security headers middleware to the pipeline
+            </summary>
+            <param name="builder">Application builder</param>
+            <returns>Application builder</returns>
+        </member>
         <member name="T:UnisonRestAdapter.Services.ISoapClientService">
             <summary>
             Interface for SOAP client operations
@@ -609,17 +1440,414 @@
             <param name="token">Authentication token</param>
             <returns>Health status</returns>
         </member>
+        <member name="M:UnisonRestAdapter.Services.IUnisonService.ValidateCardAsync(UnisonRestAdapter.Models.Request.CardValidationRequest,System.String)">
+            <summary>
+            Validates card information via SOAP service
+            </summary>
+            <param name="request">Card validation request</param>
+            <param name="token">Authentication token</param>
+            <returns>Validation response</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IUnisonService.ActivateCardAsync(UnisonRestAdapter.Models.Request.CardActivationRequest,System.String)">
+            <summary>
+            Activates a card via SOAP service
+            </summary>
+            <param name="request">Card activation request</param>
+            <param name="token">Authentication token</param>
+            <returns>Activation response</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IUnisonService.DeactivateCardAsync(UnisonRestAdapter.Models.Request.CardActivationRequest,System.String)">
+            <summary>
+            Deactivates a card via SOAP service
+            </summary>
+            <param name="request">Card activation request (with deactivation intent)</param>
+            <param name="token">Authentication token</param>
+            <returns>Activation response</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IUnisonService.GetVersionAsync(System.String)">
+            <summary>
+            Gets system version information via SOAP service
+            </summary>
+            <param name="token">Authentication token</param>
+            <returns>Version information</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IUnisonService.PingAsync(System.String)">
+            <summary>
+            Ping operation to test SOAP service connectivity
+            </summary>
+            <param name="token">Authentication token</param>
+            <returns>Ping response status</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.IPerformanceMonitoringService">
+            <summary>
+            Service for monitoring and tracking performance metrics
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IPerformanceMonitoringService.StartTiming(System.String,System.String)">
+            <summary>
+            Start timing an operation
+            </summary>
+            <param name="operationName">Name of the operation</param>
+            <param name="correlationId">Correlation ID for tracking</param>
+            <returns>Stopwatch instance</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IPerformanceMonitoringService.StopTiming(System.Diagnostics.Stopwatch,System.String,System.String,System.Boolean,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Stop timing and log performance metrics
+            </summary>
+            <param name="stopwatch">Stopwatch instance</param>
+            <param name="operationName">Name of the operation</param>
+            <param name="correlationId">Correlation ID for tracking</param>
+            <param name="success">Whether the operation was successful</param>
+            <param name="additionalMetrics">Additional metrics to log</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IPerformanceMonitoringService.LogMemoryUsage(System.String,System.String)">
+            <summary>
+            Log memory usage metrics
+            </summary>
+            <param name="operationName">Name of the operation</param>
+            <param name="correlationId">Correlation ID for tracking</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IPerformanceMonitoringService.GetStatistics">
+            <summary>
+            Get current performance statistics
+            </summary>
+            <returns>Performance statistics</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.PerformanceStatistics">
+            <summary>
+            Performance statistics data
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.PerformanceStatistics.AverageResponseTime">
+            <summary>
+            Average response time in milliseconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.PerformanceStatistics.TotalRequests">
+            <summary>
+            Total number of requests processed
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.PerformanceStatistics.SuccessfulRequests">
+            <summary>
+            Number of successful requests
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.PerformanceStatistics.FailedRequests">
+            <summary>
+            Number of failed requests
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.PerformanceStatistics.MemoryUsageBytes">
+            <summary>
+            Current memory usage in bytes
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.PerformanceStatistics.CpuUsagePercentage">
+            <summary>
+            CPU usage percentage
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.PerformanceStatistics.SuccessRate">
+            <summary>
+            Success rate percentage
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.PerformanceStatistics.RequestsPerSecond">
+            <summary>
+            Requests per second (approximate)
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.PerformanceMonitoringService">
+            <summary>
+            Implementation of performance monitoring service
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.PerformanceMonitoringService.#ctor(Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Services.PerformanceMonitoringService})">
+            <summary>
+            Initializes a new instance of the PerformanceMonitoringService
+            </summary>
+            <param name="logger">Logger instance</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.PerformanceMonitoringService.StartTiming(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.PerformanceMonitoringService.StopTiming(System.Diagnostics.Stopwatch,System.String,System.String,System.Boolean,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.PerformanceMonitoringService.LogMemoryUsage(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.PerformanceMonitoringService.GetStatistics">
+            <inheritdoc />
+        </member>
+        <member name="T:UnisonRestAdapter.Services.IResponseCacheService">
+            <summary>
+            Service for caching API responses to improve performance
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IResponseCacheService.GetAsync``1(System.String)">
+            <summary>
+            Get cached response
+            </summary>
+            <typeparam name="T">Response type</typeparam>
+            <param name="cacheKey">Cache key</param>
+            <returns>Cached response or null if not found</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IResponseCacheService.SetAsync``1(System.String,``0,System.TimeSpan)">
+            <summary>
+            Set cached response
+            </summary>
+            <typeparam name="T">Response type</typeparam>
+            <param name="cacheKey">Cache key</param>
+            <param name="value">Value to cache</param>
+            <param name="expiration">Cache expiration time</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IResponseCacheService.RemoveAsync(System.String)">
+            <summary>
+            Remove cached response
+            </summary>
+            <param name="cacheKey">Cache key</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IResponseCacheService.RemoveByPatternAsync(System.String)">
+            <summary>
+            Remove all cached responses matching pattern
+            </summary>
+            <param name="pattern">Pattern to match</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IResponseCacheService.GenerateUserCacheKey(System.String,System.String)">
+            <summary>
+            Generate cache key for user operations
+            </summary>
+            <param name="userId">User ID</param>
+            <param name="operation">Operation name</param>
+            <returns>Cache key</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.IResponseCacheService.GenerateHealthCacheKey(System.String)">
+            <summary>
+            Generate cache key for health check operations
+            </summary>
+            <param name="correlationId">Correlation ID</param>
+            <returns>Cache key</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.ResponseCacheService">
+            <summary>
+            Implementation of response cache service using in-memory caching
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.ResponseCacheService.#ctor(Microsoft.Extensions.Caching.Memory.IMemoryCache,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Services.ResponseCacheService})">
+            <summary>
+            Initializes a new instance of the ResponseCacheService
+            </summary>
+            <param name="memoryCache">Memory cache instance</param>
+            <param name="logger">Logger instance</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.ResponseCacheService.GetAsync``1(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.ResponseCacheService.SetAsync``1(System.String,``0,System.TimeSpan)">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.ResponseCacheService.RemoveAsync(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.ResponseCacheService.RemoveByPatternAsync(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.ResponseCacheService.GenerateUserCacheKey(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.ResponseCacheService.GenerateHealthCacheKey(System.String)">
+            <inheritdoc />
+        </member>
         <member name="T:UnisonRestAdapter.Services.SoapClientService">
             <summary>
             Implementation of SOAP client service using HttpClient
-            Implements direct SOAP calls to Unison Access Service
+            Implements direct SOAP calls to Unison Access Service with performance optimization
             </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.SoapClientService.#ctor(System.Net.Http.IHttpClientFactory,Microsoft.Extensions.Options.IOptions{UnisonRestAdapter.Configuration.UnisonSettings},Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Services.SoapClientService},UnisonRestAdapter.Services.IResponseCacheService,UnisonRestAdapter.Services.IPerformanceMonitoringService)">
+            <summary>
+            Initializes a new instance of the SoapClientService with performance optimization
+            </summary>
+            <param name="httpClientFactory">HTTP client factory</param>
+            <param name="settings">Unison settings</param>
+            <param name="logger">Logger instance</param>
+            <param name="cacheService">Response cache service</param>
+            <param name="performanceMonitoring">Performance monitoring service</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.SoapClientService.UpdateCardAsync(UnisonRestAdapter.Models.Request.UpdateCardRequest,System.String)">
+            <summary>
+            Updates a card in the Unison system with performance monitoring
+            </summary>
+            <param name="request">Update card request</param>
+            <param name="token">Authentication token</param>
+            <returns>Update card response</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.SoapClientService.GetUserAsync(System.String,System.String)">
+            <summary>
+            Gets user information from the Unison system
+            </summary>
+            <param name="userId">User ID to retrieve</param>
+            <param name="token">Authentication token</param>
+            <returns>User response</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.SoapClientService.CheckHealthAsync(System.String)">
+            <summary>
+            Checks the health of the Unison system
+            </summary>
+            <param name="token">Authentication token</param>
+            <returns>True if system is healthy, false otherwise</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Tracing.CorrelationService">
+            <summary>
+            Implementation of correlation service for request tracing
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Services.Tracing.CorrelationService.CorrelationIdHeaderName">
+            <summary>
+            Header name for correlation ID
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Services.Tracing.CorrelationService.RequestIdHeaderName">
+            <summary>
+            Header name for request ID
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Services.Tracing.CorrelationService.CorrelationIdKey">
+            <summary>
+            Context key for storing correlation ID
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.CorrelationService.#ctor(Microsoft.AspNetCore.Http.IHttpContextAccessor,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Services.Tracing.CorrelationService})">
+            <summary>
+            Initializes a new instance of the CorrelationService
+            </summary>
+            <param name="httpContextAccessor">HTTP context accessor</param>
+            <param name="logger">Logger instance</param>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Tracing.CorrelationService.CorrelationId">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.CorrelationService.SetCorrelationId(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.CorrelationService.GenerateCorrelationId">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.CorrelationService.GetTracingHeaders">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.CorrelationService.ExtractOrGenerateCorrelationId(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Extracts correlation ID from request headers or generates new one
+            </summary>
+            <param name="context">HTTP context</param>
+            <returns>Correlation ID</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Tracing.ICorrelationService">
+            <summary>
+            Service for managing request correlation IDs and distributed tracing
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Tracing.ICorrelationService.CorrelationId">
+            <summary>
+            Gets the current correlation ID for the request
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.ICorrelationService.SetCorrelationId(System.String)">
+            <summary>
+            Sets a new correlation ID for the current request
+            </summary>
+            <param name="correlationId">The correlation ID to set</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.ICorrelationService.GenerateCorrelationId">
+            <summary>
+            Generates a new correlation ID
+            </summary>
+            <returns>New unique correlation ID</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.ICorrelationService.GetTracingHeaders">
+            <summary>
+            Gets all tracing headers for the current request
+            </summary>
+            <returns>Dictionary of tracing headers</returns>
         </member>
         <member name="T:UnisonRestAdapter.Services.UnisonService">
             <summary>
             Implementation of Unison Access Service operations
             Wraps SOAP client calls and handles authentication
             </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.UnisonService.#ctor(UnisonRestAdapter.Services.ISoapClientService,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Services.UnisonService},Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the UnisonService
+            </summary>
+            <param name="soapClientService">SOAP client service for backend communication</param>
+            <param name="logger">Logger instance</param>
+            <param name="configuration">Application configuration</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.UnisonService.UpdateCardAsync(UnisonRestAdapter.Models.Request.UpdateCardRequest,System.String)">
+            <summary>
+            Updates card information via SOAP service
+            </summary>
+            <param name="request">Card update request</param>
+            <param name="token">Authentication token</param>
+            <returns>Update response</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.UnisonService.GetUserAsync(System.String,System.String)">
+            <summary>
+            Retrieves user information via SOAP service
+            </summary>
+            <param name="userId">User identifier</param>
+            <param name="token">Authentication token</param>
+            <returns>User information</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.UnisonService.CheckHealthAsync(System.String)">
+            <summary>
+            Health check for SOAP service connectivity
+            </summary>
+            <param name="token">Authentication token</param>
+            <returns>Health status</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.UnisonService.ValidateCardAsync(UnisonRestAdapter.Models.Request.CardValidationRequest,System.String)">
+            <summary>
+            Validates card information via SOAP service
+            </summary>
+            <param name="request">Card validation request</param>
+            <param name="token">Authentication token</param>
+            <returns>Validation response</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.UnisonService.ActivateCardAsync(UnisonRestAdapter.Models.Request.CardActivationRequest,System.String)">
+            <summary>
+            Activates a card via SOAP service
+            </summary>
+            <param name="request">Card activation request</param>
+            <param name="token">Authentication token</param>
+            <returns>Activation response</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.UnisonService.DeactivateCardAsync(UnisonRestAdapter.Models.Request.CardActivationRequest,System.String)">
+            <summary>
+            Deactivates a card via SOAP service
+            </summary>
+            <param name="request">Card activation request (with deactivation intent)</param>
+            <param name="token">Authentication token</param>
+            <returns>Activation response</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.UnisonService.GetVersionAsync(System.String)">
+            <summary>
+            Gets system version information via SOAP service
+            </summary>
+            <param name="token">Authentication token</param>
+            <returns>Version information</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.UnisonService.PingAsync(System.String)">
+            <summary>
+            Ping operation to test SOAP service connectivity
+            </summary>
+            <param name="token">Authentication token</param>
+            <returns>Ping response status</returns>
         </member>
         <member name="T:UnisonRestAdapter.Services.ValidationService">
             <summary>

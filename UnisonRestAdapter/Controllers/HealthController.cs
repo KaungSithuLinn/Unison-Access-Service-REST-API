@@ -1,82 +1,116 @@
 using Microsoft.AspNetCore.Mvc;
 using UnisonRestAdapter.Models.Response;
+using UnisonRestAdapter.Models.Monitoring;
 using UnisonRestAdapter.Services;
+using UnisonRestAdapter.Services.Monitoring;
 using System.Diagnostics;
 
 namespace UnisonRestAdapter.Controllers
 {
     /// <summary>
     /// REST API controller for health check and monitoring operations
-    /// Enhanced for TASK-005: Setup Continuous Endpoint Monitoring
+    /// Enhanced for Issue #6: Implement Monitoring and Health Checks
     /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class HealthController : ControllerBase
     {
         private readonly IUnisonService _unisonService;
+        private readonly IMonitoringService _monitoringService;
         private readonly ILogger<HealthController> _logger;
 
         /// <summary>
         /// Initializes a new instance of the HealthController
         /// </summary>
         /// <param name="unisonService">Service for communicating with the SOAP backend</param>
+        /// <param name="monitoringService">Service for monitoring and metrics collection</param>
         /// <param name="logger">Logger for tracking health check operations</param>
-        public HealthController(IUnisonService unisonService, ILogger<HealthController> logger)
+        public HealthController(
+            IUnisonService unisonService,
+            IMonitoringService monitoringService,
+            ILogger<HealthController> logger)
         {
             _unisonService = unisonService;
+            _monitoringService = monitoringService;
             _logger = logger;
         }
 
         /// <summary>
-        /// Simple health check that doesn't require authentication - for load balancers/monitoring
+        /// Basic health check endpoint - fast response for load balancers and monitoring
         /// </summary>
-        /// <returns>Basic health status including service version and environment</returns>
+        /// <returns>Basic health status according to Issue #6 specification</returns>
         /// <response code="200">Service is healthy and operational</response>
         /// <remarks>
-        /// This endpoint is designed for load balancers and monitoring tools.
-        /// It does not require authentication and provides basic service status.
+        /// This endpoint provides a basic health check that returns quickly (target: &lt;50ms).
+        /// It does not perform dependency checks and is designed for load balancers.
         /// 
-        /// Sample response:
+        /// Response format matches Issue #6 specification:
         /// 
         ///     {
-        ///         "status": "Healthy",
-        ///         "timestamp": "2025-01-05T10:30:00Z",
-        ///         "service": "UnisonRestAdapter",
+        ///         "status": "healthy",
+        ///         "timestamp": "2025-09-11T15:30:00Z",
         ///         "version": "1.0.0",
-        ///         "environment": "Development"
+        ///         "uptime": "2d 14h 30m"
         ///     }
         /// </remarks>
         [HttpGet]
         [ProducesResponseType(200)]
-        public ActionResult<object> GetHealth()
+        public ActionResult<HealthCheckResponse> GetHealth()
         {
-            var response = new
+            var response = new HealthCheckResponse
             {
-                Status = "Healthy",
+                Status = "healthy",
                 Timestamp = DateTime.UtcNow,
-                Service = "UnisonRestAdapter",
                 Version = "1.0.0",
-                Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"
+                Uptime = GetUptime()
             };
 
-            _logger.LogInformation("Health check performed - Status: {Status}", response.Status);
+            _logger.LogInformation("Basic health check performed - Status: {Status}", response.Status);
             return Ok(response);
         }
 
         /// <summary>
-        /// Detailed health check with SOAP service connectivity validation
+        /// Detailed health check endpoint - comprehensive system and dependency status
         /// </summary>
-        /// <returns>Detailed health status including dependencies and system metrics</returns>
-        /// <response code="200">Detailed health information including dependency status</response>
-        /// <response code="503">Service unhealthy - one or more dependencies failed</response>
+        /// <returns>Comprehensive health status with system metrics according to Issue #6</returns>
+        /// <response code="200">Service is healthy with detailed metrics</response>
+        /// <response code="503">Service is unhealthy or dependencies are failing</response>
         /// <remarks>
-        /// This endpoint provides comprehensive health information including:
-        /// - Application status and uptime
-        /// - Memory usage and system metrics
-        /// - SOAP service connectivity (if Unison-Token provided)
-        /// - Configuration validation
+        /// This endpoint provides comprehensive health information including system metrics,
+        /// dependency status, and performance indicators as specified in Issue #6.
         /// 
-        /// Optional Unison-Token header enables SOAP service connectivity testing.
+        /// Response includes:
+        /// - Basic health information
+        /// - System metrics (CPU, memory, disk)
+        /// - Application metrics (request counts, response times)
+        /// - Dependency status (database, SOAP service)
+        /// - Performance indicators
+        /// 
+        /// Example response:
+        /// 
+        ///     {
+        ///         "status": "healthy",
+        ///         "timestamp": "2025-09-11T15:30:00Z",
+        ///         "version": "1.0.0",
+        ///         "uptime": "2d 14h 30m",
+        ///         "systemMetrics": {
+        ///             "cpuUsagePercent": 15.2,
+        ///             "memoryUsageMb": 256.8,
+        ///             "diskUsagePercent": 45.1
+        ///         },
+        ///         "applicationMetrics": {
+        ///             "totalRequests": 15420,
+        ///             "averageResponseTimeMs": 125.4,
+        ///             "errorRate": 0.02
+        ///         },
+        ///         "dependencies": [
+        ///             {
+        ///                 "name": "SOAP Service",
+        ///                 "status": "healthy",
+        ///                 "responseTimeMs": 85
+        ///             }
+        ///         ]
+        ///     }
         /// </remarks>
         [HttpGet("detailed")]
         [ProducesResponseType(200)]
@@ -84,155 +118,310 @@ namespace UnisonRestAdapter.Controllers
         public async Task<ActionResult<object>> GetDetailedHealth()
         {
             var stopwatch = Stopwatch.StartNew();
-            var checks = new Dictionary<string, object>();
-            var overallStatus = "Healthy";
 
             try
             {
-                _logger.LogInformation("Performing detailed health check");
+                // Get comprehensive health data using monitoring service
+                var systemMetrics = await _monitoringService.GetSystemMetricsAsync();
+                var applicationMetrics = _monitoringService.GetApplicationMetrics();
 
-                // Check 1: Application health
-                checks.Add("Application", new
+                // Check all dependencies
+                var dependencyChecks = new List<Task<DependencyStatus>>();
+
+                // Check SOAP service dependency
+                var token = HttpContext.Request.Headers["Unison-Token"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(token))
                 {
-                    Status = "Healthy",
-                    Uptime = GetUptime(),
-                    Memory = GetMemoryUsage(),
-                    ProcessId = Environment.ProcessId
-                });
+                    dependencyChecks.Add(_monitoringService.CheckDependencyAsync("SOAP Service", "soap://unison-service"));
+                }
 
-                // Check 2: SOAP Service connectivity (with auth token if available)
+                var dependencyStatuses = await Task.WhenAll(dependencyChecks);
+
+                // Determine overall health status
+                var isHealthy = dependencyStatuses.All(d => d.IsHealthy);
+                var overallStatus = isHealthy ? "healthy" : "unhealthy";
+
+                var response = new
+                {
+                    Status = overallStatus,
+                    Timestamp = DateTime.UtcNow,
+                    Version = "1.0.0",
+                    Uptime = GetUptime(),
+                    SystemMetrics = new
+                    {
+                        CpuUsagePercent = systemMetrics.CpuUsagePercent,
+                        WorkingSetMemoryMB = systemMetrics.WorkingSetMemoryMB,
+                        PrivateMemoryMB = systemMetrics.PrivateMemoryMB,
+                        ThreadCount = systemMetrics.ThreadCount,
+                        ProcessorCount = systemMetrics.ProcessorCount,
+                        MachineName = systemMetrics.MachineName
+                    },
+                    ApplicationMetrics = new
+                    {
+                        TotalRequests = applicationMetrics.TotalRequests,
+                        AverageResponseTimeMs = Math.Round(applicationMetrics.AverageResponseTimeMs, 2),
+                        P95ResponseTimeMs = Math.Round(applicationMetrics.P95ResponseTimeMs, 2),
+                        ErrorRate = Math.Round(applicationMetrics.ErrorRate, 4),
+                        ActiveConnections = applicationMetrics.ActiveConnections
+                    },
+                    Dependencies = dependencyStatuses.Select(d => new
+                    {
+                        Name = d.Name,
+                        Status = d.IsHealthy ? "healthy" : "unhealthy",
+                        ResponseTimeMs = Math.Round(d.ResponseTimeMs, 2),
+                        LastCheckTime = d.LastCheckTime,
+                        ErrorMessage = d.ErrorMessage
+                    }).ToList(),
+                    Performance = new
+                    {
+                        HealthCheckDurationMs = Math.Round(stopwatch.Elapsed.TotalMilliseconds, 2)
+                    }
+                };
+
+                stopwatch.Stop();
+
+                _logger.LogInformation("Detailed health check completed - Status: {Status}, Duration: {Duration}ms",
+                    overallStatus, stopwatch.ElapsedMilliseconds);
+
+                return isHealthy ? Ok(response) : StatusCode(503, response);
+            }
+            catch (Exception ex)
+            {
+                stopwatch.Stop();
+                _logger.LogError(ex, "Error performing detailed health check");
+
+                var errorResponse = new
+                {
+                    Status = "unhealthy",
+                    Timestamp = DateTime.UtcNow,
+                    Version = "1.0.0",
+                    Error = "Health check failed",
+                    Performance = new
+                    {
+                        HealthCheckDurationMs = Math.Round(stopwatch.Elapsed.TotalMilliseconds, 2)
+                    }
+                };
+
+                return StatusCode(503, errorResponse);
+            }
+        }
+
+        /// <summary>
+        /// Readiness check endpoint - indicates if service is ready to serve requests
+        /// </summary>
+        /// <returns>Readiness status according to Issue #6 specification</returns>
+        /// <response code="200">Service is ready to serve requests</response>
+        /// <response code="503">Service is not ready (still initializing or dependency unavailable)</response>
+        /// <remarks>
+        /// This endpoint checks if the service is ready to handle requests.
+        /// Used by orchestrators like Kubernetes to determine when to route traffic.
+        /// 
+        /// Response format according to Issue #6:
+        /// 
+        ///     {
+        ///         "status": "ready",
+        ///         "timestamp": "2025-09-11T15:30:00Z",
+        ///         "checks": {
+        ///             "database": "ready",
+        ///             "cache": "ready"
+        ///         }
+        ///     }
+        /// </remarks>
+        [HttpGet("ready")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(503)]
+        public async Task<ActionResult<object>> GetReadiness()
+        {
+            try
+            {
+                var checks = new Dictionary<string, string>();
+                var allReady = true;
+
+                // Check SOAP service readiness if token is provided
                 var token = HttpContext.Request.Headers["Unison-Token"].FirstOrDefault();
                 if (!string.IsNullOrEmpty(token))
                 {
                     try
                     {
-                        var soapHealthResponse = await _unisonService.CheckHealthAsync(token);
-                        checks.Add("SOAPService", new
-                        {
-                            Status = soapHealthResponse.IsHealthy ? "Healthy" : "Unhealthy",
-                            Details = soapHealthResponse.Message,
-                            ResponseTime = soapHealthResponse.ResponseTime
-                        });
+                        var dependencyStatus = await _monitoringService.CheckDependencyAsync("SOAP Service", "soap://unison-service");
+                        var status = dependencyStatus.IsHealthy ? "ready" : "not_ready";
+                        checks.Add("soap_service", status);
 
-                        if (!soapHealthResponse.IsHealthy)
+                        if (!dependencyStatus.IsHealthy)
                         {
-                            overallStatus = "Degraded";
+                            allReady = false;
                         }
                     }
                     catch (Exception ex)
                     {
-                        checks.Add("SOAPService", new
-                        {
-                            Status = "Unhealthy",
-                            Error = ex.Message,
-                            Details = "SOAP service connectivity failed"
-                        });
-                        overallStatus = "Unhealthy";
-                        _logger.LogWarning(ex, "SOAP service health check failed");
+                        checks.Add("soap_service", "not_ready");
+                        allReady = false;
+                        _logger.LogWarning(ex, "SOAP service readiness check failed");
                     }
                 }
                 else
                 {
-                    checks.Add("SOAPService", new
-                    {
-                        Status = "Skipped",
-                        Details = "No authentication token provided for SOAP service check"
-                    });
+                    checks.Add("soap_service", "skipped");
                 }
 
-                // Check 3: Configuration validation
-                checks.Add("Configuration", new
+                // Check application state
+                checks.Add("application", "ready");
+
+                var response = new
                 {
-                    Status = "Healthy",
-                    Details = "All required configuration values are present"
-                });
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during detailed health check");
-                overallStatus = "Unhealthy";
-                checks.Add("Error", new { Message = ex.Message });
-            }
-
-            stopwatch.Stop();
-
-            var response = new
-            {
-                Status = overallStatus,
-                Timestamp = DateTime.UtcNow,
-                Service = "UnisonRestAdapter",
-                Version = "1.0.0",
-                ResponseTime = $"{stopwatch.ElapsedMilliseconds}ms",
-                Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production",
-                Checks = checks
-            };
-
-            var statusCode = overallStatus switch
-            {
-                "Healthy" => 200,
-                "Degraded" => 200,
-                "Unhealthy" => 503,
-                _ => 503
-            };
-
-            _logger.LogInformation("Detailed health check completed - Status: {Status}, ResponseTime: {ResponseTime}ms",
-                overallStatus, stopwatch.ElapsedMilliseconds);
-
-            return StatusCode(statusCode, response);
-        }
-
-        /// <summary>
-        /// Readiness probe for Kubernetes/container orchestration
-        /// </summary>
-        [HttpGet("ready")]
-        public ActionResult<object> GetReadiness()
-        {
-            try
-            {
-                // Basic readiness checks
-                var isReady = true;
-                var details = new List<string>();
-
-                // Check if service is ready to accept requests
-                if (!isReady)
-                {
-                    details.Add("Service initialization not complete");
-                    return StatusCode(503, new { Status = "NotReady", Details = details, Timestamp = DateTime.UtcNow });
-                }
-
-                return Ok(new
-                {
-                    Status = "Ready",
+                    Status = allReady ? "ready" : "not_ready",
                     Timestamp = DateTime.UtcNow,
-                    Details = "Service is ready to accept requests"
-                });
+                    Checks = checks
+                };
+
+                var statusCode = allReady ? 200 : 503;
+                _logger.LogInformation("Readiness check completed - Status: {Status}", response.Status);
+
+                return StatusCode(statusCode, response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during readiness check");
                 return StatusCode(503, new
                 {
-                    Status = "NotReady",
-                    Error = ex.Message,
+                    Status = "not_ready",
+                    Error = "Readiness check failed",
                     Timestamp = DateTime.UtcNow
                 });
             }
         }
 
         /// <summary>
-        /// Liveness probe for Kubernetes/container orchestration
+        /// Liveness check endpoint - indicates if the application process is alive
         /// </summary>
+        /// <returns>Liveness status according to Issue #6 specification</returns>
+        /// <response code="200">Service process is alive and running</response>
+        /// <remarks>
+        /// This endpoint performs a simple check to verify that the application process
+        /// is alive and responding to requests. Used by orchestrators like Kubernetes
+        /// to determine if a container needs to be restarted.
+        /// 
+        /// Response format according to Issue #6:
+        /// 
+        ///     {
+        ///         "status": "alive",
+        ///         "timestamp": "2025-09-11T15:30:00Z",
+        ///         "processId": 1234,
+        ///         "uptime": "2d 14h 30m"
+        ///     }
+        /// </remarks>
         [HttpGet("live")]
+        [ProducesResponseType(200)]
         public ActionResult<object> GetLiveness()
         {
-            return Ok(new
+            var response = new
             {
-                Status = "Alive",
+                Status = "alive",
                 Timestamp = DateTime.UtcNow,
                 ProcessId = Environment.ProcessId,
-                Uptime = GetUptime()
-            });
+                Uptime = GetUptime(),
+                ThreadCount = Environment.CurrentManagedThreadId
+            };
+
+            _logger.LogDebug("Liveness check performed - ProcessId: {ProcessId}", Environment.ProcessId);
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Metrics endpoint - provides performance metrics and statistics
+        /// </summary>
+        /// <returns>Detailed performance metrics according to Issue #6</returns>
+        /// <response code="200">Performance metrics and statistics</response>
+        /// <remarks>
+        /// This endpoint provides comprehensive performance metrics including:
+        /// - Request statistics and response times
+        /// - System resource utilization
+        /// - Per-endpoint metrics
+        /// - Cache performance (if applicable)
+        /// 
+        /// Response format according to Issue #6:
+        /// 
+        ///     {
+        ///         "timestamp": "2025-09-11T15:30:00Z",
+        ///         "uptime": "2d 14h 30m",
+        ///         "requestMetrics": {
+        ///             "totalRequests": 15420,
+        ///             "successfulRequests": 15350,
+        ///             "errorRequests": 70,
+        ///             "errorRate": 0.45
+        ///         },
+        ///         "endpointMetrics": {...}
+        ///     }
+        /// </remarks>
+        [HttpGet("metrics")]
+        [ProducesResponseType(200)]
+        public ActionResult<object> GetMetrics()
+        {
+            try
+            {
+                var requestMetrics = _monitoringService.GetRequestMetrics();
+                var applicationMetrics = _monitoringService.GetApplicationMetrics();
+                var cacheMetrics = _monitoringService.GetCacheMetrics();
+
+                var response = new
+                {
+                    Timestamp = DateTime.UtcNow,
+                    Uptime = GetUptime(),
+                    RequestMetrics = new
+                    {
+                        TotalRequests = requestMetrics.TotalRequests,
+                        SuccessfulRequests = requestMetrics.SuccessfulRequests,
+                        ErrorRequests = requestMetrics.ErrorRequests,
+                        ErrorRate = Math.Round(requestMetrics.ErrorRate, 4),
+                        StatusCodeCounts = requestMetrics.StatusCodeCounts,
+                        LastResetTime = requestMetrics.LastResetTime
+                    },
+                    ApplicationMetrics = new
+                    {
+                        TotalRequests = applicationMetrics.TotalRequests,
+                        AverageResponseTimeMs = Math.Round(applicationMetrics.AverageResponseTimeMs, 2),
+                        P95ResponseTimeMs = Math.Round(applicationMetrics.P95ResponseTimeMs, 2),
+                        ErrorRate = Math.Round(applicationMetrics.ErrorRate, 4),
+                        ActiveConnections = applicationMetrics.ActiveConnections,
+                        LastResetTime = applicationMetrics.LastResetTime
+                    },
+                    EndpointMetrics = requestMetrics.EndpointMetrics.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => new
+                        {
+                            RequestCount = kvp.Value.RequestCount,
+                            AverageResponseTimeMs = Math.Round(kvp.Value.AverageResponseTimeMs, 2),
+                            MinResponseTimeMs = Math.Round(kvp.Value.MinResponseTimeMs, 2),
+                            MaxResponseTimeMs = Math.Round(kvp.Value.MaxResponseTimeMs, 2),
+                            ErrorCount = kvp.Value.ErrorCount,
+                            ErrorRate = kvp.Value.RequestCount > 0 ? Math.Round((kvp.Value.ErrorCount / (double)kvp.Value.RequestCount) * 100, 4) : 0.0,
+                            LastAccessTime = kvp.Value.LastAccessTime
+                        }
+                    ),
+                    CacheMetrics = new
+                    {
+                        HitCount = cacheMetrics.HitCount,
+                        MissCount = cacheMetrics.MissCount,
+                        HitRatio = Math.Round(cacheMetrics.HitRatio, 4),
+                        TotalEntries = cacheMetrics.TotalEntries,
+                        EvictionCount = cacheMetrics.EvictionCount,
+                        MemoryUsageBytes = cacheMetrics.MemoryUsageBytes,
+                        LastResetTime = cacheMetrics.LastResetTime
+                    }
+                };
+
+                _logger.LogDebug("Metrics retrieved successfully");
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving metrics");
+                return StatusCode(500, new
+                {
+                    Error = "Failed to retrieve metrics",
+                    Timestamp = DateTime.UtcNow
+                });
+            }
         }
 
         private static string GetUptime()
