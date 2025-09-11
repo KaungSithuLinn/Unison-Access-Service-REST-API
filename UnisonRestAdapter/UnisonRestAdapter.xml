@@ -609,6 +609,131 @@
             <param name="token">Authentication token</param>
             <returns>Health status</returns>
         </member>
+        <member name="T:UnisonRestAdapter.Services.Resilience.IResilienceService">
+            <summary>
+            Service for managing resilience policies (retry, circuit breaker, timeout)
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Resilience.IResilienceService.ExecuteHttpAsync(System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}},System.String)">
+            <summary>
+            Execute an HTTP operation with resilience policies
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Resilience.IResilienceService.ExecuteWithRetryAsync``1(System.Func{System.Threading.Tasks.Task{``0}},System.String)">
+            <summary>
+            Execute a generic operation with retry policy
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Resilience.IResilienceService.GetCircuitBreakerState">
+            <summary>
+            Get current circuit breaker state
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Resilience.ResilienceService">
+            <summary>
+            Implementation of resilience service using Polly
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Resilience.ServiceUnavailableException">
+            <summary>
+            Exception thrown when service is unavailable due to circuit breaker
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Resilience.ResilienceSettings">
+            <summary>
+            Configuration settings for resilience patterns (retry, circuit breaker, timeout)
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Services.Resilience.ResilienceSettings.SectionName">
+            <summary>
+            Configuration section name
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.ResilienceSettings.Retry">
+            <summary>
+            Retry policy configuration
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.ResilienceSettings.CircuitBreaker">
+            <summary>
+            Circuit breaker policy configuration
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.ResilienceSettings.Timeout">
+            <summary>
+            Timeout policy configuration
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Resilience.RetrySettings">
+            <summary>
+            Retry policy configuration
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.RetrySettings.MaxAttempts">
+            <summary>
+            Maximum number of retry attempts
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.RetrySettings.BaseDelaySeconds">
+            <summary>
+            Base delay for exponential backoff in seconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.RetrySettings.MaxDelaySeconds">
+            <summary>
+            Maximum delay between retries in seconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.RetrySettings.UseJitter">
+            <summary>
+            Enable jitter to avoid thundering herd
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.RetrySettings.RetriableStatusCodes">
+            <summary>
+            HTTP status codes that should trigger a retry
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Resilience.CircuitBreakerSettings">
+            <summary>
+            Circuit breaker policy configuration
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.CircuitBreakerSettings.DurationOfBreakSeconds">
+            <summary>
+            Duration to keep circuit open in seconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.CircuitBreakerSettings.ExceptionsAllowedBeforeBreaking">
+            <summary>
+            Number of exceptions allowed before opening circuit
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.CircuitBreakerSettings.SamplingDurationSeconds">
+            <summary>
+            Sampling duration for failure threshold in seconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.CircuitBreakerSettings.MinimumThroughput">
+            <summary>
+            Minimum number of actions through circuit before statistical significance
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Resilience.TimeoutSettings">
+            <summary>
+            Timeout policy configuration
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.TimeoutSettings.RequestTimeoutSeconds">
+            <summary>
+            Request timeout in seconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Resilience.TimeoutSettings.OverallTimeoutSeconds">
+            <summary>
+            Overall operation timeout in seconds (including retries)
+            </summary>
+        </member>
         <member name="T:UnisonRestAdapter.Services.SoapClientService">
             <summary>
             Implementation of SOAP client service using HttpClient

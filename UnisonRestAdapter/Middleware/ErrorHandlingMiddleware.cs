@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Net;
 using UnisonRestAdapter.Models.Responses;
+using System.Text.RegularExpressions;
 
 namespace UnisonRestAdapter.Middleware
 {
@@ -37,15 +38,21 @@ namespace UnisonRestAdapter.Middleware
             var correlationId = GenerateCorrelationId();
             context.Items["CorrelationId"] = correlationId;
 
+            // Enhanced logging with structured data
             _logger.LogError(exception,
-                "Unhandled exception occurred. CorrelationId: {CorrelationId}, Path: {Path}, Method: {Method}",
-                correlationId, context.Request.Path, context.Request.Method);
+                "Unhandled exception occurred. CorrelationId: {CorrelationId}, Path: {Path}, Method: {Method}, User: {User}, RequestId: {RequestId}",
+                correlationId, context.Request.Path, context.Request.Method,
+                context.User?.Identity?.Name ?? "Anonymous", context.TraceIdentifier);
 
             var errorResponse = CreateErrorResponse(exception, correlationId, context);
             var statusCode = DetermineStatusCode(exception);
 
             context.Response.StatusCode = statusCode;
             context.Response.ContentType = "application/json";
+
+            // Add correlation ID to response headers for tracing
+            context.Response.Headers["X-Correlation-ID"] = correlationId;
+            context.Response.Headers["X-Request-ID"] = context.TraceIdentifier;
 
             var jsonResponse = JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
             {
@@ -177,52 +184,201 @@ namespace UnisonRestAdapter.Middleware
 
         private object ExtractSoapFaultDetails(Exception exception)
         {
-            // Extract relevant SOAP fault information while maintaining security
+            // Enhanced SOAP fault information extraction with better pattern detection
             var details = new Dictionary<string, object>
             {
                 ["type"] = "SOAP Fault",
-                ["message"] = "Backend service reported an error"
+                ["source"] = "Backend Service"
             };
 
-            // Look for specific SOAP fault patterns in the exception message
             var message = exception.Message;
-            if (message.Contains("404", StringComparison.OrdinalIgnoreCase))
+            var innerMessage = exception.InnerException?.Message;
+            var fullMessage = $"{message} {innerMessage}".ToLowerInvariant();
+
+            // Enhanced SOAP fault pattern detection
+            if (ContainsAny(fullMessage, new[] { "404", "not found", "endpoint not found" }))
             {
                 details["code"] = "ENDPOINT_NOT_FOUND";
-                details["message"] = "Requested operation is not available";
+                details["message"] = "The requested SOAP operation or endpoint is not available";
+                details["httpStatusCode"] = 404;
             }
-            else if (message.Contains("timeout", StringComparison.OrdinalIgnoreCase))
+            else if (ContainsAny(fullMessage, new[] { "timeout", "request timeout", "operation timeout" }))
             {
                 details["code"] = "SERVICE_TIMEOUT";
-                details["message"] = "Backend service did not respond in time";
+                details["message"] = "Backend service did not respond within the expected time";
+                details["httpStatusCode"] = 408;
             }
-            else if (message.Contains("authentication", StringComparison.OrdinalIgnoreCase) ||
-                     message.Contains("unauthorized", StringComparison.OrdinalIgnoreCase))
+            else if (ContainsAny(fullMessage, new[] { "authentication", "unauthorized", "access denied", "invalid token" }))
             {
                 details["code"] = "BACKEND_AUTHENTICATION_FAILED";
                 details["message"] = "Backend service authentication failed";
+                details["httpStatusCode"] = 401;
             }
-            else if (message.Contains("validation", StringComparison.OrdinalIgnoreCase))
+            else if (ContainsAny(fullMessage, new[] { "validation", "invalid", "bad request", "malformed" }))
             {
                 details["code"] = "BACKEND_VALIDATION_ERROR";
-                details["message"] = "Backend service rejected the request data";
+                details["message"] = "Backend service rejected the request data format";
+                details["httpStatusCode"] = 400;
             }
+            else if (ContainsAny(fullMessage, new[] { "server error", "internal error", "fault", "500" }))
+            {
+                details["code"] = "BACKEND_INTERNAL_ERROR";
+                details["message"] = "Backend service encountered an internal error";
+                details["httpStatusCode"] = 500;
+            }
+            else if (ContainsAny(fullMessage, new[] { "service unavailable", "503", "connection refused", "cannot connect" }))
+            {
+                details["code"] = "SERVICE_UNAVAILABLE";
+                details["message"] = "Backend service is temporarily unavailable";
+                details["httpStatusCode"] = 503;
+            }
+            else
+            {
+                details["code"] = "UNKNOWN_SOAP_FAULT";
+                details["message"] = "Backend service reported an unspecified error";
+                details["httpStatusCode"] = 502;
+            }
+
+            // Extract additional SOAP fault details if available
+            if (TryExtractSoapFaultCode(message, out var faultCode))
+            {
+                details["soapFaultCode"] = faultCode;
+            }
+
+            if (TryExtractSoapFaultReason(message, out var faultReason))
+            {
+                details["soapFaultReason"] = faultReason;
+            }
+
+            // Add sanitized error context (avoid exposing sensitive info)
+            details["context"] = CreateSanitizedErrorContext(exception);
 
             return details;
         }
 
+        private bool ContainsAny(string text, string[] patterns)
+        {
+            return patterns.Any(pattern => text.Contains(pattern, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private bool TryExtractSoapFaultCode(string message, out string faultCode)
+        {
+            faultCode = string.Empty;
+
+            // Pattern to match SOAP fault codes like "soap:Server", "soap:Client", etc.
+            var faultCodePattern = @"(?:soap:|env:)?(\w+):(\w+)";
+            var match = Regex.Match(message, faultCodePattern, RegexOptions.IgnoreCase);
+
+            if (match.Success)
+            {
+                faultCode = match.Groups[0].Value;
+                return true;
+            }
+
+            // Alternative pattern for fault codes in angle brackets
+            var bracketPattern = @"<faultcode>(.*?)</faultcode>";
+            match = Regex.Match(message, bracketPattern, RegexOptions.IgnoreCase);
+
+            if (match.Success)
+            {
+                faultCode = match.Groups[1].Value;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool TryExtractSoapFaultReason(string message, out string faultReason)
+        {
+            faultReason = string.Empty;
+
+            // Pattern to match SOAP fault strings
+            var reasonPatterns = new[]
+            {
+                @"<faultstring>(.*?)</faultstring>",
+                @"<env:Reason>(.*?)</env:Reason>",
+                @"""faultstring""\s*:\s*""([^""]+)"""
+            };
+
+            foreach (var pattern in reasonPatterns)
+            {
+                var match = Regex.Match(message, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                if (match.Success)
+                {
+                    faultReason = match.Groups[1].Value.Trim();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private object CreateSanitizedErrorContext(Exception exception)
+        {
+            return new
+            {
+                exceptionType = exception.GetType().Name,
+                hasInnerException = exception.InnerException != null,
+                stackTraceAvailable = !string.IsNullOrEmpty(exception.StackTrace),
+                // Don't include actual stack trace or sensitive info in production
+                timestamp = DateTime.UtcNow
+            };
+        }
+
         private bool IsSoapFault(Exception exception)
         {
-            // Detect if this is a SOAP-related exception
+            // Enhanced SOAP fault detection with comprehensive pattern matching
             var message = exception.Message?.ToLowerInvariant();
-            return message != null && (
-                message.Contains("soap") ||
-                message.Contains("wsdl") ||
-                message.Contains("endpoint not found") ||
-                message.Contains("request error") ||
-                message.Contains("html error page") ||
-                (exception is InvalidOperationException && message.Contains("service"))
-            );
+            var innerMessage = exception.InnerException?.Message?.ToLowerInvariant();
+            var fullMessage = $"{message} {innerMessage}";
+
+            if (string.IsNullOrEmpty(fullMessage))
+                return false;
+
+            // Primary SOAP indicators
+            var soapIndicators = new[]
+            {
+                "soap",
+                "wsdl",
+                "soap:fault",
+                "env:fault",
+                "soap envelope",
+                "faultcode",
+                "faultstring"
+            };
+
+            // Service communication indicators
+            var serviceIndicators = new[]
+            {
+                "endpoint not found",
+                "request error",
+                "html error page",
+                "service error",
+                "web service",
+                "xml parse",
+                "soap action"
+            };
+
+            // HTTP status indicators that might be SOAP-related
+            var httpIndicators = new[]
+            {
+                "500 internal server error",
+                "502 bad gateway",
+                "503 service unavailable",
+                "404 not found"
+            };
+
+            var isIndicatorMatch = soapIndicators.Any(indicator => fullMessage.Contains(indicator)) ||
+                                   serviceIndicators.Any(indicator => fullMessage.Contains(indicator)) ||
+                                   httpIndicators.Any(indicator => fullMessage.Contains(indicator));
+
+            // Exception type-based detection
+            var isSoapExceptionType = exception is InvalidOperationException ||
+                                      exception is HttpRequestException ||
+                                      exception is TaskCanceledException ||
+                                      exception is TimeoutException;
+
+            return isIndicatorMatch && isSoapExceptionType;
         }
 
         private string GenerateCorrelationId()

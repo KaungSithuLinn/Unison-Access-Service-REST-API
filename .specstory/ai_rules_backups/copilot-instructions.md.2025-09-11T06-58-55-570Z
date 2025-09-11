@@ -1,0 +1,51 @@
+
+## HEADERS
+
+## TECH STACK
+- MCPs / extensions: Microsoft-Docs, Context7, Sequential-Thinking, Playwright, Memory, Web-Search-for-Copilot, MarkItDown, SQL-Server(mssql), Codacy, Firecrawl, Postman, Terraform, GitHub
+- Built-ins: workspace file search & read, `specify` CLI, `git`, `gh`, `terraform`, `codacy-cli`
+
+## PROJECT DOCUMENTATION & CONTEXT SYSTEM
+- chat_summary.md (root): Captures decisions & open items from previous chat.
+- specs/latest/spec.md: Confirms current specification.
+
+## WORKFLOW & RELEASE RULES
+- **START-UP CHECKLIST**
+  1. Pull latest: `git pull origin main`
+  2. Read `chat_summary.md` (root) → confirms decisions & open items from previous chat.
+  3. Read `specs/latest/spec.md` → confirms current specification.
+  4. Continue from the phase marker inside `memory/current_phase.json`.
+- **CURRENT PHASE INSTRUCTIONS**
+  - If marker = `"Specify"` → run `specify init …`
+  - If `"Plan"` → run `/plan`
+  - If `"Tasks"` → run `/tasks`
+  - If `"Implement"` → pick top open GitHub issue, implement, push PR, attach Codacy report, merge on green.
+- **HAND-OVER REPORT**
+  - Before you finish, ALWAYS:
+    a. Re-run Step 0.1-0.4 (summarise, update Spec-Kit files, commit, memory store).
+    b. Print a markdown block with:
+       - Phase completed
+       - Artifacts changed (paths + hashes)
+       - Next agent's entry command
+       - Remaining risks / blockers
+- **Spec-Kit Gate ④ (Implement Phase)**
+  1. **Proceed to Issue**: Use **GitHub MCP** to access the next open issue. Implement using relevant MCPs (e.g., **Microsoft-Docs MCP** for API design, Microsoft-Docs MCP for monitoring guidance).
+  2. **Code Quality Checks**: Use **Codacy MCP** for pre-PR code quality analysis.
+  3. **PR Management**: Push changes, create PR, and merge on green status.
+  4. **Testing Integration**: Use **Playwright MCP** for integration tests where applicable.
+  5. **Output**: Implemented features, merged PRs, and updated codebase.
+- **MANDATORY ENTRY STEPS**
+  - Before starting a new task, ALWAYS perform these steps:
+    1. Summarise current chat using the built-in `summarise_current_chat` tool. Input: Full transcript → structured summary. Output: `chat_summary.md`.
+    2. Update Spec-Kit files using the built-in `update_spec_kit_files` tool. Input: Merge `chat_summary.md` into `specs/latest/spec.md` & `tasks.json`. Output: Updated Spec-Kit artifacts.
+    3. Commit and push changes using the GitHub MCP with the message: `"spec: sync chat-summary <timestamp>"`.
+    4. Store a snapshot in memory using the Memory MCP with `{"source":"chat_summary.md","phase":"Hand-off"}`.
+
+## CODING STANDARDS
+
+## DEBUGGING
+
+## TESTING
+- Use **Playwright MCP** for integration tests where applicable.
+
+## REFERENCES
