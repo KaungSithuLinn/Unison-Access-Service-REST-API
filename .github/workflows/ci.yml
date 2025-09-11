@@ -53,7 +53,7 @@ jobs:
         run: dotnet build "Unison Access Service REST API.sln" --no-restore --configuration Release
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # v0.17.0
         with:
           scan-type: "fs"
           scan-ref: "."

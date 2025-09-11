@@ -13,7 +13,7 @@ namespace UnisonAccessService
     {
         private const string ServiceUrl = "http://192.168.10.206:9003/Unison.AccessService";
         private const string Username = "admin";
-        private const string Password = "nimadmin";
+        private static readonly string Password = Environment.GetEnvironmentVariable("UNISON_PASSWORD") ?? "nimadmin"; // Default for testing only
         private const string Domain = "WORKGROUP";
 
         static async Task Main(string[] args)

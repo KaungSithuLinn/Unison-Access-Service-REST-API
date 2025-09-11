@@ -4,6 +4,61 @@
         <name>UnisonRestAdapter</name>
     </assembly>
     <members>
+        <member name="T:UnisonRestAdapter.Configuration.RequestTracingOptions">
+            <summary>
+            Configuration options for request tracing and logging
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Configuration.RequestTracingOptions.SectionName">
+            <summary>
+            Configuration section name
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.LogRequests">
+            <summary>
+            Whether to log incoming HTTP requests
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.LogResponses">
+            <summary>
+            Whether to log outgoing HTTP responses
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.LogHeaders">
+            <summary>
+            Whether to log HTTP headers (may contain sensitive data)
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.LogBody">
+            <summary>
+            Whether to log request/response body content
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.MaxBodySize">
+            <summary>
+            Maximum size of request/response body to log (bytes)
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.SensitiveHeaders">
+            <summary>
+            Headers that should be masked in logs for security
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.SensitiveBodyPaths">
+            <summary>
+            JSON paths that should be masked in request/response bodies
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.LogPerformanceMetrics">
+            <summary>
+            Whether to include performance metrics in logs
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Configuration.RequestTracingOptions.SlowRequestThresholdMs">
+            <summary>
+            Minimum duration (ms) to log slow requests
+            </summary>
+        </member>
         <member name="T:UnisonRestAdapter.Configuration.SecurityOptions">
             <summary>
             Security configuration options for the Unison REST Adapter
@@ -291,6 +346,84 @@
             </summary>
             <param name="message">The error message</param>
             <param name="innerException">The inner exception</param>
+        </member>
+        <member name="T:UnisonRestAdapter.Middleware.RequestLoggingMiddleware">
+            <summary>
+            Middleware for logging HTTP requests and responses with structured logging
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Middleware.RequestLoggingMiddleware},Microsoft.Extensions.Options.IOptions{UnisonRestAdapter.Configuration.RequestTracingOptions})">
+            <summary>
+            Initializes a new instance of the RequestLoggingMiddleware
+            </summary>
+            <param name="next">The next middleware in the pipeline</param>
+            <param name="logger">Logger instance</param>
+            <param name="options">Request tracing options</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,UnisonRestAdapter.Services.Tracing.ICorrelationService)">
+            <summary>
+            Process the HTTP request and response logging
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.LogRequestAsync(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Log incoming HTTP request details
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.LogResponseAsync(Microsoft.AspNetCore.Http.HttpContext,System.String,System.IO.MemoryStream,System.Int64)">
+            <summary>
+            Log outgoing HTTP response details
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.LogPerformanceMetrics(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Int64,System.DateTimeOffset)">
+            <summary>
+            Log performance metrics for the request
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.LogRequestException(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Exception,System.Int64)">
+            <summary>
+            Log request processing exceptions
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.ReadRequestBodyAsync(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Read and sanitize request body content
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.ReadResponseBodyAsync(System.IO.MemoryStream)">
+            <summary>
+            Read and sanitize response body content
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.SanitizeHeaders(Microsoft.AspNetCore.Http.IHeaderDictionary)">
+            <summary>
+            Sanitize headers by masking sensitive values
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.SanitizeBodyContent(System.String)">
+            <summary>
+            Sanitize body content by masking sensitive data
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.IsJsonContent(System.String)">
+            <summary>
+            Check if content appears to be JSON
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.SanitizeJsonBody(System.String)">
+            <summary>
+            Sanitize JSON body by masking sensitive paths
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.SanitizeTextBody(System.String)">
+            <summary>
+            Basic text sanitization for non-JSON content
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.RequestLoggingMiddleware.GetLogLevelForStatusCode(System.Int32)">
+            <summary>
+            Get appropriate log level based on HTTP status code
+            </summary>
         </member>
         <member name="T:UnisonRestAdapter.Middleware.SecurityMiddleware">
             <summary>
@@ -614,6 +747,80 @@
             Implementation of SOAP client service using HttpClient
             Implements direct SOAP calls to Unison Access Service
             </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Tracing.CorrelationService">
+            <summary>
+            Implementation of correlation service for request tracing
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Services.Tracing.CorrelationService.CorrelationIdHeaderName">
+            <summary>
+            Header name for correlation ID
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Services.Tracing.CorrelationService.RequestIdHeaderName">
+            <summary>
+            Header name for request ID
+            </summary>
+        </member>
+        <member name="F:UnisonRestAdapter.Services.Tracing.CorrelationService.CorrelationIdKey">
+            <summary>
+            Context key for storing correlation ID
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.CorrelationService.#ctor(Microsoft.AspNetCore.Http.IHttpContextAccessor,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Services.Tracing.CorrelationService})">
+            <summary>
+            Initializes a new instance of the CorrelationService
+            </summary>
+            <param name="httpContextAccessor">HTTP context accessor</param>
+            <param name="logger">Logger instance</param>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Tracing.CorrelationService.CorrelationId">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.CorrelationService.SetCorrelationId(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.CorrelationService.GenerateCorrelationId">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.CorrelationService.GetTracingHeaders">
+            <inheritdoc />
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.CorrelationService.ExtractOrGenerateCorrelationId(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Extracts correlation ID from request headers or generates new one
+            </summary>
+            <param name="context">HTTP context</param>
+            <returns>Correlation ID</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Tracing.ICorrelationService">
+            <summary>
+            Service for managing request correlation IDs and distributed tracing
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Services.Tracing.ICorrelationService.CorrelationId">
+            <summary>
+            Gets the current correlation ID for the request
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.ICorrelationService.SetCorrelationId(System.String)">
+            <summary>
+            Sets a new correlation ID for the current request
+            </summary>
+            <param name="correlationId">The correlation ID to set</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.ICorrelationService.GenerateCorrelationId">
+            <summary>
+            Generates a new correlation ID
+            </summary>
+            <returns>New unique correlation ID</returns>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Tracing.ICorrelationService.GetTracingHeaders">
+            <summary>
+            Gets all tracing headers for the current request
+            </summary>
+            <returns>Dictionary of tracing headers</returns>
         </member>
         <member name="T:UnisonRestAdapter.Services.UnisonService">
             <summary>
