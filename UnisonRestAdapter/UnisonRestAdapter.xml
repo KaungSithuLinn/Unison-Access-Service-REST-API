@@ -486,63 +486,153 @@
         <member name="T:UnisonRestAdapter.Controllers.HealthController">
             <summary>
             REST API controller for health check and monitoring operations
-            Enhanced for TASK-005: Setup Continuous Endpoint Monitoring
+            Enhanced for Issue #6: Implement Monitoring and Health Checks
             </summary>
         </member>
-        <member name="M:UnisonRestAdapter.Controllers.HealthController.#ctor(UnisonRestAdapter.Services.IUnisonService,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Controllers.HealthController})">
+        <member name="M:UnisonRestAdapter.Controllers.HealthController.#ctor(UnisonRestAdapter.Services.IUnisonService,UnisonRestAdapter.Services.Monitoring.IMonitoringService,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Controllers.HealthController})">
             <summary>
             Initializes a new instance of the HealthController
             </summary>
             <param name="unisonService">Service for communicating with the SOAP backend</param>
+            <param name="monitoringService">Service for monitoring and metrics collection</param>
             <param name="logger">Logger for tracking health check operations</param>
         </member>
         <member name="M:UnisonRestAdapter.Controllers.HealthController.GetHealth">
             <summary>
-            Simple health check that doesn't require authentication - for load balancers/monitoring
+            Basic health check endpoint - fast response for load balancers and monitoring
             </summary>
-            <returns>Basic health status including service version and environment</returns>
+            <returns>Basic health status according to Issue #6 specification</returns>
             <response code="200">Service is healthy and operational</response>
             <remarks>
-            This endpoint is designed for load balancers and monitoring tools.
-            It does not require authentication and provides basic service status.
+            This endpoint provides a basic health check that returns quickly (target: &lt;50ms).
+            It does not perform dependency checks and is designed for load balancers.
             
-            Sample response:
+            Response format matches Issue #6 specification:
             
                 {
-                    "status": "Healthy",
-                    "timestamp": "2025-01-05T10:30:00Z",
-                    "service": "UnisonRestAdapter",
+                    "status": "healthy",
+                    "timestamp": "2025-09-11T15:30:00Z",
                     "version": "1.0.0",
-                    "environment": "Development"
+                    "uptime": "2d 14h 30m"
                 }
             </remarks>
         </member>
         <member name="M:UnisonRestAdapter.Controllers.HealthController.GetDetailedHealth">
             <summary>
-            Detailed health check with SOAP service connectivity validation
+            Detailed health check endpoint - comprehensive system and dependency status
             </summary>
-            <returns>Detailed health status including dependencies and system metrics</returns>
-            <response code="200">Detailed health information including dependency status</response>
-            <response code="503">Service unhealthy - one or more dependencies failed</response>
+            <returns>Comprehensive health status with system metrics according to Issue #6</returns>
+            <response code="200">Service is healthy with detailed metrics</response>
+            <response code="503">Service is unhealthy or dependencies are failing</response>
             <remarks>
-            This endpoint provides comprehensive health information including:
-            - Application status and uptime
-            - Memory usage and system metrics
-            - SOAP service connectivity (if Unison-Token provided)
-            - Configuration validation
+            This endpoint provides comprehensive health information including system metrics,
+            dependency status, and performance indicators as specified in Issue #6.
             
-            Optional Unison-Token header enables SOAP service connectivity testing.
+            Response includes:
+            - Basic health information
+            - System metrics (CPU, memory, disk)
+            - Application metrics (request counts, response times)
+            - Dependency status (database, SOAP service)
+            - Performance indicators
+            
+            Example response:
+            
+                {
+                    "status": "healthy",
+                    "timestamp": "2025-09-11T15:30:00Z",
+                    "version": "1.0.0",
+                    "uptime": "2d 14h 30m",
+                    "systemMetrics": {
+                        "cpuUsagePercent": 15.2,
+                        "memoryUsageMb": 256.8,
+                        "diskUsagePercent": 45.1
+                    },
+                    "applicationMetrics": {
+                        "totalRequests": 15420,
+                        "averageResponseTimeMs": 125.4,
+                        "errorRate": 0.02
+                    },
+                    "dependencies": [
+                        {
+                            "name": "SOAP Service",
+                            "status": "healthy",
+                            "responseTimeMs": 85
+                        }
+                    ]
+                }
             </remarks>
         </member>
         <member name="M:UnisonRestAdapter.Controllers.HealthController.GetReadiness">
             <summary>
-            Readiness probe for Kubernetes/container orchestration
+            Readiness check endpoint - indicates if service is ready to serve requests
             </summary>
+            <returns>Readiness status according to Issue #6 specification</returns>
+            <response code="200">Service is ready to serve requests</response>
+            <response code="503">Service is not ready (still initializing or dependency unavailable)</response>
+            <remarks>
+            This endpoint checks if the service is ready to handle requests.
+            Used by orchestrators like Kubernetes to determine when to route traffic.
+            
+            Response format according to Issue #6:
+            
+                {
+                    "status": "ready",
+                    "timestamp": "2025-09-11T15:30:00Z",
+                    "checks": {
+                        "database": "ready",
+                        "cache": "ready"
+                    }
+                }
+            </remarks>
         </member>
         <member name="M:UnisonRestAdapter.Controllers.HealthController.GetLiveness">
             <summary>
-            Liveness probe for Kubernetes/container orchestration
+            Liveness check endpoint - indicates if the application process is alive
             </summary>
+            <returns>Liveness status according to Issue #6 specification</returns>
+            <response code="200">Service process is alive and running</response>
+            <remarks>
+            This endpoint performs a simple check to verify that the application process
+            is alive and responding to requests. Used by orchestrators like Kubernetes
+            to determine if a container needs to be restarted.
+            
+            Response format according to Issue #6:
+            
+                {
+                    "status": "alive",
+                    "timestamp": "2025-09-11T15:30:00Z",
+                    "processId": 1234,
+                    "uptime": "2d 14h 30m"
+                }
+            </remarks>
+        </member>
+        <member name="M:UnisonRestAdapter.Controllers.HealthController.GetMetrics">
+            <summary>
+            Metrics endpoint - provides performance metrics and statistics
+            </summary>
+            <returns>Detailed performance metrics according to Issue #6</returns>
+            <response code="200">Performance metrics and statistics</response>
+            <remarks>
+            This endpoint provides comprehensive performance metrics including:
+            - Request statistics and response times
+            - System resource utilization
+            - Per-endpoint metrics
+            - Cache performance (if applicable)
+            
+            Response format according to Issue #6:
+            
+                {
+                    "timestamp": "2025-09-11T15:30:00Z",
+                    "uptime": "2d 14h 30m",
+                    "requestMetrics": {
+                        "totalRequests": 15420,
+                        "successfulRequests": 15350,
+                        "errorRequests": 70,
+                        "errorRate": 0.45
+                    },
+                    "endpointMetrics": {...}
+                }
+            </remarks>
         </member>
         <member name="T:UnisonRestAdapter.Controllers.MetricsController">
             <summary>
@@ -726,6 +816,32 @@
             <param name="message">The error message</param>
             <param name="innerException">The inner exception</param>
         </member>
+        <member name="T:UnisonRestAdapter.Middleware.MetricsCollectionMiddleware">
+            <summary>
+            Middleware to automatically collect request metrics for monitoring
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.MetricsCollectionMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Middleware.MetricsCollectionMiddleware})">
+            <summary>
+            Initializes a new instance of the MetricsCollectionMiddleware
+            </summary>
+            <param name="next">Next middleware in the pipeline</param>
+            <param name="logger">Logger for metrics collection</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.MetricsCollectionMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,UnisonRestAdapter.Services.Monitoring.IMonitoringService)">
+            <summary>
+            Invokes the middleware to collect metrics for the request
+            </summary>
+            <param name="context">HTTP context</param>
+            <param name="monitoringService">Monitoring service for metrics collection</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Middleware.MetricsCollectionMiddleware.GetNormalizedEndpoint(Microsoft.AspNetCore.Http.PathString)">
+            <summary>
+            Normalizes endpoint paths for consistent metrics collection
+            </summary>
+            <param name="path">Request path</param>
+            <returns>Normalized endpoint path</returns>
+        </member>
         <member name="T:UnisonRestAdapter.Middleware.PerformanceMonitoringMiddleware">
             <summary>
             Middleware for automatic performance monitoring of API requests
@@ -832,6 +948,291 @@
         <member name="T:UnisonRestAdapter.Middleware.TokenUsage">
             <summary>
             Token usage tracking
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Monitoring.SystemMetrics">
+            <summary>
+            System metrics information
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.SystemMetrics.MachineName">
+            <summary>
+            Name of the machine hosting the application
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.SystemMetrics.ProcessorCount">
+            <summary>
+            Number of processors on the machine
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.SystemMetrics.OSVersion">
+            <summary>
+            Operating system version
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.SystemMetrics.FrameworkVersion">
+            <summary>
+            .NET Framework version
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.SystemMetrics.WorkingSetMemoryMB">
+            <summary>
+            Working set memory usage in MB
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.SystemMetrics.PrivateMemoryMB">
+            <summary>
+            Private memory usage in MB
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.SystemMetrics.CpuUsagePercent">
+            <summary>
+            CPU usage percentage
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.SystemMetrics.ThreadCount">
+            <summary>
+            Number of threads
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.SystemMetrics.Uptime">
+            <summary>
+            Application uptime
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.SystemMetrics.Timestamp">
+            <summary>
+            Timestamp when metrics were collected
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Monitoring.ApplicationMetrics">
+            <summary>
+            Application performance metrics
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.ApplicationMetrics.TotalRequests">
+            <summary>
+            Total number of requests processed
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.ApplicationMetrics.AverageResponseTimeMs">
+            <summary>
+            Average response time in milliseconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.ApplicationMetrics.P95ResponseTimeMs">
+            <summary>
+            95th percentile response time in milliseconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.ApplicationMetrics.ErrorRate">
+            <summary>
+            Error rate as percentage
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.ApplicationMetrics.ActiveConnections">
+            <summary>
+            Number of active connections
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.ApplicationMetrics.LastResetTime">
+            <summary>
+            When metrics were last reset
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.ApplicationMetrics.Timestamp">
+            <summary>
+            Timestamp when metrics were collected
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Monitoring.RequestMetrics">
+            <summary>
+            Request metrics information
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.RequestMetrics.TotalRequests">
+            <summary>
+            Total number of requests
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.RequestMetrics.SuccessfulRequests">
+            <summary>
+            Number of successful requests
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.RequestMetrics.ErrorRequests">
+            <summary>
+            Number of error requests
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.RequestMetrics.ErrorRate">
+            <summary>
+            Error rate as percentage
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.RequestMetrics.EndpointMetrics">
+            <summary>
+            Metrics per endpoint
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.RequestMetrics.StatusCodeCounts">
+            <summary>
+            Count of each status code returned
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.RequestMetrics.LastResetTime">
+            <summary>
+            When metrics were last reset
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Monitoring.EndpointMetrics">
+            <summary>
+            Per-endpoint metrics
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.EndpointMetrics.Endpoint">
+            <summary>
+            Endpoint path
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.EndpointMetrics.RequestCount">
+            <summary>
+            Number of requests to this endpoint
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.EndpointMetrics.AverageResponseTimeMs">
+            <summary>
+            Average response time in milliseconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.EndpointMetrics.MinResponseTimeMs">
+            <summary>
+            Minimum response time in milliseconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.EndpointMetrics.MaxResponseTimeMs">
+            <summary>
+            Maximum response time in milliseconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.EndpointMetrics.ErrorCount">
+            <summary>
+            Number of errors for this endpoint
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.EndpointMetrics.LastAccessTime">
+            <summary>
+            Last time this endpoint was accessed
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Monitoring.CacheMetrics">
+            <summary>
+            Cache performance metrics
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.CacheMetrics.HitCount">
+            <summary>
+            Number of cache hits
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.CacheMetrics.MissCount">
+            <summary>
+            Number of cache misses
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.CacheMetrics.HitRatio">
+            <summary>
+            Cache hit ratio as percentage
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.CacheMetrics.EvictionCount">
+            <summary>
+            Number of evicted cache entries
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.CacheMetrics.TotalEntries">
+            <summary>
+            Total number of entries in cache
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.CacheMetrics.MemoryUsageBytes">
+            <summary>
+            Memory usage of cache in bytes
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.CacheMetrics.LastResetTime">
+            <summary>
+            When metrics were last reset
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Monitoring.DependencyStatus">
+            <summary>
+            Dependency status information
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.DependencyStatus.Name">
+            <summary>
+            Dependency name
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.DependencyStatus.Url">
+            <summary>
+            Dependency URL
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.DependencyStatus.IsHealthy">
+            <summary>
+            Whether dependency is healthy
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.DependencyStatus.Status">
+            <summary>
+            Status string (healthy/unhealthy)
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.DependencyStatus.ResponseTimeMs">
+            <summary>
+            Response time in milliseconds
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.DependencyStatus.ErrorMessage">
+            <summary>
+            Error message if unhealthy
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.DependencyStatus.LastCheckTime">
+            <summary>
+            When dependency was last checked
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Models.Monitoring.HealthCheckResponse">
+            <summary>
+            Health check response model according to Issue #6 specification
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.HealthCheckResponse.Status">
+            <summary>
+            Overall health status (healthy/degraded/unhealthy)
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.HealthCheckResponse.Timestamp">
+            <summary>
+            Timestamp of health check
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.HealthCheckResponse.Version">
+            <summary>
+            Service version
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.HealthCheckResponse.Uptime">
+            <summary>
+            Service uptime string
+            </summary>
+        </member>
+        <member name="P:UnisonRestAdapter.Models.Monitoring.HealthCheckResponse.Dependencies">
+            <summary>
+            Status of dependencies
             </summary>
         </member>
         <member name="T:UnisonRestAdapter.Models.Request.CardActivationRequest">
@@ -1477,6 +1878,99 @@
             </summary>
             <param name="token">Authentication token</param>
             <returns>Ping response status</returns>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Monitoring.IMonitoringService">
+            <summary>
+            Service interface for application monitoring and metrics collection
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.IMonitoringService.GetSystemMetricsAsync">
+            <summary>
+            Gets comprehensive system metrics
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.IMonitoringService.GetApplicationMetrics">
+            <summary>
+            Gets application performance metrics
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.IMonitoringService.RecordRequestMetric(System.String,System.Int32,System.Double)">
+            <summary>
+            Records a request metric
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.IMonitoringService.GetRequestMetrics">
+            <summary>
+            Gets request metrics summary
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.IMonitoringService.GetCacheMetrics">
+            <summary>
+            Gets cache metrics if caching is enabled
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.IMonitoringService.CheckDependencyAsync(System.String,System.String)">
+            <summary>
+            Checks if a dependency is healthy
+            </summary>
+        </member>
+        <member name="T:UnisonRestAdapter.Services.Monitoring.MonitoringService">
+            <summary>
+            Implementation of monitoring service for metrics collection and health monitoring
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.MonitoringService.#ctor(Microsoft.Extensions.Logging.ILogger{UnisonRestAdapter.Services.Monitoring.MonitoringService},System.Net.Http.IHttpClientFactory,Microsoft.Extensions.Options.IOptions{UnisonRestAdapter.Configuration.UnisonSettings})">
+            <summary>
+            Initializes a new instance of the MonitoringService
+            </summary>
+            <param name="logger">Logger for the monitoring service</param>
+            <param name="httpClientFactory">HTTP client factory for dependency checks</param>
+            <param name="unisonSettings">Unison configuration settings</param>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.MonitoringService.GetSystemMetricsAsync">
+            <summary>
+            Gets comprehensive system metrics
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.MonitoringService.GetApplicationMetrics">
+            <summary>
+            Gets application performance metrics
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.MonitoringService.RecordRequestMetric(System.String,System.Int32,System.Double)">
+            <summary>
+            Records a request metric
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.MonitoringService.GetRequestMetrics">
+            <summary>
+            Gets request metrics summary
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.MonitoringService.GetCacheMetrics">
+            <summary>
+            Gets cache metrics if caching is enabled
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.MonitoringService.CheckDependencyAsync(System.String,System.String)">
+            <summary>
+            Checks if a dependency is healthy
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.MonitoringService.Calculate95thPercentile">
+            <summary>
+            Calculate 95th percentile response time
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.MonitoringService.GetCpuUsageAsync">
+            <summary>
+            Get current CPU usage (simplified implementation)
+            </summary>
+        </member>
+        <member name="M:UnisonRestAdapter.Services.Monitoring.MonitoringService.GetActiveConnectionCount">
+            <summary>
+            Get active connection count (simplified implementation)
+            </summary>
         </member>
         <member name="T:UnisonRestAdapter.Services.IPerformanceMonitoringService">
             <summary>

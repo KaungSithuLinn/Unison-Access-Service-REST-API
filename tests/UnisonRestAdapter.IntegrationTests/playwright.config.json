@@ -1,0 +1,38 @@
+{
+  "baseURL": "http://192.168.10.206:5001",
+  "testDir": "./Tests",
+  "timeout": 30000,
+  "expect": {
+    "timeout": 5000
+  },
+  "fullyParallel": true,
+  "forbidOnly": true,
+  "retries": 2,
+  "workers": 3,
+  "reporter": [
+    ["html"],
+    ["junit", { "outputFile": "test-results/junit-results.xml" }],
+    ["json", { "outputFile": "test-results/test-results.json" }]
+  ],
+  "use": {
+    "baseURL": "http://192.168.10.206:5001",
+    "trace": "on-first-retry",
+    "screenshot": "only-on-failure",
+    "video": "retain-on-failure",
+    "ignoreHTTPSErrors": true,
+    "extraHTTPHeaders": {
+      "Content-Type": "application/json"
+    }
+  },
+  "projects": [
+    {
+      "name": "API Tests",
+      "testMatch": "**/*ApiTests.cs",
+      "use": {
+        "baseURL": "http://192.168.10.206:5001"
+      }
+    }
+  ],
+  "outputDir": "test-results/",
+  "globalSetup": "./GlobalSetup.cs"
+}
