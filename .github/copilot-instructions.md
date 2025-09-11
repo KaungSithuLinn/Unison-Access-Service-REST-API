@@ -24,6 +24,11 @@ globs: *
   - If `"Plan"` → run `/plan`
   - If `"Tasks"` → run `/tasks`
   - If `"Implement"` → pick top open GitHub issue, implement, push PR, attach Codacy report, merge on green.
+  - If marker = `"Deployment"` → execute final deployment preparation
+     - Review and merge all GitHub PRs using GitHub MCP
+     - Prepare production infrastructure using Terraform MCP
+     - Execute final testing using Playwright MCP test suite
+     - Create deployment documentation using MarkItDown MCP
 - **HAND-OVER REPORT**
   - Before you finish, ALWAYS:
     a. Re-run Step 0.1-0.4 (summarise, update Spec-Kit files, commit, memory store).
@@ -38,12 +43,64 @@ globs: *
   3. **PR Management**: Push changes, create PR, and merge on green status.
   4. **Testing Integration**: Use **Playwright MCP** for integration tests where applicable.
   5. **Output**: Implemented features, merged PRs, and updated codebase.
+- **Spec-Kit Gate ⑤ (Deployment Preparation)**
+  1. **PR Review and Merge**:
+     - Use **GitHub MCP** to review and merge all PRs.
+     - Ensure all Codacy checks pass before merging.
+  2. **Infrastructure Preparation**:
+     - Use **Terraform MCP** to prepare production deployment configuration.
+     - Use **Postman MCP** to create production API test collections.
+  3. **Final Testing**:
+     - Use **Playwright MCP** to execute full test suite against production configuration.
+     - Use **Codacy MCP** for final code quality audit.
+  4. **Documentation**:
+     - Use **MarkItDown MCP** to create deployment guide and API documentation.
+  5. **Output**: Production-ready deployment, comprehensive documentation, finalized project.
 - **MANDATORY ENTRY STEPS**
   - Before starting a new task, ALWAYS perform these steps:
     1. Summarise current chat using the built-in `summarise_current_chat` tool. Input: Full transcript → structured summary. Output: `chat_summary.md`.
     2. Update Spec-Kit files using the built-in `update_spec_kit_files` tool. Input: Merge `chat_summary.md` into `specs/latest/spec.md` & `tasks.json`. Output: Updated Spec-Kit artifacts.
     3. Commit and push changes using the GitHub MCP with the message: `"spec: sync chat-summary <timestamp>"`.
     4. Store a snapshot in memory using the Memory MCP with `{"source":"chat_summary.md","phase":"Hand-off"}`.
+- **MANDATORY FINAL IMPLEMENTATION SYNC**
+    1. Summarise current chat using the built-in `summarise_current_chat` tool. Input: Full transcript → structured summary. Output: `chat_summary.md`.
+    2. Update Spec-Kit files using the built-in `update_spec_kit_files` tool. Input: Merge `chat_summary.md` into `specs/latest/spec.md` & `tasks.json`. Output: Updated Spec-Kit artifacts.
+    3. Commit and push changes using the GitHub MCP with the message: `"spec: sync final-implementation <timestamp>"`.
+    4. Store a snapshot in memory using the Memory MCP with `{"source":"chat_summary.md","phase":"Deployment"}`.
+- **HANDOFF VERIFICATION**
+  - The AI must verify the handoff summary against the actual repository state (GitHub, memory) before proceeding.
+  - If discrepancies are found, the AI must block further execution and present the user with options to resolve the discrepancies (e.g., partial deployment, complete implementation, investigation).
+- **DISCREPANCY RESOLUTION PROTOCOL**
+  - **Mandatory Entry Steps**
+    1. Summarise current chat using the built-in `summarise_current_chat` tool. Input: Full transcript → structured summary. Output: `chat_summary.md`.
+    2. Update Spec-Kit files using the built-in `update_spec_kit_files` tool. Input: Merge `chat_summary.md` into `specs/latest/spec.md` & `tasks.json`. Output: Updated Spec-Kit artifacts.
+    3. Commit and push changes using the GitHub MCP with the message: `"spec: sync discrepancy-resolution <timestamp>"`.
+    4. Store a snapshot in memory using the Memory MCP with `{"source":"chat_summary.md","phase":"Investigation"}`.
+  - **Phase 1 - Investigation (Spec-Kit Gate ①)**
+    1. **Discrepancy Analysis**:
+       - Use **GitHub MCP** to verify all PRs and issue statuses.
+       - Use **Memory MCP** to check for evidence of completed work not pushed.
+    2. **Decision Point**:
+       - Use **Sequential-Thinking MCP** to evaluate options: complete implementation vs. partial deployment.
+    3. **Output**: Clear action plan based on investigation results.
+  - **Phase 2 - Implementation Completion (If Chosen)**
+    1. **Complete Missing Issues**:
+       - Use **GitHub MCP** to access issues #3, #5, #6, #7.
+       - Implement using appropriate MCPs (Playwright for testing, etc.).
+    2. **PR Creation**:
+       - Create PRs for each completed issue.
+       - Use **Codacy MCP** for quality checks.
+    3. **Output**: All issues implemented, PRs created.
+  - **Phase 3 - Deployment Preparation**
+    1. **PR Merge**:
+       - Use **GitHub MCP** to merge all PRs.
+    2. **Infrastructure Setup**:
+       - Use **Terraform MCP** for production config.
+    3. **Final Testing**:
+       - Use **Playwright MCP** for full test suite.
+    4. **Documentation**:
+       - Use **MarkItDown MCP** for deployment guides.
+    5. **Output**: Production-ready deployment.
 
 ## CODING STANDARDS
 
@@ -51,5 +108,6 @@ globs: *
 
 ## TESTING
 - Use **Playwright MCP** for integration tests where applicable.
+- When fixing logging issues in Playwright tests, replace direct `ILogger` usage with `Console.WriteLine` to ensure proper logging output during test execution.
 
 ## REFERENCES
