@@ -110,8 +110,8 @@ def test_authentication():
         print(
             f"   No token: {response.status_code} - {'✅ Unauthorized' if response.status_code == 401 else '❌ Should be unauthorized'}"
         )
-    except:
-        print("   No token: ❌ Connection failed")
+    except (requests.RequestException, requests.Timeout, ConnectionError) as e:
+        print(f"   No token: ❌ Connection failed: {e}")
 
     # Test with invalid token
     try:
@@ -119,8 +119,8 @@ def test_authentication():
             f"{base_url}/health", headers={"Unison-Token": "invalid-token"}, timeout=5
         )
         print(f"   Invalid token: {response.status_code}")
-    except:
-        print("   Invalid token: ❌ Connection failed")
+    except (requests.RequestException, requests.Timeout, ConnectionError) as e:
+        print(f"   Invalid token: ❌ Connection failed: {e}")
 
 
 if __name__ == "__main__":

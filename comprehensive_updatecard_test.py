@@ -146,7 +146,7 @@ def test_rest_updatecard(config):
                     else True
                 ):
                     result["success"] = True
-            except:
+            except (ValueError, json.JSONDecodeError, KeyError):
                 # Non-JSON response might still be success
                 if (
                     "error" not in response.text.lower()

@@ -124,7 +124,7 @@ class WCFPerformanceMonitor:
             is_up = response.status_code == 200
             self.metrics["uptime_checks"].append(is_up)
             return is_up
-        except:
+        except (requests.RequestException, requests.Timeout, ConnectionError):
             self.metrics["uptime_checks"].append(False)
             return False
 
