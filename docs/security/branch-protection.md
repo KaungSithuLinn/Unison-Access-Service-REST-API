@@ -185,6 +185,18 @@ git push --force origin main
 - Verify that status checks run
 - Verify that merge is blocked until all checks pass
 
+---
+
+### ✅ Status Check Enforcement Verified (2025-09-12)
+
+A test pull request ([#15](https://github.com/KaungSithuLinn/Unison-Access-Service-REST-API/pull/15)) was created from `test-status-verify` to `main` to verify branch protection enforcement. The following was observed:
+
+- Both required status checks (`ci/application` and `ci/infrastructure`) appeared on the PR.
+- The PR could not be merged until both checks passed.
+- Branch protection is confirmed to be working as intended for production security.
+
+The test PR and branch were deleted after verification. This section serves as an audit record of the enforcement test.
+
 ## Monitoring and Maintenance
 
 ### Regular Reviews
