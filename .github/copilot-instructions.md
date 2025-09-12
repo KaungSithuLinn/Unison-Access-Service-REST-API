@@ -11,7 +11,7 @@ This file defines all project rules, coding standards, workflow guidelines, refe
 
 ### TECH STACK
 
-*   **MCPs / extensions**: Microsoft-Docs, Context7, Sequential-Thinking, Playwright, Memory, Web-Search-for-Copilot, MarkItDown, SQL-Server(mssql), Codacy, Firecrawl, Postman, Terraform, GitHub
+*   **MCPs / extensions**: Microsoft-Docs, Context7, Sequential-Thinking, Playwright, Memory, Web-Search-for-Copilot, MarkItDown, SQL-Server(mssql), Codacy, Firecrawl, Postman, Terraform, GitHub, HashiCorp Terraform MCP, GitHub MCP, GitHub Pull Requests & Issues extension
 *   **Built-ins**: workspace file search & read, `specify` CLI, `git`, `gh`, `terraform`, `codacy-cli`
 
 ### PROJECT DOCUMENTATION & CONTEXT SYSTEM
@@ -23,7 +23,7 @@ The `specs/latest/spec.md` file contains the final specification with all enhanc
 1.  **Summarise & Sync (Mandatory Entry Step)**: Before starting a new phase, always summarize the current chat, update the Spec-Kit files, commit the changes, and store a snapshot in memory.
     *   Use `summarise_current_chat` to create `chat_summary.md`.
     *   Use `update_spec_kit_files` to merge `chat_summary.md` into `specs/latest/spec.md` & `tasks.json`.
-    *   Use `git commit_push` with message `"spec: sync <feature> <timestamp>"`. Examples: `"spec: sync security-validation <timestamp>"`, `"spec: sync branch-protection <timestamp>"`, `"spec: sync status-checks-integration <timestamp>"`.
+    *   Use `git commit_push` with message `"spec: sync <feature> <timestamp>"`. Examples: `"spec: sync security-validation <timestamp>"`, `"spec: sync branch-protection <timestamp>"`, `"spec: sync status-checks-integration <timestamp>"`, `"spec: sync test-verify-status-checks"`.
     *   Use `Memory MCP` to `store_snapshot` with `{"source":"chat_summary.md","phase":"<current_phase>"}`.
 
 2.  **Deployment Preparation (Phase 3)**: Involves PR review & merge, infrastructure setup, final testing, and documentation.
@@ -130,6 +130,9 @@ b. Print a markdown block with:
 *   MarkItDown MCP: `generate-deployment-guide --output docs/deployment.md`
 *   GitHub MCP: `gh pr create --title "Test CI Trigger" --body "Triggering initial CI run" --head test-branch --base main`
 *   GitHub MCP: `gh api repos/OWNER/REPO/branches/main/protection` (verify status checks)
+*   GitHub Pull Requests & Issues extension: `git add . && git commit -m "chore: commit pending changes for test"`
+*   GitHub Pull Requests & Issues extension: `gh pr create --title "Test Status Checks Integration" --body "Verify status checks block merge until passed" --head test-branch --base main`
+*   GitHub Pull Requests & Issues extension: `gh pr close <number> && git push origin --delete test-status-verify`
 
 ### SECURITY - IMPLEMENTATION DETAILS
 
