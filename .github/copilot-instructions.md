@@ -44,7 +44,7 @@ The `specs/latest/spec.md` file contains the final specification with all enhanc
 
 ### DEBUGGING
 
-When encountering merge conflicts during PR review, switch to each feature branch and update them manually by rebasing onto the `main` branch.
+When encountering merge conflicts during PR review, switch to each feature branch and update them manually by rebasing onto the `main` branch. If the GitHub CLI (`gh`) is not recognized, ensure it is installed correctly and that the terminal or VS Code has been restarted to update the PATH. The `gh --version` command should execute successfully. **If the `gh` command is still not recognized after installation and restart, ensure the GitHub CLI is authenticated by running `gh auth login` and following the prompts.**
 
 ### CODING STANDARDS
 
@@ -108,7 +108,7 @@ To protect the `main` branch and enforce best practices:
 
 ### HAND-OVER PROTOCOL
 
-Before finishing, always:
+Before finishing, **always**:
 
 a. Re-run Step 0.1-0.4 (summarise, update Spec-Kit files, commit, memory store).
 b. Print a markdown block with:
@@ -116,6 +116,19 @@ b. Print a markdown block with:
    - Artifacts changed (paths + hashes)
    - Next agent's entry command
    - Remaining risks / blockers
+
+### REPOSITORY CONSOLIDATION (OPTIONAL)
+
+1. **Compare Repositories**:
+   - Use **GitHub MCP** to compare original and canonical repositories
+   - Command: `git -C "C:\Projects\Unison Access Service REST API" log --oneline --graph --all --max-count=20`
+
+2. **Migrate Unique Changes**:
+   - Use **GitHub Pull Requests & Issues extension** to cherry-pick any unique commits
+   - Create PRs for any valuable changes from original repo
+
+3. **Clean Up**:
+   - Archive or delete original parent folder repo to avoid confusion
 
 ### TEMPLATE COMMANDS/SNIPPETS:
 

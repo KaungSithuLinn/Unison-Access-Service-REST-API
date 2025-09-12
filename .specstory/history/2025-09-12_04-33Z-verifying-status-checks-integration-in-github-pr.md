@@ -2,7 +2,7 @@
 
 # Verifying Status Checks Integration in GitHub PR (2025-09-12 04:33Z)
 
-_**User (2025-09-12 05:24Z)**_
+_**User (2025-09-12 05:26Z)**_
 
 ### Concise, Structured Summary of Current Chat
 
@@ -109,6 +109,88 @@ b. Print a markdown block with:
 **Note**: Status checks `ci/application` and `ci/infrastructure` are available from CI runs. Test PR must demonstrate that merge is blocked until these checks pass. This is the final verification step for production-grade branch protection.  
 
 **Expected Output**: Verified branch protection with status checks enforcing merge requirements, updated documentation, and clean repository state.
+
+---
+
+_**Assistant**_
+
+The `gh` CLI (GitHub CLI) is not available in your current environment, so I cannot create the test PR via command line. 
+
+Please create a pull request from the `test-status-verify` branch to `main` using the GitHub web interface. Once the PR is created, let me know, and I will proceed to verify that status checks are enforced and continue with the next steps.
+
+---
+
+_**User (2025-09-12 05:31Z)**_
+
+I just installed the GitHub CLI now. Is that help help for you?
+
+---
+
+_**Assistant**_
+
+The GitHub CLI (`gh`) is still not recognized in your current terminal session. Please ensure you have completed the installation and restarted your terminal or VS Code so that the `gh` command is available in your PATH.
+
+Once you can run `gh --version` successfully in your terminal, let me know and I will proceed with the automated PR creation and verification steps.
+
+---
+
+_**User (2025-09-12 06:05Z)**_
+
+PowerShell 7.5.2
+Loading personal and system profiles took 1738ms.
+PS C:\Users\Kaung Sithu Linn> gh --version
+gh version 2.79.0 (2025-09-09)
+https://github.com/cli/cli/releases/tag/v2.79.0
+PS C:\Users\Kaung Sithu Linn>
+
+---
+
+_**Assistant**_
+
+The GitHub CLI is now installed, but you need to authenticate it first. Please run:
+
+```
+gh auth login
+```
+
+Follow the prompts to log in to your GitHub account. Once authentication is complete, let me know and I will proceed to create the test pull request automatically.
+
+---
+
+_**User (2025-09-12 06:09Z)**_
+
+PowerShell 7.5.2
+PS C:\Users\Kaung Sithu Linn> gh --version
+gh version 2.79.0 (2025-09-09)
+https://github.com/cli/cli/releases/tag/v2.79.0
+PS C:\Users\Kaung Sithu Linn> gh auth login
+? Where do you use GitHub? GitHub.com
+? What is your preferred protocol for Git operations on this host? HTTPS
+? Authenticate Git with your GitHub credentials? Yes
+? How would you like to authenticate GitHub CLI? Login with a web browser
+
+! First copy your one-time code: 6174-4259
+Press Enter to open https://github.com/login/device in your browser...
+✓ Authentication complete.
+- gh config set -h github.com git_protocol https
+✓ Configured git protocol
+✓ Logged in as KaungSithuLinn
+PS C:\Users\Kaung Sithu Linn>
+
+---
+
+_**Assistant**_
+
+The test pull request has been created:  
+https://github.com/KaungSithuLinn/Unison-Access-Service-REST-API/pull/15
+
+Next, please verify in the PR that the required status checks (`ci/application` and `ci/infrastructure`) are present and that merging is blocked until they pass. Let me know when you have confirmed this, and I will proceed with the cleanup and documentation update steps.
+
+---
+
+_**User (2025-09-12 06:11Z)**_
+
+I can see this. What should I do next?
 
 ---
 
