@@ -23,7 +23,7 @@ The `specs/latest/spec.md` file contains the final specification with all enhanc
 1.  **Summarise & Sync (Mandatory Entry Step)**: Before starting a new phase, always summarize the current chat, update the Spec-Kit files, commit the changes, and store a snapshot in memory.
     *   Use `summarise_current_chat` to create `chat_summary.md`.
     *   Use `update_spec_kit_files` to merge `chat_summary.md` into `specs/latest/spec.md` & `tasks.json`.
-    *   Use `git commit_push` with message `"spec: sync <feature> <timestamp>"`. Examples: `"spec: sync security-validation <timestamp>"`, `"spec: sync branch-protection <timestamp>"`
+    *   Use `git commit_push` with message `"spec: sync <feature> <timestamp>"`. Examples: `"spec: sync security-validation <timestamp>"`, `"spec: sync branch-protection <timestamp>"`, `"spec: sync status-checks-integration <timestamp>"`.
     *   Use `Memory MCP` to `store_snapshot` with `{"source":"chat_summary.md","phase":"<current_phase>"}`.
 
 2.  **Deployment Preparation (Phase 3)**: Involves PR review & merge, infrastructure setup, final testing, and documentation.
@@ -62,6 +62,8 @@ To protect the `main` branch and enforce best practices:
     *   Enable:
         *   **Require a pull request before merging**
         *   **Require status checks to pass before merging** (add your CI checks)
+            *   Example status checks: `codacy/pr-check`, `ci/application`, `ci/infrastructure`
+            *   Enable “Require branches to be up to date before merging”.
         *   **Require review from at least 1 reviewer**
         *   **Require linear history**
         *   **Include administrators** (optional but recommended)
@@ -80,6 +82,30 @@ To protect the `main` branch and enforce best practices:
         *   Push restrictions (file size, extensions, etc.)
     *   Set enforcement to **Active**.
 
+   * **Recommended Ruleset Configuration:**
+        * **Ruleset Name:** `main`
+        * **Target branches:** Set the branch targeting pattern to: `main`
+        * **Enforcement status:** Set to **Active** (enforced for all users)
+        * **Bypass list:** Leave empty unless you have a specific reason to allow certain roles/teams/apps to bypass protection (not recommended for production).
+        *   **Restrict creations/updates:** *Leave unchecked* (unless you want to lock down branch creation/updates to only bypass users)
+        *   **Restrict deletions:** ✅ Enabled (prevents branch deletion)
+        *   **Require linear history:** ✅ Enabled (prevents merge commits)
+        *   **Require deployments to succeed:** (Optional, only if you use GitHub Environments)
+        *   **Require signed commits:** ✅ Enabled (all commits must be signed)
+        *   **Require a pull request before merging:** ✅ Enabled
+            *   **Required approvals:** Set to at least 1
+            *   **Dismiss stale approvals:** ✅ Enabled
+            *   **Require review from Code Owners:** (Optional, enable if you have a CODEOWNERS file)
+            *   **Require approval of most recent push:** ✅ Enabled
+            *   **Require conversation resolution:** (Optional, but recommended)
+        *   **Allowed merge methods:** At least one enabled (squash, rebase, or merge)
+        *   **Require status checks to pass:** ✅ Enabled
+            *   **Require branches to be up to date before merging:** ✅ Enabled
+            *   **You must add at least one status check** (e.g., `codacy/pr-check`, `ci/application`, or `ci/infrastructure`)
+        *   **Block force pushes:** ✅ Enabled
+        *   **Require code scanning results:** (Optional, enable if you use CodeQL or other tools)
+        *   **Automatically request Copilot code review:** (Optional)
+
 ### HAND-OVER PROTOCOL
 
 Before finishing, always:
@@ -97,8 +123,18 @@ b. Print a markdown block with:
 *   GitHub MCP: `gh pr merge <pr_number> --squash --delete-branch` (merge each PR)
 *   GitHub MCP: `gh api repos/OWNER/REPO/branches/main/protection -X PUT -f ...` (basic protection)
 *   GitHub MCP: `gh api repos/OWNER/REPO/rulesets -X POST -f ...` (advanced rulesets)
+*   Codacy MCP: `codacy-cli enable-github-status-checks`
+*   MarkItDown MCP: `generate-docs --type branch-protection --output docs/security/branch-protection.md`
 *   Terraform MCP: `terraform apply -auto-approve`
 *   Playwright MCP: `npx playwright test --config=playwright.production.config.ts`
 *   MarkItDown MCP: `generate-deployment-guide --output docs/deployment.md`
-*   Codacy MCP: `codacy-cli enable-github-status-checks`
-*   MarkItDown MCP: `generate-docs --type branch-protection --output docs/security/branch-protection.md`
+*   GitHub MCP: `gh pr create --title "Test CI Trigger" --body "Triggering initial CI run" --head test-branch --base main`
+*   GitHub MCP: `gh api repos/OWNER/REPO/branches/main/protection` (verify status checks)
+
+### SECURITY - IMPLEMENTATION DETAILS
+
+When creating security documentation, ensure the following guidelines are adhered to:
+*   **Markdown Documentation Issues**:
+    *   Bare URLs should be wrapped in angle brackets (`<...>`) to comply with markdown linting rules.
+    *   Code blocks should have blank lines before/after the fence and a language specifier (e.g., ```bash or ```yaml).
+*   **PowerShell Script Issue**: Validate variable references to avoid errors like "Variable reference is not valid. ':' was not followed by a valid variable name character. Consider using ${} to delimit the name."
