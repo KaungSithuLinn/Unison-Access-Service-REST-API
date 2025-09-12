@@ -32,7 +32,7 @@
 ### AI-Detected Technical Debt
 
 1. **Adapter Scalability**: Current REST-SOAP adapter may need circuit breaker patterns for high load
-2. **WSDL Caching**: Static WSDL parsing could benefit from dynamic caching mechanisms  
+2. **WSDL Caching**: Static WSDL parsing could benefit from dynamic caching mechanisms
 3. **Performance Monitoring**: Missing real-time Web Vitals integration in Terraform IaC
 4. **Accessibility Gaps**: No WCAG 2.1 AA validation in current CI pipeline
 

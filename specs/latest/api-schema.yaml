@@ -1,0 +1,926 @@
+# REST API Schema Definitions
+# Unison Access Service - Type-Safe REST Schemas Mirroring SOAP Envelopes
+
+openapi: 3.0.3
+info:
+  title: Unison Access Service REST API
+  description: |
+    AI-Enhanced REST API providing modern interface to Unison Access Service SOAP operations.
+    Generated using AI framework analysis of 50+ SOAP operations with performance and accessibility integration.
+  version: 1.0.0
+  contact:
+    name: Unison Access Service Team
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.unison.example.com/v1
+    description: Production server
+  - url: https://staging-api.unison.example.com/v1
+    description: Staging server
+  - url: http://localhost:8080/v1
+    description: Development server
+
+# Security Schemes
+security:
+  - bearerAuth: []
+  - apiKey: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: OAuth 2.0 Bearer token authentication
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for service-to-service authentication
+
+  # Core Data Models (mirroring SOAP complex types)
+  schemas:
+    User:
+      type: object
+      required:
+        - userId
+        - userKey
+        - firstName
+        - lastName
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: Unique user identifier
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        userKey:
+          type: string
+          pattern: '^[A-Z0-9]{8,16}$'
+          description: User key for legacy system integration
+          example: "USR12345"
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: '^[a-zA-Z\s\-\'\.]+$'
+          description: User's first name
+          example: "John"
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: '^[a-zA-Z\s\-\'\.]+$'
+          description: User's last name
+          example: "Doe"
+        email:
+          type: string
+          format: email
+          maxLength: 100
+          description: User's email address
+          example: "john.doe@example.com"
+        phone:
+          type: string
+          pattern: '^\+?[1-9]\d{1,14}$'
+          description: Phone number in E.164 format
+          example: "+1234567890"
+        department:
+          type: string
+          maxLength: 100
+          description: User's department
+          example: "Engineering"
+        isActive:
+          type: boolean
+          description: Whether the user account is active
+          default: true
+        createdAt:
+          type: string
+          format: date-time
+          description: User creation timestamp
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          readOnly: true
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: '^[a-zA-Z\s\-\'\.]+$'
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: '^[a-zA-Z\s\-\'\.]+$'
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        phone:
+          type: string
+          pattern: '^\+?[1-9]\d{1,14}$'
+        department:
+          type: string
+          maxLength: 100
+        isActive:
+          type: boolean
+
+    UserSyncRequest:
+      type: object
+      required:
+        - operations
+      properties:
+        operations:
+          type: array
+          minItems: 1
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/UserSyncOperation'
+        transactionId:
+          type: string
+          format: uuid
+          description: Transaction identifier for batch operation tracking
+
+    UserSyncOperation:
+      type: object
+      required:
+        - operation
+        - userKey
+      properties:
+        operation:
+          type: string
+          enum: [create, update, delete]
+          description: Operation type to perform
+        userKey:
+          type: string
+          pattern: '^[A-Z0-9]{8,16}$'
+        userData:
+          $ref: '#/components/schemas/User'
+          description: User data (required for create/update operations)
+
+    UserSyncResponse:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          format: uuid
+        totalOperations:
+          type: integer
+          minimum: 0
+        successfulOperations:
+          type: integer
+          minimum: 0
+        failedOperations:
+          type: integer
+          minimum: 0
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSyncResult'
+
+    UserSyncResult:
+      type: object
+      properties:
+        userKey:
+          type: string
+        operation:
+          type: string
+          enum: [create, update, delete]
+        success:
+          type: boolean
+        errorMessage:
+          type: string
+          description: Error message if operation failed
+        userId:
+          type: string
+          format: uuid
+          description: Generated user ID for successful create operations
+
+    Card:
+      type: object
+      required:
+        - cardNumber
+        - cardStatus
+      properties:
+        cardNumber:
+          type: string
+          pattern: '^[0-9]{6,20}$'
+          description: Card number (masked in responses)
+          example: "****1234"
+        cardId:
+          type: string
+          format: uuid
+          description: Unique card identifier
+          readOnly: true
+        cardStatus:
+          type: string
+          enum: [active, inactive, blocked, lost, stolen]
+          description: Current card status
+        assignedUser:
+          $ref: '#/components/schemas/User'
+          description: User assigned to this card
+        accessGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessGroup'
+          description: Access groups associated with this card
+        issuedDate:
+          type: string
+          format: date-time
+          description: Card issuance date
+          readOnly: true
+        expiryDate:
+          type: string
+          format: date-time
+          description: Card expiration date
+        lastUsed:
+          type: string
+          format: date-time
+          description: Last time card was used for access
+          readOnly: true
+
+    CardUpdateRequest:
+      type: object
+      properties:
+        cardStatus:
+          type: string
+          enum: [active, inactive, blocked, lost, stolen]
+        assignedUserId:
+          type: string
+          format: uuid
+          description: ID of user to assign to this card
+        accessGroupIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: List of access group IDs to assign to card
+        expiryDate:
+          type: string
+          format: date-time
+
+    AccessGroup:
+      type: object
+      required:
+        - groupId
+        - groupName
+      properties:
+        groupId:
+          type: string
+          format: uuid
+          description: Unique access group identifier
+        groupName:
+          type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '^[a-zA-Z0-9\s\-_]+$'
+          description: Access group name
+          example: "Main Building Access"
+        description:
+          type: string
+          maxLength: 500
+          description: Group description
+        permissions:
+          type: array
+          items:
+            type: string
+          description: List of permissions granted by this group
+          example: ["door.main.enter", "elevator.all.use"]
+        isActive:
+          type: boolean
+          description: Whether the access group is active
+          default: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+
+    AccessGroupUpdateRequest:
+      type: object
+      properties:
+        groupName:
+          type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '^[a-zA-Z0-9\s\-_]+$'
+        description:
+          type: string
+          maxLength: 500
+        permissions:
+          type: array
+          items:
+            type: string
+        isActive:
+          type: boolean
+
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+          description: Overall system health status
+        timestamp:
+          type: string
+          format: date-time
+          description: Health check timestamp
+        version:
+          type: string
+          description: API version
+          example: "1.0.0"
+        uptime:
+          type: integer
+          description: System uptime in seconds
+        dependencies:
+          type: object
+          properties:
+            soapService:
+              $ref: '#/components/schemas/DependencyStatus'
+            database:
+              $ref: '#/components/schemas/DependencyStatus'
+          description: Status of system dependencies
+
+    DependencyStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [available, degraded, unavailable]
+        responseTime:
+          type: number
+          description: Response time in milliseconds
+        lastCheck:
+          type: string
+          format: date-time
+
+    SyncOperationRequest:
+      type: object
+      required:
+        - operationType
+      properties:
+        operationType:
+          type: string
+          enum: [begin, end, reset]
+          description: Synchronization operation type
+        transactionId:
+          type: string
+          format: uuid
+          description: Transaction ID for begin/end operations
+
+    SyncOperationResponse:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [started, completed, failed, reset]
+        message:
+          type: string
+          description: Operation result message
+        timestamp:
+          type: string
+          format: date-time
+
+    # Error Response Models
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+        - timestamp
+      properties:
+        error:
+          type: string
+          description: Error code
+          example: "USER_NOT_FOUND"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "The specified user was not found"
+        details:
+          type: object
+          description: Additional error details
+        timestamp:
+          type: string
+          format: date-time
+          description: Error timestamp
+        traceId:
+          type: string
+          description: Request trace ID for debugging
+
+    ValidationErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+        - validationErrors
+      properties:
+        error:
+          type: string
+          enum: [VALIDATION_ERROR]
+        message:
+          type: string
+          example: "Request validation failed"
+        validationErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+        timestamp:
+          type: string
+          format: date-time
+
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Field name that failed validation
+        message:
+          type: string
+          description: Validation error message
+        code:
+          type: string
+          description: Validation error code
+
+    # Pagination Models
+    PaginatedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items: {}
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          description: Current page number
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: Number of items per page
+        totalPages:
+          type: integer
+          minimum: 0
+          description: Total number of pages
+        totalItems:
+          type: integer
+          minimum: 0
+          description: Total number of items
+        hasNext:
+          type: boolean
+          description: Whether there is a next page
+        hasPrevious:
+          type: boolean
+          description: Whether there is a previous page
+
+  # Reusable Parameters
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number (1-based)
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    PageSizeParam:
+      name: pageSize
+      in: query
+      description: Number of items per page
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    SortParam:
+      name: sort
+      in: query
+      description: Sort field and direction (e.g., 'firstName:asc', 'createdAt:desc')
+      required: false
+      schema:
+        type: string
+        pattern: '^[a-zA-Z][a-zA-Z0-9]*:(asc|desc)$'
+
+  # Reusable Headers
+  headers:
+    X-RateLimit-Limit:
+      description: Request limit per time window
+      schema:
+        type: integer
+    X-RateLimit-Remaining:
+      description: Remaining requests in current time window
+      schema:
+        type: integer
+    X-RateLimit-Reset:
+      description: Time when rate limit resets (Unix timestamp)
+      schema:
+        type: integer
+
+# API Paths
+paths:
+  # User Management Endpoints
+  /users/{userKey}:
+    get:
+      summary: Retrieve user by user key
+      description: |
+        Get user information by user key. Maps to SOAP GetUserByKey operation.
+        Performance target: <500ms response time.
+      operationId: getUserByKey
+      tags: [Users]
+      parameters:
+        - name: userKey
+          in: path
+          required: true
+          description: User key identifier
+          schema:
+            type: string
+            pattern: '^[A-Z0-9]{8,16}$'
+      responses:
+        '200':
+          description: User found successfully
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                user_example:
+                  summary: Example user response
+                  value:
+                    userId: "550e8400-e29b-41d4-a716-446655440000"
+                    userKey: "USR12345"
+                    firstName: "John"
+                    lastName: "Doe"
+                    email: "john.doe@example.com"
+                    department: "Engineering"
+                    isActive: true
+                    createdAt: "2024-01-15T10:30:00Z"
+                    updatedAt: "2024-01-20T14:45:00Z"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                user_not_found:
+                  value:
+                    error: "USER_NOT_FOUND"
+                    message: "User with key 'USR12345' was not found"
+                    timestamp: "2024-01-20T15:30:00Z"
+                    traceId: "abc123def456"
+        '400':
+          description: Invalid user key format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          headers:
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+
+    put:
+      summary: Update user information
+      description: |
+        Update user details. Maps to SOAP UpdateUser operation.
+        Performance target: <750ms response time.
+      operationId: updateUser
+      tags: [Users]
+      parameters:
+        - name: userKey
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[A-Z0-9]{8,16}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+            examples:
+              update_example:
+                summary: Update user example
+                value:
+                  firstName: "Jane"
+                  lastName: "Smith"
+                  email: "jane.smith@example.com"
+                  department: "Marketing"
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /users/sync:
+    post:
+      summary: Bulk user synchronization
+      description: |
+        Perform bulk user operations (create/update/delete). Maps to SOAP SyncUsers operation.
+        Performance target: <30s for 1000+ users with progress indication.
+      operationId: syncUsers
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSyncRequest'
+            examples:
+              sync_example:
+                summary: Bulk sync example
+                value:
+                  operations:
+                    - operation: "create"
+                      userKey: "USR54321"
+                      userData:
+                        firstName: "Alice"
+                        lastName: "Johnson"
+                        email: "alice.johnson@example.com"
+                    - operation: "update"
+                      userKey: "USR12345"
+                      userData:
+                        department: "Sales"
+      responses:
+        '200':
+          description: Sync operation completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSyncResponse'
+        '400':
+          description: Invalid sync request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  # Card Management Endpoints
+  /cards/{cardNumber}:
+    get:
+      summary: Retrieve card by number
+      description: |
+        Get card information by card number. Maps to SOAP GetCardByNumber operation.
+        Performance target: <300ms response time.
+      operationId: getCardByNumber
+      tags: [Cards]
+      parameters:
+        - name: cardNumber
+          in: path
+          required: true
+          description: Card number (will be masked in response)
+          schema:
+            type: string
+            pattern: '^[0-9]{6,20}$'
+      responses:
+        '200':
+          description: Card found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Update card information
+      description: |
+        Update card details including status and assignments. Maps to SOAP UpdateCard operation.
+        Performance target: <400ms response time.
+      operationId: updateCard
+      tags: [Cards]
+      parameters:
+        - name: cardNumber
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9]{6,20}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardUpdateRequest'
+      responses:
+        '200':
+          description: Card updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Access Group Management
+  /access-groups:
+    get:
+      summary: List access groups
+      description: |
+        Retrieve paginated list of access groups. Maps to SOAP GetAllAccessGroups operation.
+        Performance target: <600ms with pagination support.
+      operationId: listAccessGroups
+      tags: [Access Groups]
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PageSizeParam'
+        - $ref: '#/components/parameters/SortParam'
+        - name: search
+          in: query
+          description: Search term for group name or description
+          schema:
+            type: string
+            maxLength: 100
+      responses:
+        '200':
+          description: Access groups retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AccessGroup'
+
+  /access-groups/{groupId}:
+    put:
+      summary: Update access group
+      description: |
+        Update access group configuration. Maps to SOAP UpdateAccessGroup operation.
+        Performance target: <600ms response time.
+      operationId: updateAccessGroup
+      tags: [Access Groups]
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessGroupUpdateRequest'
+      responses:
+        '200':
+          description: Access group updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessGroup'
+        '404':
+          description: Access group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # System Operations
+  /health:
+    get:
+      summary: System health check
+      description: |
+        Get basic system health status. Maps to SOAP Ping operation.
+        Performance target: <100ms response time.
+      operationId: getHealth
+      tags: [System]
+      security: []
+      responses:
+        '200':
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy]
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /health/detailed:
+    get:
+      summary: Detailed health status
+      description: |
+        Get comprehensive system health including dependencies. Requires authentication.
+        Performance target: <100ms response time.
+      operationId: getDetailedHealth
+      tags: [System]
+      responses:
+        '200':
+          description: Detailed health information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
+  /sync/{operation}:
+    post:
+      summary: Synchronization operations
+      description: |
+        Manage data synchronization processes. Maps to SOAP SyncBegin/SyncEnd/SyncReset operations.
+        Performance target: <2s response time.
+      operationId: manageSyncOperation
+      tags: [System]
+      parameters:
+        - name: operation
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [begin, end, reset]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncOperationRequest'
+      responses:
+        '200':
+          description: Sync operation completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncOperationResponse'
+        '400':
+          description: Invalid sync operation request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+# Tags for API organization
+tags:
+  - name: Users
+    description: User management operations
+  - name: Cards
+    description: Card management operations
+  - name: Access Groups
+    description: Access group management operations
+  - name: System
+    description: System health and synchronization operations
+
+# External Documentation
+externalDocs:
+  description: Find more info about Unison Access Service
+  url: https://docs.unison.example.com
