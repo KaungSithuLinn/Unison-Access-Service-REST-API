@@ -12,7 +12,7 @@ This file defines all project rules, coding standards, workflow guidelines, refe
 ### TECH STACK
 
 *   **MCPs / extensions**: Microsoft-Docs, Context7, Sequential-Thinking, Playwright, Memory, Web-Search-for-Copilot, MarkItDown, SQL-Server(mssql), Codacy, Firecrawl, Postman, Terraform, GitHub, HashiCorp Terraform MCP, GitHub MCP, GitHub Pull Requests & Issues extension
-*   **Built-ins**: workspace file search & read, `specify` CLI, `git`, `gh`, `terraform`, `codacy-cli`
+*   **Built-ins**: workspace file search & read, `specify` CLI, `git`, `gh`, `terraform`, `codacy-cli`, `curl`
 
 ### PROJECT DOCUMENTATION & CONTEXT SYSTEM
 
@@ -23,7 +23,7 @@ The `specs/latest/spec.md` file contains the final specification with all enhanc
 1.  **Summarise & Sync (Mandatory Entry Step)**: Before starting a new phase, always summarize the current chat, update the Spec-Kit files, commit the changes, and store a snapshot in memory.
     *   Use `summarise_current_chat` to create `chat_summary.md`.
     *   Use `update_spec_kit_files` to merge `chat_summary.md` into `specs/latest/spec.md` & `tasks.json`.
-    *   Use `git commit_push` with message `"spec: sync <feature> <timestamp>"`. Examples: `"spec: sync security-validation <timestamp>"`, `"spec: sync branch-protection <timestamp>"`, `"spec: sync status-checks-integration <timestamp>"`, `"spec: sync test-verify-status-checks"`.
+    *   Use `git commit_push` with message `"spec: sync <feature> <timestamp>"`. Examples: `"spec: sync security-validation <timestamp>"`, `"spec: sync branch-protection <timestamp>"`, `"spec: sync status-checks-integration <timestamp>"`, `"spec: sync test-verify-status-checks"`, `"spec: sync soap-rest-clarification"`, `"spec: sync soap-rest-clarification <timestamp>"`.
     *   Use `Memory MCP` to `store_snapshot` with `{"source":"chat_summary.md","phase":"<current_phase>"}`.
 
 2.  **Deployment Preparation (Phase 3)**: Involves PR review & merge, infrastructure setup, final testing, and documentation.
@@ -154,3 +154,106 @@ When creating security documentation, ensure the following guidelines are adhere
     *   Bare URLs should be wrapped in angle brackets (`<...>`) to comply with markdown linting rules.
     *   Code blocks should have blank lines before/after the fence and a language specifier (e.g., ```bash or ```yaml).
 *   **PowerShell Script Issue**: Validate variable references to avoid errors like "Variable reference is not valid. ':' was not followed by a valid variable name character. Consider using ${} to delimit the name."
+
+### TROUBLESHOOTING & DEBUGGING
+
+When interacting with external services, it is crucial to accurately characterize the service type (e.g., REST vs. SOAP).
+
+1.  **Service Type Determination:**
+    *   Analyze the service's WSDL (if available) for binding types. `basicHttpBinding` and `mexHttpBinding` indicate a SOAP 1.1 web service, not a REST API.
+    *   **Direct Testing (Mandatory):** Attempt to call the service directly using `curl` with different content types.
+        *   **REST API Test:**
+            ```bash
+            curl -X POST "<service_endpoint>" \
+              -H "Content-Type: application/json" \
+              -d '{"cardId":"12345"}'
+            ```
+            *   *Expected Result:* A true REST service should return a JSON error message, even if the request is invalid.
+        *   **SOAP Service Test:**
+            ```bash
+            curl -X POST "<service_endpoint>" \
+              -H "Content-Type: text/xml; charset=utf-8" \
+              -H "SOAPAction: <soap_action_from_wsdl>" \
+              -d '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                      <MethodName xmlns="http://tempuri.org/">
+                        <parameter1>value1</parameter1>
+                      </MethodName>
+                    </soap:Body>
+                  </soap:Envelope>'
+            ```
+            *   *Expected Result:* A successful call (or a meaningful SOAP fault) confirms the service expects SOAP-XML.
+
+2.  **Error Interpretation:**
+    *   HTTP 415 Unsupported Media Type, HTTP 500 Internal Server Error with SOAP Fault XML, or HTTP 400 Bad Request responses from a JSON request indicate a SOAP service.
+
+3.  **Communication:**
+    *   When communicating with stakeholders, clearly explain the difference between using HTTP as a transport protocol and adhering to the REST architectural style. A service can use HTTP without being a REST API.
+
+### ADAPTERS & TRANSLATIONS
+
+When integrating with SOAP services, use a REST-to-SOAP adapter to provide a modern REST API for client applications.
+
+1.  **Adapter Role:** The adapter translates simple REST/JSON requests into the complex SOAP/XML format required by the backend service.
+
+2.  **Workflow:**
+    *   Frontend/Client teams call the REST adapter endpoint with JSON.
+    *   The adapter handles the translation to SOAP and calls the real Unison service.
+    *   The Unison service receives the SOAP request it expects.
+
+### TROUBLESHOOTING & DEBUGGING - SOAP vs REST
+
+When encountering issues with external services, and there is a possibility of confusion regarding whether the service is RESTful or SOAP-based, **always**:
+
+1.  **Run a REST API Test:** Attempt to call the service using `curl` with `Content-Type: application/json` and a simple JSON payload. Analyze the response. A true REST service should return a JSON error message, even if the request is invalid.
+2.  **Run a SOAP Service Test:** If the REST test fails, attempt to call the service using `curl` with `Content-Type: text/xml; charset=utf-8`, a valid SOAPAction header (obtained from the WSDL), and a valid SOAP envelope. A successful call (or a meaningful SOAP fault) confirms the service expects SOAP-XML.
+3.  **Document the Evidence:** Save both `curl` commands and their outputs in a short markdown file (e.g., `docs/soap-vs-rest-evidence.md`). Clearly label each result: “REST-style call (fails)” and “SOAP call (succeeds)”.
+
+### COMMUNICATION GUIDELINES
+
+When communicating with stakeholders about service types (REST vs. SOAP), **always**:
+
+*   Clearly explain the difference between using HTTP as a transport protocol and adhering to the REST architectural style. A service can use HTTP without being a REST API.
+*   Reiterate that a REST-to-SOAP adapter is the correct and necessary solution if the backend service is SOAP-based and the frontend requires a RESTful interface.
+*   Provide concrete evidence (e.g., the `curl` command outputs) to support your explanation.
+
+### WORKFLOW & RELEASE RULES - CLARIFICATION PHASE
+
+When the project is in the "Clarification" phase, relating to SOAP/REST clarification, the following steps and considerations apply:
+
+1. **Mandatory Entry Step**: Before starting, always execute the "Mandatory Entry Step – Summarise & Sync" as outlined in the project rules. This includes:
+    * Summarizing the current chat and updating `chat_summary.md`.
+    * Merging the summary into `specs/latest/spec.md` and `tasks.json`.
+    * Committing and pushing with the message: `"spec: sync soap-rest-clarification"`.
+    * Storing a snapshot in memory with phase marker `"Clarification"`.
+
+2. **Validation Tests**:
+    * Use `curl` or **Postman** to send a JSON payload to the service endpoint (e.g., `http://192.168.10.206:9003/Unison.AccessService`). Expect a failure response (e.g., HTTP 415/400).
+    * Use `curl` or **Postman** to send a valid SOAP envelope with the correct SOAPAction header. Expect a successful response or a meaningful SOAP fault.
+    * Capture both commands and responses in `docs/soap-vs-rest-evidence.md` using **MarkItDown**.
+
+3. **Documentation Updates**:
+    * Add a service architecture explanation to `docs/architecture.md` using **MarkItDown**.
+    * Clarify the REST adapter's purpose in `README.md` using **MarkItDown**.
+
+4. **Stakeholder Communication**:
+    * Draft a message to stakeholders (e.g., Minh) with a summary of the findings, including the evidence gathered. Use **Microsoft-Docs** for drafting the message.
+    * Optionally, schedule an alignment call and prepare notes using **Microsoft-Docs**.
+
+5. **Handover Preparation**:
+    * Re-run Mandatory Entry Step (0.1-0.4) to sync the latest state.
+    * Generate a handover report.
+
+6. **Startup Checklist**: Ensure the following before commencing work:
+   * Pull latest: `git pull origin main`
+   * Read `chat_summary.md` (root) to confirm the SOAP service nature and communication plan.
+   * Read `specs/latest/spec.md` to verify the adapter implementation is correct.
+   * Continue from the phase marker inside `memory/current_phase.json` (should be "Clarification").
+
+7. **Handover Report**: Before finishing, **ALWAYS**:
+    * Re-run Step 0.1-0.4 (summarise, update Spec-Kit files, commit & push with GitHub Pull Requests & Issues extension, memory store).
+    * Print a markdown block with:
+        * Phase completed
+        * Artifacts changed (paths + hashes)
+        * Next agent’s entry command
+        * Remaining risks / blockers
