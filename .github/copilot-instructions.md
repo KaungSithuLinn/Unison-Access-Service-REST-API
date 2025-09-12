@@ -11,12 +11,12 @@ This file defines all project rules, coding standards, workflow guidelines, refe
 
 ### TECH STACK
 
-*   **MCPs / extensions**: Microsoft-Docs, Context7, Sequential-Thinking, Playwright, Memory, Web-Search-for-Copilot, MarkItDown, SQL-Server(mssql), Codacy, Firecrawl, Postman, Terraform, GitHub, HashiCorp Terraform MCP, GitHub MCP, GitHub Pull Requests & Issues extension
-*   **Built-ins**: workspace file search & read, `specify` CLI, `git`, `gh`, `terraform`, `codacy-cli`, `curl`
+*   **MCPs / extensions**: Microsoft-Docs, Context7, Sequential-Thinking, Playwright, Memory, Web-Search-for-Copilot, MarkItDown, SQL-Server(mssql), Codacy, Firecrawl, Postman, Terraform, GitHub, HashiCorp Terraform MCP, GitHub MCP, GitHub Pull Requests & Issues extension, GitHub Copilot Chat.
+*   **Built-ins**: workspace file search & read, `specify` CLI, `git`, `gh`, `terraform`, `codacy-cli`, `curl`, `lighthouse-ci`, `axe-cli`, `npm/pnpm`, `docker`.
 
 ### PROJECT DOCUMENTATION & CONTEXT SYSTEM
 
-The `specs/latest/spec.md` file contains the final specification with all enhancements. It should be consulted to confirm the project's current state. `chat_summary.md` provides a structured summary of recent activity. Memory is stored using the Memory MCP, with phase markers indicating the current stage of the project.
+The `specs/latest/spec.md` file contains the final specification with all enhancements. It should be consulted to confirm the project's current state. `chat_summary.md` provides a structured summary of recent activity. Memory is stored using the Memory MCP, with phase markers indicating the current stage of the project. `architecture_decisions.md` stores architecture decisions in ADR format.
 
 ### WORKFLOW & RELEASE RULES
 
@@ -224,7 +224,7 @@ When the project is in the "Clarification" phase, relating to SOAP/REST clarific
 1. **Mandatory Entry Step**: Before starting, always execute the "Mandatory Entry Step – Summarise & Sync" as outlined in the project rules. This includes:
     * Summarizing the current chat and updating `chat_summary.md`.
     * Merging the summary into `specs/latest/spec.md` and `tasks.json`.
-    * Committing and pushing with the message: `"spec: sync soap-rest-clarification"`.
+    * Committing and pushing with the message: `"spec: sync soap-rest-clarification"` or `"spec: sync soap-rest-clarification <timestamp>"`.
     * Storing a snapshot in memory with phase marker `"Clarification"`.
 
 2. **Validation Tests**:
@@ -257,3 +257,107 @@ When the project is in the "Clarification" phase, relating to SOAP/REST clarific
         * Artifacts changed (paths + hashes)
         * Next agent’s entry command
         * Remaining risks / blockers
+
+### WORKFLOW & RELEASE RULES - AI-ENHANCED SPECIFICATION FRAMEWORK
+
+The following describes the AI-enhanced specification framework, including a mandatory entry step and phased execution with AI observability.
+
+#### Global Tool-Set
+
+*   See TECH STACK for list of tools.
+
+#### Mandatory Entry Step – Summarise & Sync
+
+| # | Tool / Built-in | Capability | Input | Output | Next |
+|---|-----------------|------------|-------|--------|------|
+| 0.1 | built-in + GitHub Copilot Chat | `ai_enhanced_summarise_current_chat` | Full transcript + prior chat_summary.md → AI-extracted insights (decisions, debt, bottlenecks) | `chat_summary.md` with structured sections (e.g., AI_Insights, Tech_Debt) | 0.2 |
+| 0.2 | GitHub Copilot Chat + specify CLI | `ai_review_and_update_spec` | Current `specs/latest/spec.md` → AI-suggested enhancements (edge cases, accessibility) | Updated `spec.md`, `tasks.json`, `architecture_decisions.md` (ADR format) | 0.3 |
+| 0.3 | built-in | `merge_artifacts` | AI outputs into Spec-Kit files | Synced Spec-Kit artifacts with versioned ADRs | 0.4 |
+| 0.4 | GitHub Pull Requests & Issues extension | `commit & push` | Message = `"feat(spec): ai-enhanced framework sync - $(date '+%Y-%m-%d-%H-%M')"` | Remote branch updated via PR | 0.5 |
+| 0.5 | Memory MCP | `store_enhanced_snapshot` | `{"source":"spec.md","phase":"Hand-off","ai_insights":["adapter scalability","perf budgets"],"tech_debt":["WSDL caching"]}` | Memory updated with AI context | Phase 1 |
+
+#### Phase 1 – AI-Enhanced Specification (Gate ①: Requirements Lock)
+
+1. **AI User Story Generation**:
+   - Use GitHub Copilot Chat to expand WSDL ops (e.g., Ping, SyncUsers) into user stories with acceptance criteria, including accessibility (axe-cli checks) and performance (Lighthouse budgets).
+   - Input: `docs/architecture.md` + WSDL from temp_wsdl.xml.
+   - Output: Updated `specs/latest/user-stories.md`; validate with Playwright-generated scenarios (>80% coverage).
+
+2. **Schema & Contract Refinement**:
+   - Run `specify CLI` with AI prompts for type-safe REST schemas mirroring SOAP envelopes.
+   - Test via Postman collections for adapter endpoints.
+   - Document edge cases (e.g., fault handling) in `architecture_decisions.md`.
+
+3. **Metrics Baseline**:
+   - Define Core Web Vitals targets (LCP <2.5s) and security reqs (OWASP top 10 coverage).
+   - Run initial axe-cli on mockups.
+
+#### Phase 2 – Intelligent Planning (Gate ②: Architecture Freeze)
+
+1. **IaC Generation**:
+   - Use Terraform MCP + Copilot Chat for optimized modules (e.g., adapter deployment with auto-scaling).
+   - AI prompt: "Optimize for cost/security in REST-SOAP proxy."
+   - Validate: `terraform validate` + security scan.
+
+2. **Component Design**:
+   - AI-suggest patterns (e.g., circuit breaker for SOAP calls) via Sequential-Thinking.
+   - Build dependency graph; flag circular deps.
+
+3. **Threat Modeling**:
+   - AI-assisted (Copilot Chat) for adapter risks (e.g., XML injection); document in ADR.
+
+#### Phase 3 – Smart Task Generation (Gate ③: Task Backlog Ready)
+
+1. **Issue Creation**:
+   - GitHub Extension + AI: Generate issues for adapter impl (e.g., "Implement Ping endpoint") with DoD, estimates.
+   - Prioritize via tech debt from Memory MCP.
+
+2. **Dependency Mapping**:
+   - Create graph in `tasks.json`; optimize order for parallelism.
+
+3. **CI/CD Mapping**:
+   - Link to pipelines with feature flags for SOAP integration.
+
+#### Phase 4 – AI-Assisted Implementation (Gate ④: Code Complete)
+
+1. **Task Fetch & Code Gen**:
+   - Pull top issue; use Copilot Chat for TypeScript impl (e.g., SOAP client lib).
+   - Standards: ESLint, Prettier; include unit tests.
+
+2. **Testing Suite**:
+   - Playwright E2E + Postman for adapter; aim 90% coverage.
+   - Run lighthouse-ci, axe-cli.
+
+3. **PR Creation**:
+   - Auto-generate desc; link issues, request reviews.
+
+#### Phase 5 – Intelligent Review & Deploy (Gate ⑤: Production Ready)
+
+1. **Quality Gates**:
+   - Codacy + AI review; fix suggestions.
+
+2. **Merge & Deploy**:
+   - Squash commit; Terraform apply with monitoring (e.g., Azure App Insights).
+
+3. **Observability**:
+   - Setup alerts for adapter latency.
+
+#### Handover Protocol (AI-Enhanced Framework)
+
+Before finishing, **always**:
+
+a. Re-run Mandatory Entry Step 0.1-0.5 (AI summarize, spec update, commit & PR via GitHub Extension, enhanced memory store).
+b. Print a markdown block with:
+   - Phase completed
+   - Artifacts changed (paths + SHAs/metrics)
+   - Next agent’s entry command
+   - Remaining risks / blockers (e.g., tech debt items)
+   - Quality Metrics (coverage %, perf score, etc.)
+
+### START-UP CHECKLIST (AI-Enhanced Framework)
+
+1. Pull latest: `git pull origin main --rebase`
+2. Read `chat_summary.md` (root) → confirms AI framework adoption and clarification phase completion
+3. Read `specs/latest/spec.md` → verify AI-enhanced user stories and schemas
+4. Read `architecture_decisions.md` → load ADRs for REST-SOAP patterns
+5. Check `memory/current_phase.json` (should be current phase post-sync)

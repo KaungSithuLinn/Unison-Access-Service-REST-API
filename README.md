@@ -7,7 +7,7 @@ Enterprise-grade .NET 9.0 REST-to-SOAP adapter for Unison Access Service, featur
 The Unison Access Service backend is a **SOAP 1.1 WCF service** that provides comprehensive access control functionality. Since modern frontend applications require REST/JSON APIs, this project implements a **REST-to-SOAP adapter** that:
 
 - **Translates** REST/JSON requests to SOAP/XML format
-- **Provides** modern REST API interface for frontend applications  
+- **Provides** modern REST API interface for frontend applications
 - **Preserves** all existing backend functionality and security
 - **Maintains** compatibility with the Unison Access Service
 

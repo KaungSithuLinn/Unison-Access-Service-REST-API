@@ -161,12 +161,12 @@ Recommended technologies for the REST-to-SOAP adapter:
 
 ### Error Handling Strategy
 
-| SOAP Fault Type | HTTP Status | JSON Error Response |
-|------------------|-------------|-------------------|
-| ArgumentError | 400 Bad Request | `{"error": "Invalid parameters", "details": "..."}` |
-| ServiceError | 500 Internal Server Error | `{"error": "Service unavailable", "message": "..."}` |
-| Authentication | 401 Unauthorized | `{"error": "Authentication required"}` |
-| Authorization | 403 Forbidden | `{"error": "Access denied"}` |
+| SOAP Fault Type | HTTP Status               | JSON Error Response                                  |
+| --------------- | ------------------------- | ---------------------------------------------------- |
+| ArgumentError   | 400 Bad Request           | `{"error": "Invalid parameters", "details": "..."}`  |
+| ServiceError    | 500 Internal Server Error | `{"error": "Service unavailable", "message": "..."}` |
+| Authentication  | 401 Unauthorized          | `{"error": "Authentication required"}`               |
+| Authorization   | 403 Forbidden             | `{"error": "Access denied"}`                         |
 
 ## Conclusion
 
