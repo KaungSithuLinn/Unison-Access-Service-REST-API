@@ -1,0 +1,402 @@
+name: Application Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "*.csproj"
+      - "Dockerfile"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "*.csproj"
+      - "Dockerfile"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy"
+        required: true
+        default: "development"
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+env:
+  DOTNET_VERSION: "9.0.x"
+  REGISTRY_NAME: "unisonaccessregistry"
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build application
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run unit tests
+        run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: "**/TestResults/**"
+
+  security-scan:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install security scanning tools
+        run: |
+          dotnet tool install --global security-scan
+          dotnet tool install --global dotnet-outdated-tool
+
+      - name: Run security scan
+        run: security-scan --project . --format sarif --output security-results.sarif
+        continue-on-error: true
+
+      - name: Check for outdated packages
+        run: dotnet outdated --upgrade:Major --include-auto-references
+        continue-on-error: true
+
+      - name: Upload security results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-results
+          path: security-results.sarif
+
+  build-docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [build, security-scan]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Azure Container Registry
+        run: az acr login --name ${{ env.REGISTRY_NAME }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_NAME }}.azurecr.io/unison-access-service
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+
+  deploy-development:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    needs: build-docker
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'development')
+    environment: development
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: "unison-access-service-dev"
+          images: "${{ env.REGISTRY_NAME }}.azurecr.io/unison-access-service:${{ github.sha }}"
+
+      - name: Wait for deployment
+        run: sleep 60
+
+      - name: Health check
+        run: |
+          APP_URL="https://unison-access-service-dev.azurewebsites.net"
+
+          # Test health endpoint
+          response=$(curl -s -o /dev/null -w "%{http_code}" "${APP_URL}/health")
+
+          if [ "$response" != "200" ]; then
+            echo "Health check failed with status: $response"
+            exit 1
+          fi
+
+          echo "Development deployment successful!"
+
+      - name: Run integration tests
+        run: |
+          APP_URL="https://unison-access-service-dev.azurewebsites.net"
+
+          # Test API endpoints
+          curl -f "${APP_URL}/api/v1/status" || exit 1
+          curl -f "${APP_URL}/swagger" || exit 1
+
+          echo "Integration tests passed!"
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: deploy-development
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_STAGING }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: "unison-access-service-staging"
+          images: "${{ env.REGISTRY_NAME }}.azurecr.io/unison-access-service:${{ github.sha }}"
+
+      - name: Wait for deployment
+        run: sleep 60
+
+      - name: Health check
+        run: |
+          APP_URL="https://unison-access-service-staging.azurewebsites.net"
+
+          # Test health endpoint
+          response=$(curl -s -o /dev/null -w "%{http_code}" "${APP_URL}/health")
+
+          if [ "$response" != "200" ]; then
+            echo "Health check failed with status: $response"
+            exit 1
+          fi
+
+          echo "Staging deployment successful!"
+
+      - name: Run performance tests
+        run: |
+          APP_URL="https://unison-access-service-staging.azurewebsites.net"
+
+          # Basic performance test
+          echo "Running performance tests..."
+
+          for i in {1..10}; do
+            start_time=$(date +%s%N)
+            curl -s "${APP_URL}/api/v1/status" > /dev/null
+            end_time=$(date +%s%N)
+            duration=$((($end_time - $start_time) / 1000000))
+            echo "Request $i: ${duration}ms"
+            
+            if [ $duration -gt 5000 ]; then
+              echo "Performance test failed: Request took more than 5 seconds"
+              exit 1
+            fi
+          done
+
+          echo "Performance tests passed!"
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_PROD }}
+
+      - name: Pre-deployment backup
+        run: |
+          echo "Creating pre-deployment backup..."
+
+          # Get current app settings
+          az webapp config appsettings list \
+            --name unison-access-service-prod \
+            --resource-group unison-access-service-prod-rg \
+            --output json > app-settings-backup.json
+
+          # Upload backup to storage
+          az storage blob upload \
+            --account-name unisonaccessstorageprod \
+            --container-name backups \
+            --name "app-settings-$(date +%Y%m%d%H%M%S).json" \
+            --file app-settings-backup.json
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: "unison-access-service-prod"
+          images: "${{ env.REGISTRY_NAME }}.azurecr.io/unison-access-service:${{ github.sha }}"
+
+      - name: Wait for deployment
+        run: sleep 120
+
+      - name: Health check
+        run: |
+          APP_URL="https://unison-access-service-prod.azurewebsites.net"
+
+          # Extended health check for production
+          for i in {1..5}; do
+            echo "Health check attempt $i..."
+            response=$(curl -s -o /dev/null -w "%{http_code}" "${APP_URL}/health")
+            
+            if [ "$response" == "200" ]; then
+              echo "Health check passed!"
+              break
+            fi
+            
+            if [ $i -eq 5 ]; then
+              echo "Health check failed after 5 attempts with status: $response"
+              exit 1
+            fi
+            
+            sleep 30
+          done
+
+      - name: Post-deployment validation
+        run: |
+          APP_URL="https://unison-access-service-prod.azurewebsites.net"
+
+          # Test critical endpoints
+          echo "Testing critical endpoints..."
+
+          # Test status endpoint
+          curl -f "${APP_URL}/api/v1/status" || exit 1
+
+          # Test swagger documentation
+          curl -f "${APP_URL}/swagger" || exit 1
+
+          # Test metrics endpoint
+          curl -f "${APP_URL}/metrics" || exit 1
+
+          echo "All validation tests passed!"
+
+      - name: Update monitoring
+        run: |
+          echo "Updating monitoring configuration..."
+
+          # Enable Application Insights alerts
+          az monitor metrics alert create \
+            --name "unison-access-service-high-response-time" \
+            --resource-group unison-access-service-prod-rg \
+            --scopes "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/unison-access-service-prod-rg/providers/Microsoft.Web/sites/unison-access-service-prod" \
+            --condition "avg Microsoft.Web/sites ResponseTime > 5" \
+            --description "Alert when average response time exceeds 5 seconds" \
+            --evaluation-frequency 1m \
+            --window-size 5m \
+            --severity 2 \
+            --action-group ${{ secrets.ALERT_ACTION_GROUP_ID }} \
+            --auto-mitigate true \
+            || echo "Alert already exists"
+
+      - name: Post-deployment notification
+        run: |
+          echo "Production deployment completed successfully!"
+          echo "Application URL: https://unison-access-service-prod.azurewebsites.net"
+          echo "Swagger UI: https://unison-access-service-prod.azurewebsites.net/swagger"
+          echo "Deployment time: $(date)"
+
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    if: failure() && (needs.deploy-development.result == 'failure' || needs.deploy-staging.result == 'failure' || needs.deploy-production.result == 'failure')
+    environment: ${{ github.event.inputs.environment || 'development' }}
+
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+
+      - name: Determine environment
+        id: env
+        run: |
+          if [ "${{ github.event.inputs.environment }}" == "production" ]; then
+            echo "app_name=unison-access-service-prod" >> $GITHUB_OUTPUT
+            echo "resource_group=unison-access-service-prod-rg" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.inputs.environment }}" == "staging" ]; then
+            echo "app_name=unison-access-service-staging" >> $GITHUB_OUTPUT
+            echo "resource_group=unison-access-service-staging-rg" >> $GITHUB_OUTPUT
+          else
+            echo "app_name=unison-access-service-dev" >> $GITHUB_OUTPUT
+            echo "resource_group=unison-access-service-dev-rg" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Rollback to previous deployment
+        run: |
+          echo "Rolling back deployment for ${{ steps.env.outputs.app_name }}..."
+
+          # Get previous deployment slot
+          az webapp deployment list-publishing-profiles \
+            --name ${{ steps.env.outputs.app_name }} \
+            --resource-group ${{ steps.env.outputs.resource_group }} \
+            --query "[0].publishUrl" -o tsv
+
+          # Swap back to previous slot if available
+          az webapp deployment slot swap \
+            --name ${{ steps.env.outputs.app_name }} \
+            --resource-group ${{ steps.env.outputs.resource_group }} \
+            --slot production \
+            --target-slot staging \
+            || echo "No staging slot available for rollback"
+
+          echo "Rollback completed!"
