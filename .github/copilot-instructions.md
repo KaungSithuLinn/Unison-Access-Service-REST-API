@@ -361,3 +361,110 @@ b. Print a markdown block with:
 3. Read `specs/latest/spec.md` → verify AI-enhanced user stories and schemas
 4. Read `architecture_decisions.md` → load ADRs for REST-SOAP patterns
 5. Check `memory/current_phase.json` (should be current phase post-sync)
+
+### WORKFLOW & RELEASE RULES - MERGE CONFLICTS
+
+If the AI encounters merge conflicts and is unable to resolve them automatically, it must stop and provide detailed instructions to the user on how to resolve the conflicts manually. It should not proceed with the merge until the user confirms that the conflicts have been resolved. Untracked files that would be overwritten by the merge must be handled with care. The AI should offer to move these files to a backup location before proceeding with the merge.
+
+### WORKFLOW & RELEASE RULES - BRANCH MANAGEMENT
+
+When the AI is instructed to merge or copy files from feature branches into the main branch, the following steps must be followed:
+
+1. **Identify Relevant Branches:** Identify all feature branches to be merged.
+2. **Update Branches:** For each branch, check out the branch and pull the latest changes.
+3. **Merge or Cherry-Pick:** Merge or cherry-pick changes into `main`, resolving conflicts if needed.
+4. **Validate:** Validate that all project files/folders are present and correct in `main`.
+5. **Delete Branches:** After a successful merge, delete the merged branches locally and remotely.
+6. **Confirm Workspace:** Confirm the workspace is clean and up to date.
+7. **Handle Untracked Files:** If untracked files would be overwritten by the merge, move these files to a backup location before proceeding with the merge.
+
+### WORKFLOW & RELEASE RULES - NEXT-STEPS OUTLINE
+
+The following outlines the next steps in the project, following a Spec-Kit-aligned, AI-enhanced workflow:
+
+#### Global Tool-Set
+
+*   **MCPs / extensions:** Microsoft-Docs, Context7, Sequential-Thinking, Playwright, Memory, Web-Search-for-Copilot, MarkItDown, SQL-Server(mssql), Codacy, Firecrawl, Postman, HashiCorp Terraform, GitHub, GitHub Pull Requests & Issues
+*   **Built-ins:** workspace file search & read, `specify` CLI, `git`, `gh`, `terraform`, `codacy-cli`, npm/pnpm, docker, lighthouse-ci, axe-cli
+
+#### Mandatory Entry Step – Summarise & Sync
+
+| #   | Tool / Built-in                | Specific Capability         | Input (concrete)                                 | Output (artifact)         | Feeds Into |
+|-----|-------------------------------|----------------------------|--------------------------------------------------|--------------------------|------------|
+| 0.1 | built-in + AI                 | summarise_current_chat     | full transcript → decisions, features, fixes     | `chat_summary.md`        | 0.2        |
+| 0.2 | built-in                      | update_spec_kit_files      | merge chat_summary.md into spec.md & `tasks.json` | updated Spec-Kit artifacts | 0.3        |
+| 0.3 | GitHub Pull Requests & Issues | commit & push              | message = `"spec: sync chat-summary <timestamp>"`| remote branch updated     | 0.4        |
+| 0.4 | Memory MCP                    | store_snapshot             | `{"source":"chat_summary.md","phase":"Hand-off"}`| memory updated            | Phase 1    |
+
+#### Phase 1 – Specify (Gate ①) – AI-Enhanced
+
+| #   | Tool / Built-in         | Capability                | Input / Prompt                                  | Output / Artifact         | Feeds Into |
+|-----|------------------------|---------------------------|-------------------------------------------------|--------------------------|------------|
+| 1.1 | GitHub Copilot Chat    | generate_user_stories     | “Create stories & acceptance criteria for spec.md” | `user_stories.json`      | 1.2        |
+| 1.2 | Built-in + specify CLI | create_schemas            | stories → type-safe schemas / API contracts     | `schemas.ts` + `api.yml` | 1.3        |
+| 1.3 | Playwright MCP         | generate_e2e_stub         | stories → `e2e/<story>.spec.ts`                 | test stubs               | 1.4        |
+| 1.4 | Built-in               | write_file                | merge above → spec.md updated    | spec finalized           | Phase 2    |
+
+#### Phase 2 – Plan (Gate ②) – Intelligent Planning
+
+| #   | Tool / Built-in         | Capability                | Input / Prompt                                  | Output / Artifact         | Feeds Into |
+|-----|------------------------|---------------------------|-------------------------------------------------|--------------------------|------------|
+| 2.1 | HashiCorp Terraform MCP| plan_infrastructure       | `{"file":"infra/main.tf","cloud":"azure"}`      | `tfplan.json`            | 2.2        |
+| 2.2 | GitHub Copilot Chat    | review_plan               | “Check plan for cost, security, scalability”    | improvement list          | 2.3        |
+| 2.3 | SQL-Server(mssql) MCP  | validate_schema_draft     | `schemas.ts` → DDL                              | `.sql` file              | 2.4        |
+| 2.4 | Codacy MCP             | scan_plan                 | `plan.md` + DDL + TF                            | quality report            | Phase 3    |
+
+#### Phase 3 – Tasks (Gate ③) – Smart Task Generation
+
+| #   | Tool / Built-in                | Capability                | Input / Prompt                                  | Output / Artifact         | Feeds Into |
+|-----|-------------------------------|---------------------------|-------------------------------------------------|--------------------------|------------|
+| 3.1 | GitHub Pull Requests & Issues | create_issues             | `tasks.json` (AI-prioritised)                   | issue list               | 3.2        |
+| 3.2 | GitHub Copilot Chat           | suggest_impl              | per issue → code hints                          | hints stored in issue    | 3.3        |
+| 3.3 | Built-in                      | dependency_graph          | tasks → ordered graph                           | `task_graph.json`        | Phase 4    |
+
+#### Phase 4 – Implement (Gate ④) – AI-Assisted Coding
+
+| #   | Tool / Built-in                | Capability                | Input / Prompt                                  | Output / Artifact         | Feeds Into |
+|-----|-------------------------------|---------------------------|-------------------------------------------------|--------------------------|------------|
+| 4.1 | GitHub Pull Requests & Issues | fetch_top_issue           | highest priority                                | issue context            | 4.2        |
+| 4.2 | GitHub Copilot Chat           | generate_code             | “Implement issue #123 per hints”                | `.ts/.tsx` files         | 4.3        |
+| 4.3 | Playwright + Built-in         | run_tests                 | unit + int + e2e                                | all green                | 4.4        |
+| 4.4 | lighthouse-ci & axe-cli       | performance_accessibility | URL = `localhost:3000`                          | budgets met, WCAG AA     | 4.5        |
+| 4.5 | GitHub Pull Requests & Issues | create_pr                 | template + hints + reports                      | PR #xxx                  | Phase 5    |
+
+#### Phase 5 – Review & Deploy (Gate ⑤) – Intelligent Review
+
+| #   | Tool / Built-in         | Capability                | Input / Prompt                                  | Output / Artifact         | Feeds Into |
+|-----|------------------------|---------------------------|-------------------------------------------------|--------------------------|------------|
+| 5.1 | Codacy MCP             | scan_pr                   | PR diff                                         | quality gate ≥ threshold | 5.2        |
+| 5.2 | GitHub Copilot Chat    | review_checklist          | “Security, perf, a11y, i18n”                    | checklist ok             | 5.3        |
+| 5.3 | GitHub Pull Requests & Issues | merge_pr           | squash + semantic msg                           | trunk updated            | 5.4        |
+| 5.4 | HashiCorp Terraform MCP| apply                     | `tfplan.json`                                   | infra live               | 5.5        |
+| 5.5 | Built-in               | feature_flags & observability | enable flags, dashboards                   | monitored release        | Hand-off   |
+
+### HAND-OVER PROTOCOL - ENGINEERED PROMPT FOR NEXT AGENT
+
+```
+You are continuing an AI-First Spec-Kit project.
+Tool-set: the 14 MCPs/extensions listed above + workspace file access + `specify` CLI.
+
+START-UP CHECKLIST  
+1. `git pull origin main --rebase && npm ci`  
+2. Read `chat_summary.md` → latest decisions & blockers  
+3. Read `specs/latest/spec.md` → canonical requirements  
+4. Read `memory/current_phase.json` → your starting gate
+
+PHASE-SPECIFIC COMMANDS  
+- Specify: `specify init <feature> --ai`  
+- Plan: `/plan` (Terraform extension auto-plans)  
+- Tasks: `/tasks` (GitHub issues created)  
+- Implement: pick top issue, Copilot-generate code, run full test suite (unit+int+e2e), lighthouse & axe, PR  
+- Review: Codacy scan, Copilot checklist, merge, Terraform apply, enable observability
+
+BEFORE YOU LEAVE  
+Re-run Step 0.1-0.4 (summarise, update Spec-Kit files, commit, memory snapshot) and print the **Hand-over Report** markdown block:
+- Phase completed
+- Artifacts changed (paths + SHAs)
+- Next agent’s entry command
+- Remaining risks / blockers
+```
