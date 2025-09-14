@@ -1,22 +1,147 @@
-# Zero-Context Engineered Prompt for Next Agent
+# Zero-Context Agent Prompt
 
-## 🚀 AGENT HANDOVER PROTOCOL
+You are continuing an AI-First Spec-Kit project with complete tool integration and framework support.
 
-You are continuing an **AI-First Spec-Kit project** with advanced automation and quality gates.
+## Tool-Set Available
 
----
+**14 MCPs/Extensions**: Microsoft-Docs, Context7, Sequential-Thinking, Playwright, Memory, Web-Search-for-Copilot, MarkItDown, SQL-Server(mssql), Codacy, Firecrawl, Postman, HashiCorp Terraform, GitHub, GitHub Pull Requests & Issues
 
-## ⚡ CRITICAL STARTUP SEQUENCE
+**Built-ins**: workspace file search & read, `specify` CLI, `git`, `gh`, `terraform`, `codacy-cli`, npm/pnpm, docker, lighthouse-ci, axe-cli
 
-### Step 1: Environment Preparation
+## START-UP CHECKLIST
 
-```powershell
-# Pull latest changes and sync workspace
-git pull origin main --rebase
-npm ci  # or yarn install if package.json uses yarn
+**Execute these steps in order before beginning work:**
+
+1. **Environment Sync**: `git pull origin main --rebase && npm ci`
+2. **Context Loading**: Read `chat_summary.md` → latest decisions & blockers
+3. **Requirements Review**: Read `specs/latest/spec.md` → canonical requirements
+4. **Phase Confirmation**: Read `memory/current_phase.json` → your starting gate
+
+## PHASE-SPECIFIC COMMANDS
+
+**Quick Reference for Each Phase:**
+
+- **Specify**: `specify init <feature> --ai`
+- **Plan**: `/plan` (Terraform extension auto-plans)
+- **Tasks**: `/tasks` (GitHub issues created)
+- **Implement**: pick top issue, Copilot-generate code, run full test suite (unit+int+e2e), lighthouse & axe, PR
+- **Review**: Codacy scan, Copilot checklist, merge, Terraform apply, enable observability
+
+## MANDATORY ENTRY STEP (0.1-0.4)
+
+**ALWAYS execute before starting phase work:**
+
+1. **Summarize**: Create/update `chat_summary.md` with AI insights
+2. **Sync Specs**: Merge chat summary into `specs/latest/spec.md` & `tasks.json`
+3. **Commit**: `git commit -m "spec: sync <feature> <timestamp>"`
+4. **Memory**: Store snapshot with Memory MCP
+
+## WORKFLOW STEPS BY PHASE
+
+### Phase 1 - Specify (AI-Enhanced) ✅ COMPLETE
+
+**Status**: All deliverables complete
+
+- User stories with acceptance criteria in `specs/latest/user-stories.md`
+- Type-safe schemas in `specs/latest/api-schema.yaml`
+- Performance baselines in `specs/latest/metrics-baseline.md`
+- E2E test stubs generated with Playwright
+
+### Phase 2 - Plan (Intelligent Planning) 🚀 READY
+
+**Your immediate actions:**
+
+1. **Infrastructure Planning**: Use HashiCorp Terraform MCP for Azure optimization
+2. **Cost/Security Review**: Use GitHub Copilot Chat for plan analysis
+3. **Schema Validation**: Use SQL-Server(mssql) MCP for DDL generation
+4. **Quality Gates**: Use Codacy MCP for planning artifact validation
+
+**Success Criteria:**
+
+- Terraform plan validated and cost-optimized
+- Security review completed (OWASP compliance)
+- Database schema performance-optimized
+- All planning artifacts pass quality thresholds
+
+### Phase 3 - Tasks (Smart Generation)
+
+**Actions:**
+
+1. **Issue Creation**: GitHub Pull Requests & Issues MCP with AI prioritization
+2. **Implementation Hints**: GitHub Copilot Chat for code guidance
+3. **Dependency Mapping**: Task graph generation for optimized execution
+
+### Phase 4 - Implement (AI-Assisted Coding)
+
+**Actions:**
+
+1. **Top Issue**: Fetch highest priority with GitHub MCP
+2. **Code Generation**: GitHub Copilot Chat with TypeScript/ESLint standards
+3. **Testing**: Playwright + lighthouse-ci + axe-cli (90% coverage target)
+4. **PR Creation**: Automated with quality reports
+
+### Phase 5 - Review & Deploy (Intelligent Review)
+
+**Actions:**
+
+1. **Quality Scan**: Codacy MCP for threshold validation
+2. **Review Checklist**: AI-assisted security/performance/accessibility check
+3. **Deployment**: Terraform apply with monitoring activation
+
+## QUALITY GATES & TARGETS
+
+**Performance**: Core Web Vitals (LCP <2.5s, FID <100ms, CLS <0.1)
+**Accessibility**: WCAG 2.1 AA compliance via axe-cli
+**Security**: OWASP Top 10 coverage, Codacy rating >8.0
+**Testing**: 90% coverage (unit + integration + E2E)
+
+## TECHNICAL DEBT AWARENESS
+
+**High Priority:**
+
+1. WSDL caching strategy for latency reduction
+2. SOAP fault translation standardization
+3. API documentation automation
+
+**Monitor & Address**: Check `chat_summary.md` technical debt section for latest items
+
+## BEFORE YOU LEAVE
+
+**ALWAYS execute handover protocol:**
+
+a. Re-run Mandatory Entry Step 0.1-0.4 (summarise, update Spec-Kit files, commit, memory snapshot)
+
+b. Print **Hand-over Report** markdown block:
+
+```markdown
+## Hand-over Report
+
+**Phase Completed**: [Phase name and gate]
+**Artifacts Changed**:
+
+- [file path] (SHA: [commit hash])
+- [performance metrics if applicable]
+
+**Next Agent Entry Command**: [specific next action]
+**Remaining Risks/Blockers**: [any issues that need attention]
+**Quality Metrics**: [coverage %, performance scores, etc.]
 ```
 
-### Step 2: Context Loading (MANDATORY)
+## PROJECT CONTEXT
+
+**Architecture**: REST-to-SOAP adapter for Unison Access Service
+**Technology Stack**: .NET 9.0, Azure deployment, Docker containerization
+**Current Status**: Phase 1 complete, Phase 2 ready for intelligent planning
+**Branch Protection**: Active (requires PRs, signed commits, status checks)
+
+## CRITICAL SUCCESS FACTORS
+
+1. **Zero Context Gaps**: All information available in documented artifacts
+2. **Quality Gates**: Never compromise on established thresholds
+3. **AI Integration**: Leverage all 14 MCPs/extensions for optimal results
+4. **Handover Excellence**: Ensure next agent has complete context
+
+You have everything needed to succeed. Focus on the current phase, execute with quality, and maintain the handover chain.
 
 1. **Read `ai_enhanced_chat_summary.md`** → Latest decisions, blockers, and AI insights
 2. **Read `specs/latest/spec.md`** → Canonical requirements and architecture

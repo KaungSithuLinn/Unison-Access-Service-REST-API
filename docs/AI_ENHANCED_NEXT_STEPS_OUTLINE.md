@@ -1,31 +1,36 @@
-# AI-Enhanced Spec-Kit Framework - Next Steps Outline
+# AI-Enhanced Next Steps Outline
 
-## Global Tool-Set & Capabilities
+## Global Tool-Set
 
-### MCPs / Extensions (14+ Tools)
+### MCPs / Extensions (14 Tools)
 
-- **Microsoft-Docs MCP**: Architecture pattern validation, best practices
-- **Context7 MCP**: Library documentation and integration patterns
-- **Sequential-Thinking MCP**: Complex problem decomposition and analysis
-- **Playwright MCP**: E2E testing automation and browser interactions
-- **Memory MCP**: Knowledge graph and context persistence
-- **Web-Search-for-Copilot**: Real-time information gathering
-- **MarkItDown MCP**: Document generation and conversion
-- **SQL-Server(mssql) MCP**: Database schema validation and operations
-- **Codacy MCP**: Code quality gates and automated remediation
-- **Firecrawl MCP**: Web scraping and content extraction
-- **Postman MCP**: API testing and collection management
-- **HashiCorp Terraform MCP**: Infrastructure as Code optimization
-- **GitHub MCP**: Repository management and automation
-- **GitHub Pull Requests & Issues**: Workflow and PR management
+- **Microsoft-Docs**: Official Microsoft/Azure documentation search and fetch
+- **Context7**: Library documentation resolution and retrieval
+- **Sequential-Thinking**: Complex problem decomposition and analysis
+- **Playwright**: Browser automation and E2E testing
+- **Memory**: Knowledge graph for context tracking
+- **Web-Search-for-Copilot**: Real-time web search capabilities
+- **MarkItDown**: Document conversion and generation
+- **SQL-Server(mssql)**: Database management and schema operations
+- **Codacy**: Code quality analysis and security scanning
+- **Firecrawl**: Web crawling and content extraction
+- **Postman**: API testing and collection management
+- **HashiCorp Terraform**: Infrastructure as Code planning and deployment
+- **GitHub**: Repository management and workflow automation
+- **GitHub Pull Requests & Issues**: Issue tracking and PR management
 
-### Built-in Capabilities
+### Built-in Tools
 
-- **Workspace Access**: File search, read, edit operations
+- **workspace file search & read**: File system navigation and content access
 - **specify CLI**: Type-safe schema generation and validation
-- **Terminal Operations**: git, gh, terraform, codacy-cli, npm/pnpm, docker
-- **Quality Tools**: lighthouse-ci, axe-cli for performance and accessibility
-- **AI Integration**: GitHub Copilot Chat for code generation and review
+- **git**: Version control operations
+- **gh**: GitHub CLI for advanced operations
+- **terraform**: Infrastructure planning and deployment
+- **codacy-cli**: Local quality analysis
+- **npm/pnpm**: Package management
+- **docker**: Containerization and deployment
+- **lighthouse-ci**: Performance monitoring
+- **axe-cli**: Accessibility validation
 
 ---
 
