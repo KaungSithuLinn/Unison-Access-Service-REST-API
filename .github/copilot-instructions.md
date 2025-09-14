@@ -242,8 +242,6 @@ When the project is in the "Clarification" phase, relating to SOAP/REST clarific
 
 5. **Handover Preparation**:
     * Re-run Mandatory Entry Step (0.1-0.4) to sync the latest state.
-    * Generate a handover report.
-
 6. **Startup Checklist**: Ensure the following before commencing work:
    * Pull latest: `git pull origin main`
    * Read `chat_summary.md` (root) to confirm the SOAP service nature and communication plan.
@@ -391,8 +389,8 @@ The following outlines the next steps in the project, following a Spec-Kit-align
 
 | #   | Tool / Built-in                | Specific Capability         | Input (concrete)                                 | Output (artifact)         | Feeds Into |
 |-----|-------------------------------|----------------------------|--------------------------------------------------|--------------------------|------------|
-| 0.1 | built-in + AI                 | summarise_current_chat     | full transcript → decisions, features, fixes     | `chat_summary.md`        | 0.2        |
-| 0.2 | built-in                      | update_spec_kit_files      | merge chat_summary.md into spec.md & `tasks.json` | updated Spec-Kit artifacts | 0.3        |
+| 0.1 | built-in + AI                 | `summarise_current_chat`     | full transcript → decisions, features, fixes     | `chat_summary.md`        | 0.2        |
+| 0.2 | built-in                      | `update_spec_kit_files`      | merge chat_summary.md into spec.md & `tasks.json` | updated Spec-Kit artifacts | 0.3        |
 | 0.3 | GitHub Pull Requests & Issues | commit & push              | message = `"spec: sync chat-summary <timestamp>"`| remote branch updated     | 0.4        |
 | 0.4 | Memory MCP                    | store_snapshot             | `{"source":"chat_summary.md","phase":"Hand-off"}`| memory updated            | Phase 1    |
 
@@ -400,9 +398,9 @@ The following outlines the next steps in the project, following a Spec-Kit-align
 
 | #   | Tool / Built-in         | Capability                | Input / Prompt                                  | Output / Artifact         | Feeds Into |
 |-----|------------------------|---------------------------|-------------------------------------------------|--------------------------|------------|
-| 1.1 | GitHub Copilot Chat    | generate_user_stories     | “Create stories & acceptance criteria for spec.md” | `user_stories.json`      | 1.2        |
-| 1.2 | Built-in + specify CLI | create_schemas            | stories → type-safe schemas / API contracts     | `schemas.ts` + `api.yml` | 1.3        |
-| 1.3 | Playwright MCP         | generate_e2e_stub         | stories → `e2e/<story>.spec.ts`                 | test stubs               | 1.4        |
+| 1.1 | GitHub Copilot Chat    | `generate_user_stories`     | “Create stories & acceptance criteria for spec.md” | `user_stories.json`      | 1.2        |
+| 1.2 | Built-in + specify CLI | `create_schemas`            | stories → type-safe schemas / API contracts     | `schemas.ts` + `api.yml` | 1.3        |
+| 1.3 | Playwright MCP         | `generate_e2e_stub`         | stories → `e2e/<story>.spec.ts`                 | test stubs               | 1.4        |
 | 1.4 | Built-in               | write_file                | merge above → spec.md updated    | spec finalized           | Phase 2    |
 
 #### Phase 2 – Plan (Gate ②) – Intelligent Planning
@@ -468,3 +466,5 @@ Re-run Step 0.1-0.4 (summarise, update Spec-Kit files, commit, memory snapshot) 
 - Next agent’s entry command
 - Remaining risks / blockers
 ```
+
+**Note**: Before proceeding with any changes, always check the latest content of `PHASE_1_HANDOVER_REPORT.md`, `chat_summary.md`, and `current_phase.json` for manual edits made after the branch merges.
