@@ -16,7 +16,7 @@ This file defines all project rules, coding standards, workflow guidelines, refe
 
 ### PROJECT DOCUMENTATION & CONTEXT SYSTEM
 
-The `specs/latest/spec.md` file contains the final specification with all enhancements. It should be consulted to confirm the project's current state. `chat_summary.md` provides a structured summary of recent activity. Memory is stored using the Memory MCP, with phase markers indicating the current stage of the project. `architecture_decisions.md` stores architecture decisions in ADR format.
+The `specs/latest/spec.md` file contains the final specification with all enhancements. It should be consulted to confirm the project's current state. `chat_summary.md` provides a structured summary of recent activity. Memory is stored using the Memory MCP, with phase markers indicating the current stage of the project. `architecture_decisions.md` stores architecture decisions in ADR format. `AI_ENHANCED_NEXT_STEPS_OUTLINE.md` contains the complete 5-phase AI-enhanced workflow documentation. `ZERO_CONTEXT_AGENT_PROMPT.md` contains the agent handover instructions and startup checklist. `PHASE_1_HANDOVER_REPORT.md` contains the comprehensive handover documentation for Phase 1.
 
 ### WORKFLOW & RELEASE RULES
 
@@ -406,7 +406,7 @@ The following outlines the next steps in the project, following a Spec-Kit-align
 #### Phase 2 – Plan (Gate ②) – Intelligent Planning
 
 | #   | Tool / Built-in         | Capability                | Input / Prompt                                  | Output / Artifact         | Feeds Into |
-|-----|------------------------|---------------------------|-------------------------------------------------|--------------------------|------------|
+|-----|------------------------|----------------ニーカー|-------------------------------------------------|--------------------------|------------|
 | 2.1 | HashiCorp Terraform MCP| plan_infrastructure       | `{"file":"infra/main.tf","cloud":"azure"}`      | `tfplan.json`            | 2.2        |
 | 2.2 | GitHub Copilot Chat    | review_plan               | “Check plan for cost, security, scalability”    | improvement list          | 2.3        |
 | 2.3 | SQL-Server(mssql) MCP  | validate_schema_draft     | `schemas.ts` → DDL                              | `.sql` file              | 2.4        |
@@ -468,28 +468,3 @@ Re-run Step 0.1-0.4 (summarise, update Spec-Kit files, commit, memory snapshot) 
 ```
 
 **Note**: Before proceeding with any changes, always check the latest content of `PHASE_1_HANDOVER_REPORT.md`, `chat_summary.md`, and `current_phase.json` for manual edits made after the branch merges.
-
-### WORKFLOW & RELEASE RULES - NEXT-STEPS OUTLINE (UPDATED)
-
-The following outlines the next steps in the project, following a Spec-Kit-aligned, AI-enhanced workflow:
-
-#### Global Tool-Set
-
-*   **MCPs / extensions:** Microsoft-Docs, Context7, Sequential-Thinking, Playwright, Memory, Web-Search-for-Copilot, MarkItDown, SQL-Server(mssql), Codacy, Firecrawl, Postman, HashiCorp Terraform, GitHub, GitHub Pull Requests & Issues
-*   **Built-ins:** workspace file search & read, `specify` CLI, `git`, `gh`, `terraform`, `codacy-cli`, npm/pnpm, docker, lighthouse-ci, axe-cli
-
-#### Mandatory Entry Step – Summarise & Sync
-
-| #   | Tool / Built-in                | Specific Capability         | Input (concrete)                                 | Output (artifact)         | Feeds Into |
-|-----|-------------------------------|----------------------------|--------------------------------------------------|--------------------------|------------|
-| 0.1 | built-in + AI                 | `summarise_current_chat`   | full transcript → decisions, features, fixes, blockers, open questions | `chat_summary.md`        | 0.2        |
-| 0.2 | built-in                      | `update_spec_kit_files`    | merge chat_summary.md into spec.md & `tasks.json` | updated Spec-Kit artifacts | 0.3        |
-| 0.3 | GitHub Pull Requests & Issues | `commit & push`            | message = `"spec: sync chat-summary <timestamp>"`| remote branch updated     | 0.4        |
-| 0.4 | Memory MCP                    | `store_snapshot`           | `{"source":"chat_summary.md","phase":"Hand-off"}`| memory updated            | Phase 1    |
-
-#### Phase 1 – Specify (Gate ①) – AI-Enhanced
-
-| #   | Tool / Built-in         | Capability                | Input / Prompt                                  | Output / Artifact         | Feeds Into |
-|-----|------------------------|---------------------------|-------------------------------------------------|--------------------------|------------|
-| 1.1 | GitHub Copilot Chat    | `generate_user_stories`   | prompt = “Create stories & acceptance criteria for spec.md” | `user_stories.json`      | 1.2        |
-| 1.2 | Built-in + specify CLI | `create_schemas`          | consume
